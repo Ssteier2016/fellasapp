@@ -1,27 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_socketio import SocketIO, emit
 from hashlib import sha256
-import webpush
-from py_vapid import Vapid
 import os
-from dotenv import load_dotenv
-
-# Cargar variables de entorno desde .env (localmente)
-load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret!')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key_1234567890')  # Valor por defecto
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Base de datos en memoria (simplificada)
 users_db = {}  # {username: hashed_password}
 connected_users = {}  # {sid: username}
-subscriptions = {}  # {username: subscription}
-
-# Configuración de VAPID para notificaciones push
-VAPID_PRIVATE_KEY = os.getenv('VAPID_PRIVATE_KEY')
-VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY')
-VAPID_CLAIMS = {"sub": "mailto:tu_correo@example.com"}  # Reemplaza con tu correo real
 
 def hash_password(password):
     return sha256(password.encode('utf-8')).hexdigest()
@@ -62,14 +50,6 @@ def reset_password():
     users_db[username] = hashed
     return jsonify({'success': True})
 
-@app.route('/subscribe', methods=['POST'])
-def subscribe():
-    data = request.get_json()
-    username = data['username']
-    subscription = data['subscription']
-    subscriptions[username] = subscription
-    return jsonify({'success': True})
-
 @socketio.on('connect')
 def handle_connect():
     print('Cliente conectado')
@@ -96,22 +76,6 @@ def handle_message(data):
 def handle_audio(data):
     username = connected_users[request.sid]
     emit('audio', {'username': username, 'audio': data['audio']}, broadcast=True)
-    # Enviar notificación push a los usuarios suscritos
-    for sub_username, subscription in subscriptions.items():
-        if sub_username != username:  # No enviar notificación al emisor
-            try:
-                webpush.send(
-                    subscription,
-                    json.dumps({
-                        'title': f'Nuevo audio de {username}',
-                        'body': 'Toca para escuchar',
-                        'url': 'https://fellasapp.onrender.com'
-                    }),
-                    VAPID_PRIVATE_KEY,
-                    VAPID_CLAIMS
-                )
-            except Exception as e:
-                print(f'Error al enviar notificación a {sub_username}: {e}')
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
