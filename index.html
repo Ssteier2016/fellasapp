@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Global con Micrófono</title>
+  <title>Chat Global con Walkie-Talkie</title>
+  <link rel="manifest" href="/manifest.json">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -111,7 +112,7 @@
     <div id="chat-container" class="hidden">
       <h2>Chat Global</h2>
       <div id="users-list"></div>
-      <div id="chat-messages"></div>
+      <div id="chat Sunset Glow-messages"></div>
       <input type="text" id="message-input" placeholder="Escribe un mensaje...">
       <button onclick="sendMessage()">Enviar</button>
       <button id="mic-btn" onclick="toggleRecording()">Grabar</button>
@@ -127,6 +128,45 @@
     let globalMuted = false;
     let mutedUsers = new Set();
     let username = '';
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registrado'))
+          .catch(err => console.error('Error al registrar Service Worker:', err));
+      });
+    }
+
+    // Solicitar permiso para notificaciones
+    async function requestNotificationPermission() {
+      if (Notification.permission !== 'granted') {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          subscribeToPush();
+        }
+      } else {
+        subscribeToPush();
+      }
+    }
+
+    // Suscribirse a notificaciones push
+    async function subscribeToPush() {
+      const registration = await navigator.serviceWorker.ready;
+      try {
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: 'YOUR_VAPID_PUBLIC_KEY' // Reemplaza con tu clave pública VAPID
+        });
+        await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription, username })
+        });
+      } catch (err) {
+        console.error('Error al suscribirse a push:', err);
+      }
+    }
 
     // Mostrar formularios
     function showLogin() {
@@ -159,6 +199,7 @@
       document.getElementById('reset-password-form').classList.add('hidden');
       document.getElementById('chat-container').classList.remove('hidden');
       clearError();
+      requestNotificationPermission();
     }
 
     function clearError() {
@@ -232,7 +273,7 @@
 
     // WebSocket para chat y audio
     function connectWebSocket() {
-      ws = new WebSocket(`ws://${window.location.host}/ws/${username}`);
+      ws = new WebSocket(`wss://${window.location.host}/ws/${username}`);
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'message') {
@@ -303,7 +344,7 @@
       if (!isRecording) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          recorder = new MediaRecorder(stream);
+          recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
           recorder.ondataavailable = (e) => {
             if (e.data.size > 0 && ws) {
               const reader = new FileReader();
@@ -313,7 +354,7 @@
               reader.readAsDataURL(e.data);
             }
           };
-          recorder.start(1000); // Enviar audio cada segundo
+          recorder.start(100); // Enviar fragmentos cada 100ms para menor latencia
           isRecording = true;
           micBtn.textContent = 'Detener';
           micBtn.classList.add('recording');
