@@ -112,7 +112,7 @@
     <div id="chat-container" class="hidden">
       <h2>Chat Global</h2>
       <div id="users-list"></div>
-      <div id="chat Sunset Glow-messages"></div>
+      <div id="chat-messages"></div>
       <input type="text" id="message-input" placeholder="Escribe un mensaje...">
       <button onclick="sendMessage()">Enviar</button>
       <button id="mic-btn" onclick="toggleRecording()">Grabar</button>
@@ -128,6 +128,7 @@
     let globalMuted = false;
     let mutedUsers = new Set();
     let username = '';
+    const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY'; // Reemplaza con la clave pública generada
 
     // Registrar Service Worker
     if ('serviceWorker' in navigator) {
@@ -156,7 +157,7 @@
       try {
         const subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: 'YOUR_VAPID_PUBLIC_KEY' // Reemplaza con tu clave pública VAPID
+          applicationServerKey: VAPID_PUBLIC_KEY
         });
         await fetch('/subscribe', {
           method: 'POST',
