@@ -6,7 +6,7 @@ from py_vapid import Vapid
 import os
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde .env
+# Cargar variables de entorno desde .env (localmente)
 load_dotenv()
 
 app = Flask(__name__)
@@ -21,7 +21,7 @@ subscriptions = {}  # {username: subscription}
 # Configuración de VAPID para notificaciones push
 VAPID_PRIVATE_KEY = os.getenv('VAPID_PRIVATE_KEY')
 VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY')
-VAPID_CLAIMS = {"sub": "mailto:tu_correo@example.com"}  # Reemplaza con tu correo
+VAPID_CLAIMS = {"sub": "mailto:tu_correo@example.com"}  # Reemplaza con tu correo real
 
 def hash_password(password):
     return sha256(password.encode('utf-8')).hexdigest()
