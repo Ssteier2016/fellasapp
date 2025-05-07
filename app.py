@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
-from flask_socketio import SocketIO, join_room, emit
-import bcrypt
-import os
+from flask_socketio import SocketIO, emit
+from hashlib import sha256
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -11,6 +10,12 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 users_db = {}  # {username: hashed_password}
 connected_users = {}  # {sid: username}
 
+def hash_password(password):
+    return sha256(password.encode('utf-8')).hexdigest()
+
+def check_password(password, hashed):
+    return hash_password(password) == hashed
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -18,7 +23,7 @@ def login():
     password = data.get('password')
     if username in users_db:
         hashed = users_db[username]
-        if bcrypt.checkpw(password.encode('utf-8'), hashed):
+        if check_password(password, hashed):
             return jsonify({'success': True})
     return jsonify({'success': False, 'message': 'Usuario o contraseña incorrectos'})
 
@@ -29,7 +34,7 @@ def register():
     password = data.get('password')
     if username in users_db:
         return jsonify({'success': False, 'message': 'El usuario ya existe'})
-    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    hashed = hash_password(password)
     users_db[username] = hashed
     return jsonify({'success': True})
 
@@ -37,10 +42,10 @@ def register():
 def reset_password():
     data = request.get_json()
     username = data.get('username')
-    new_password = data.get('new_password')
+    new_password = data.get('newPassword')
     if username not in users_db:
         return jsonify({'success': False, 'message': 'Usuario no encontrado'})
-    hashed = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+    hashed = hash_password(new_password)
     users_db[username] = hashed
     return jsonify({'success': True})
 
