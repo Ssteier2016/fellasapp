@@ -249,6 +249,9 @@
         setError('Conexión perdida. Reintentando...');
         setTimeout(connectWebSocket, 5000);
       };
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'join', username }));
+      };
     }
 
     function addMessage(username, message) {
