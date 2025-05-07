@@ -4,6 +4,10 @@ from hashlib import sha256
 import webpush
 from py_vapid import Vapid
 import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret!')
@@ -15,9 +19,9 @@ connected_users = {}  # {sid: username}
 subscriptions = {}  # {username: subscription}
 
 # Configuración de VAPID para notificaciones push
-VAPID_PRIVATE_KEY = os.getenv('VAPID_PRIVATE_KEY', 'YOUR_VAPID_PRIVATE_KEY')
-VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY', 'YOUR_VAPID_PUBLIC_KEY')
-VAPID_CLAIMS = {"sub": "mailto:your-email@example.com"}
+VAPID_PRIVATE_KEY = os.getenv('VAPID_PRIVATE_KEY')
+VAPID_PUBLIC_KEY = os.getenv('VAPID_PUBLIC_KEY')
+VAPID_CLAIMS = {"sub": "mailto:tu_correo@example.com"}  # Reemplaza con tu correo
 
 def hash_password(password):
     return sha256(password.encode('utf-8')).hexdigest()
