@@ -23,7 +23,7 @@
     .hidden { display: none; }
     .form-group { margin-bottom: 15px; }
     input, button {
-      padding: 10px;
+      padding:  Ascending;
       margin: 5px 0;
       width: 100%;
       box-sizing: border-box;
@@ -128,6 +128,7 @@
     let globalMuted = false;
     let mutedUsers = new Set();
     let username = '';
+    let pendingMessages = []; // Cola para mensajes y audios pendientes
 
     // Mostrar formularios
     function showLogin() {
@@ -174,18 +175,22 @@
     async function login() {
       const username = document.getElementById('login-username').value;
       const password = document.getElementById('login-password').value;
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await response.json();
-      if (data.success) {
-        this.username = username;
-        connectWebSocket();
-        showChat();
-      } else {
-        setError(data.message);
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        if (data.success) {
+          this.username = username;
+          connectWebSocket();
+          showChat();
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError('Error al iniciar sesión. Intenta de nuevo.');
       }
     }
 
@@ -197,16 +202,20 @@
         setError('Las contraseñas no coinciden');
         return;
       }
-      const response = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
-      const data = await response.json();
-      if (data.success) {
-        showLogin();
-      } else {
-        setError(data.message);
+      try {
+        const response = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        if (data.success) {
+          showLogin();
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError('Error al registrarse. Intenta de nuevo.');
       }
     }
 
@@ -218,22 +227,34 @@
         setError('Las contraseñas no coinciden');
         return;
       }
-      const response = await fetch('/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, newPassword })
-      });
-      const data = await response.json();
-      if (data.success) {
-        showLogin();
-      } else {
-        setError(data.message);
+      try {
+        const response = await fetch('/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, newPassword })
+        });
+        const data = await response.json();
+        if (data.success) {
+          showLogin();
+        } else {
+          setError(data.message);
+        }
+      } catch (err) {
+        setError('Error al restablecer contraseña. Intenta de nuevo.');
       }
     }
 
     // WebSocket para chat y audio
     function connectWebSocket() {
       ws = new WebSocket(`wss://${window.location.host}/ws/${username}`);
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'join', username }));
+        // Procesar mensajes pendientes
+        while (pendingMessages.length > 0 && ws.readyState === WebSocket.OPEN) {
+          const msg = pendingMessages.shift();
+          ws.send(JSON.stringify(msg));
+        }
+      };
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'message') {
@@ -250,8 +271,8 @@
         setError('Conexión perdida. Reintentando...');
         setTimeout(connectWebSocket, 5000);
       };
-      ws.onopen = () => {
-        ws.send(JSON.stringify({ type: 'join', username }));
+      ws.onerror = (err) => {
+        console.error('WebSocket error:', err);
       };
     }
 
@@ -292,9 +313,15 @@
     function sendMessage() {
       const input = document.getElementById('message-input');
       const message = input.value.trim();
-      if (message && ws) {
-        ws.send(JSON.stringify({ type: 'message', message }));
-        input.value = '';
+      if (message) {
+        const msg = { type: 'message', message };
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify(msg));
+          input.value = '';
+        } else {
+          pendingMessages.push(msg);
+          setError('Mensaje en cola. Esperando reconexión...');
+        }
       }
     }
 
@@ -306,10 +333,15 @@
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
           recorder.ondataavailable = (e) => {
-            if (e.data.size > 0 && ws) {
+            if (e.data.size > 0) {
               const reader = new FileReader();
               reader.onload = () => {
-                ws.send(JSON.stringify({ type: 'audio', audio: reader.result }));
+                const audioMsg = { type: 'audio', audio: reader.result };
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                  ws.send(JSON.stringify(audioMsg));
+                } else {
+                  pendingMessages.push(audioMsg);
+                }
               };
               reader.readAsDataURL(e.data);
             }
