@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Global con Walkie-Talkie</title>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .hidden { display: none; }
+    .form-group { margin-bottom: 15px; }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+    #chat-messages {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    #users-list {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    .user-item { margin: 5px 0; }
+    .mute-btn { margin-left: 10px; background: #dc3545; }
+    .mute-btn:hover { background: #a71d2a; }
+    #mic-btn {
+      background: #28a745;
+      padding: 15px;
+      font-size: 16px;
+    }
+    #mic-btn.recording { background: #dc3545; }
+    #global-mute-btn { background: #ffc107; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Formulario de inicio de sesión -->
+    <div id="login-form">
+      <h2>Iniciar Sesión</h2>
+      <div class="form-group">
+        <input type="text" id="login-username" placeholder="Nombre de usuario" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="login-password" placeholder="Contraseña" required>
+      </div>
+      <button onclick="login()">Iniciar Sesión</button>
+      <p><a href="#" onclick="showResetPassword()">¿Olvidaste tu contraseña?</a></p>
+      <p>No tienes cuenta? <a href="#" onclick="showRegister()">Regístrate</a></p>
+    </div>
+
+    <!-- Formulario de registro -->
+    <div id="register-form" class="hidden">
+      <h2>Registrarse</h2>
+      <div class="form-group">
+        <input type="text" id="register-username" placeholder="Nombre de usuario" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="register-password" placeholder="Contraseña" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="register-confirm-password" placeholder="Confirmar contraseña" required>
+      </div>
+      <button onclick="register()">Registrarse</button>
+      <p>Ya tienes cuenta? <a href="#" onclick="showLogin()">Inicia sesión</a></p>
+    </div>
+
+    <!-- Formulario de restablecimiento de contraseña -->
+    <div id="reset-password-form" class="hidden">
+      <h2>Restablecer Contraseña</h2>
+      <div class="form-group">
+        <input type="text" id="reset-username" placeholder="Nombre de usuario" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="reset-new-password" placeholder="Nueva contraseña" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="reset-confirm-password" placeholder="Confirmar nueva contraseña" required>
+      </div>
+      <button onclick="resetPassword()">Restablecer Contraseña</button>
+      <p>Volver a <a href="#" onclick="showLogin()">Iniciar sesión</a></p>
+    </div>
+
+    <!-- Interfaz del chat -->
+    <div id="chat-container" class="hidden">
+      <h2>Chat Global</h2>
+      <div id="users-list"></div>
+      <div id="chat Sunset Glow-messages"></div>
+      <input type="text" id="message-input" placeholder="Escribe un mensaje...">
+      <button onclick="sendMessage()">Enviar</button>
+      <button id="mic-btn" onclick="toggleRecording()">Grabar</button>
+      <button id="global-mute-btn" onclick="toggleGlobalMute()">Mutear Todos</button>
+    </div>
+    <p id="error" class="error"></p>
+  </div>
+
+  <script>
+    let ws = null;
+    let recorder = null;
+    let isRecording = false;
+    let globalMuted = false;
+    let mutedUsers = new Set();
+    let username = '';
+
+    // Registrar Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('Service Worker registrado'))
+          .catch(err => console.error('Error al registrar Service Worker:', err));
+      });
+    }
+
+    // Solicitar permiso para notificaciones
+    async function requestNotificationPermission() {
+      if (Notification.permission !== 'granted') {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+          subscribeToPush();
+        }
+      } else {
+        subscribeToPush();
+      }
+    }
+
+    // Suscribirse a notificaciones push
+    async function subscribeToPush() {
+      const registration = await navigator.serviceWorker.ready;
+      try {
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: 'YOUR_VAPID_PUBLIC_KEY' // Reemplaza con tu clave pública VAPID
+        });
+        await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription, username })
+        });
+      } catch (err) {
+        console.error('Error al suscribirse a push:', err);
+      }
+    }
+
+    // Mostrar formularios
+    function showLogin() {
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('register-form').classList.add('hidden');
+      document.getElementById('reset-password-form').classList.add('hidden');
+      document.getElementById('chat-container').classList.add('hidden');
+      clearError();
+    }
+
+    function showRegister() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('register-form').classList.remove('hidden');
+      document.getElementById('reset-password-form').classList.add('hidden');
+      document.getElementById('chat-container').classList.add('hidden');
+      clearError();
+    }
+
+    function showResetPassword() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('register-form').classList.add('hidden');
+      document.getElementById('reset-password-form').classList.remove('hidden');
+      document.getElementById('chat-container').classList.add('hidden');
+      clearError();
+    }
+
+    function showChat() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('register-form').classList.add('hidden');
+      document.getElementById('reset-password-form').classList.add('hidden');
+      document.getElementById('chat-container').classList.remove('hidden');
+      clearError();
+      requestNotificationPermission();
+    }
+
+    function clearError() {
+      document.getElementById('error').textContent = '';
+    }
+
+    function setError(message) {
+      document.getElementById('error').textContent = message;
+    }
+
+    // Autenticación
+    async function login() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      if (data.success) {
+        this.username = username;
+        connectWebSocket();
+        showChat();
+      } else {
+        setError(data.message);
+      }
+    }
+
+    async function register() {
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+      if (password !== confirmPassword) {
+        setError('Las contraseñas no coinciden');
+        return;
+      }
+      const response = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showLogin();
+      } else {
+        setError(data.message);
+      }
+    }
+
+    async function resetPassword() {
+      const username = document.getElementById('reset-username').value;
+      const newPassword = document.getElementById('reset-new-password').value;
+      const confirmPassword = document.getElementById('reset-confirm-password').value;
+      if (newPassword !== confirmPassword) {
+        setError('Las contraseñas no coinciden');
+        return;
+      }
+      const response = await fetch('/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, newPassword })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showLogin();
+      } else {
+        setError(data.message);
+      }
+    }
+
+    // WebSocket para chat y audio
+    function connectWebSocket() {
+      ws = new WebSocket(`wss://${window.location.host}/ws/${username}`);
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'message') {
+          addMessage(data.username, data.message);
+        } else if (data.type === 'users') {
+          updateUsersList(data.users);
+        } else if (data.type === 'audio') {
+          if (!globalMuted && !mutedUsers.has(data.username)) {
+            playAudio(data.audio);
+          }
+        }
+      };
+      ws.onclose = () => {
+        setError('Conexión perdida. Reintentando...');
+        setTimeout(connectWebSocket, 5000);
+      };
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ type: 'join', username }));
+      };
+    }
+
+    function addMessage(username, message) {
+      const messages = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.textContent = `${username}: ${message}`;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function updateUsersList(users) {
+      const usersList = document.getElementById('users-list');
+      usersList.innerHTML = `<strong>Usuarios conectados (${users.length}):</strong>`;
+      users.forEach(user => {
+        const div = document.createElement('div');
+        div.className = 'user-item';
+        div.textContent = user;
+        const muteBtn = document.createElement('button');
+        muteBtn.className = 'mute-btn';
+        muteBtn.textContent = mutedUsers.has(user) ? 'Desmutear' : 'Mutear';
+        muteBtn.onclick = () => toggleMuteUser(user, muteBtn);
+        div.appendChild(muteBtn);
+        usersList.appendChild(div);
+      });
+    }
+
+    function toggleMuteUser(user, button) {
+      if (mutedUsers.has(user)) {
+        mutedUsers.delete(user);
+        button.textContent = 'Mutear';
+      } else {
+        mutedUsers.add(user);
+        button.textContent = 'Desmutear';
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('message-input');
+      const message = input.value.trim();
+      if (message && ws) {
+        ws.send(JSON.stringify({ type: 'message', message }));
+        input.value = '';
+      }
+    }
+
+    // Grabación de audio
+    async function toggleRecording() {
+      const micBtn = document.getElementById('mic-btn');
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+          recorder.ondataavailable = (e) => {
+            if (e.data.size > 0 && ws) {
+              const reader = new FileReader();
+              reader.onload = () => {
+                ws.send(JSON.stringify({ type: 'audio', audio: reader.result }));
+              };
+              reader.readAsDataURL(e.data);
+            }
+          };
+          recorder.start(100); // Enviar fragmentos cada 100ms para menor latencia
+          isRecording = true;
+          micBtn.textContent = 'Detener';
+          micBtn.classList.add('recording');
+        } catch (err) {
+          setError('Error al acceder al micrófono');
+        }
+      } else {
+        recorder.stop();
+        recorder.stream.getTracks().forEach(track => track.stop());
+        isRecording = false;
+        micBtn.textContent = 'Grabar';
+        micBtn.classList.remove('recording');
+      }
+    }
+
+    function playAudio(audioData) {
+      const audio = new Audio(audioData);
+      audio.play().catch(err => console.error('Error al reproducir audio:', err));
+    }
+
+    function toggleGlobalMute() {
+      globalMuted = !globalMuted;
+      const btn = document.getElementById('global-mute-btn');
+      btn.textContent = globalMuted ? 'Desmutear Todos' : 'Mutear Todos';
+    }
+  </script>
+</body>
+</html>
