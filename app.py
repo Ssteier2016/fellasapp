@@ -1,15 +1,19 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 from hashlib import sha256
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key_1234567890')  # Valor por defecto
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key_1234567890')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Base de datos en memoria (simplificada)
 users_db = {}  # {username: hashed_password}
 connected_users = {}  # {sid: username}
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 def hash_password(password):
     return sha256(password.encode('utf-8')).hexdigest()
