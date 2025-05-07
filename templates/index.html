@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat Global con Walkie-Talkie</title>
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/static/manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     body {
@@ -303,31 +303,44 @@
 
     // Autenticación
     async function login() {
-      const username = document.getElementById('login-username').value;
+      const username = document.getElementById('login-username').value.trim();
       const password = document.getElementById('login-password').value;
+      if (!username || !password) {
+        setError('Por favor, completa todos los campos');
+        return;
+      }
       try {
         const response = await fetch('/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+        }
         const data = await response.json();
         if (data.success) {
           this.username = username;
           connectWebSocket();
           showChat();
         } else {
-          setError(data.message);
+          setError(data.message || 'Error al iniciar sesión');
         }
       } catch (err) {
-        setError('Error al iniciar sesión. Intenta de nuevo.');
+        console.error('Error en login:', err);
+        setError(`Error al conectar con el servidor: ${err.message}`);
       }
     }
 
     async function register() {
-      const username = document.getElementById('register-username').value;
+      const username = document.getElementById('register-username').value.trim();
       const password = document.getElementById('register-password').value;
       const confirmPassword = document.getElementById('register-confirm-password').value;
+      if (!username || !password || !confirmPassword) {
+        setError('Por favor, completa todos los campos');
+        return;
+      }
       if (password !== confirmPassword) {
         setError('Las contraseñas no coinciden');
         return;
@@ -338,21 +351,31 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+        }
         const data = await response.json();
         if (data.success) {
           showLogin();
+          setError('Registro exitoso. Inicia sesión.');
         } else {
-          setError(data.message);
+          setError(data.message || 'Error al registrarse');
         }
       } catch (err) {
-        setError('Error al registrarse. Intenta de nuevo.');
+        console.error('Error en register:', err);
+        setError(`Error al conectar con el servidor: ${err.message}`);
       }
     }
 
     async function resetPassword() {
-      const username = document.getElementById('reset-username').value;
+      const username = document.getElementById('reset-username').value.trim();
       const newPassword = document.getElementById('reset-new-password').value;
       const confirmPassword = document.getElementById('reset-confirm-password').value;
+      if (!username || !newPassword || !confirmPassword) {
+        setError('Por favor, completa todos los campos');
+        return;
+      }
       if (newPassword !== confirmPassword) {
         setError('Las contraseñas no coinciden');
         return;
@@ -363,14 +386,20 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, newPassword })
         });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorText}`);
+        }
         const data = await response.json();
         if (data.success) {
           showLogin();
+          setError('Contraseña restablecida. Inicia sesión.');
         } else {
-          setError(data.message);
+          setError(data.message || 'Error al restablecer contraseña');
         }
       } catch (err) {
-        setError('Error al restablecer contraseña. Intenta de nuevo.');
+        console.error('Error en resetPassword:', err);
+        setError(`Error al conectar con el servidor: ${err.message}`);
       }
     }
 
@@ -478,6 +507,7 @@
           micBtn.classList.add('recording');
         } catch (err) {
           setError('Error al acceder al micrófono');
+          console.error('Error en toggleRecording:', err);
         }
       } else {
         recorder.stop();
