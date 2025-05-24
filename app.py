@@ -4,11 +4,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Lista de productos con URLs de Imgur (reemplaza con tus URLs reales)
+# Lista de productos con dos prendas (URLs de ejemplo, reemplaza con las tuyas)
 products = [
-    {"id": 1, "name": "Camisa Gucci Edición Limitada", "image": "https://i.imgur.com/0lX8j5O.jpg", "timeLeft": 3600},
-    {"id": 2, "name": "Vestido Dior Vintage", "image": "https://i.imgur.com/5Y7Qz9I.jpg", "timeLeft": 7200},
-    {"id": 3, "name": "Chaqueta Levi's Única", "image": "https://i.imgur.com/3Z2r4kL.jpg", "timeLeft": 1800},
+    {"id": 1, "name": "Remera Underarmour XXL", "image": "https://i.imgur.com/0lX8j5O.jpg", "timeLeft": 3600},
+    {"id": 2, "name": "Short Underarmour S", "image": "https://i.imgur.com/5Y7Qz9I.jpg", "timeLeft": 7200},
 ]
 
 cart = []
