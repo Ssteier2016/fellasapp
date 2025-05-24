@@ -4,88 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo con Precio Personalizado y Subasta</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .catalog {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .product {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .product img {
-            max-width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        .product h3 {
-            margin: 10px 0;
-        }
-        .product input {
-            width: 80%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .product button {
-            background: #28a745;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .product button:hover {
-            background: #218838;
-        }
-        .product .timer {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        .cart {
-            background: white;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .cart h2 {
-            margin-top: 0;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .cart-item:last-child {
-            border-bottom: none;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Catálogo de Productos</h1>
-        <div class="catalog" id="catalog">
-            <!-- Productos se generarán dinámicamente -->
-        </div>
+        <div class="catalog" id="catalog"></div>
         <div class="cart">
             <h2>Carrito de Compras 🛒</h2>
             <div id="cart-items"></div>
@@ -94,15 +18,6 @@
     </div>
 
     <script>
-        // Lista de productos de ejemplo
-        const products = [
-            { id: 1, name: "Producto 1", image: "https://via.placeholder.com/150", timeLeft: 3600 },
-            { id: 2, name: "Producto 2", image: "https://via.placeholder.com/150", timeLeft: 7200 },
-            { id: 3, name: "Producto 3", image: "https://via.placeholder.com/150", timeLeft: 1800 },
-        ];
-
-        let cart = [];
-
         // Función para formatear el tiempo en mm:ss
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -110,8 +25,15 @@
             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Función para renderizar el catálogo
-        function renderCatalog() {
+        // Cargar productos desde el backend
+        async function loadProducts() {
+            const response = await fetch('/api/products');
+            const products = await response.json();
+            renderCatalog(products);
+        }
+
+        // Renderizar catálogo
+        function renderCatalog(products) {
             const catalog = document.getElementById('catalog');
             catalog.innerHTML = '';
             products.forEach(product => {
@@ -122,53 +44,23 @@
                     <h3>${product.name}</h3>
                     <div class="timer" id="timer-${product.id}">${formatTime(product.timeLeft)}</div>
                     <input type="number" id="price-${product.id}" placeholder="Ingresa tu precio" min="0">
-                    <button onclick="addToCart(${product.id})">Agregar al Carrito</button>
+                    <button ${product.timeLeft <= 0 ? 'disabled' : ''} onclick="addToCart(${product.id})">
+                        ${product.timeLeft <= 0 ? 'Subasta Cerrada' : 'Agregar al Carrito'}
+                    </button>
                 `;
                 catalog.appendChild(productDiv);
             });
         }
 
-        // Función para actualizar los temporizadores
-        function updateTimers() {
-            products.forEach(product => {
-                if (product.timeLeft > 0) {
-                    product.timeLeft--;
-                    const timerElement = document.getElementById(`timer-${product.id}`);
-                    if (timerElement) {
-                        timerElement.textContent = formatTime(product.timeLeft);
-                        if (product.timeLeft === 0) {
-                            timerElement.textContent = "¡Subasta finalizada!";
-                            const button = timerElement.parentElement.querySelector('button');
-                            button.disabled = true;
-                            button.textContent = "Subasta Cerrada";
-                        }
-                    }
-                }
-            });
+        // Cargar carrito desde el backend
+        async function loadCart() {
+            const response = await fetch('/api/cart');
+            const cart = await response.json();
+            renderCart(cart);
         }
 
-        // Función para agregar al carrito
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const priceInput = document.getElementById(`price-${productId}`);
-            const price = parseFloat(priceInput.value);
-
-            if (!price || price <= 0) {
-                alert("Por favor, ingresa un precio válido.");
-                return;
-            }
-
-            if (product.timeLeft === 0) {
-                alert("La subasta para este producto ha finalizado.");
-                return;
-            }
-
-            cart.push({ id: productId, name: product.name, price: price });
-            renderCart();
-        }
-
-        // Función para renderizar el carrito
-        function renderCart() {
+        // Renderizar carrito
+        function renderCart(cart) {
             const cartItems = document.getElementById('cart-items');
             const cartEmpty = document.getElementById('cart-empty');
             cartItems.innerHTML = '';
@@ -189,15 +81,52 @@
             }
         }
 
-        // Función para eliminar del carrito
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            renderCart();
+        // Agregar al carrito
+        async function addToCart(productId) {
+            const priceInput = document.getElementById(`price-${productId}`);
+            const price = parseFloat(priceInput.value);
+
+            if (!price || price <= 0) {
+                alert("Por favor, ingresa un precio válido.");
+                return;
+            }
+
+            const response = await fetch('/api/cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, price })
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                renderCart(result.cart);
+            } else {
+                alert(result.error);
+            }
         }
 
-        // Inicializar catálogo y temporizadores
-        renderCatalog();
-        renderCart();
+        // Eliminar del carrito
+        async function removeFromCart(index) {
+            const response = await fetch(`/api/cart/${index}`, { method: 'DELETE' });
+            const result = await response.json();
+
+            if (response.ok) {
+                renderCart(result.cart);
+            } else {
+                alert(result.error);
+            }
+        }
+
+        // Actualizar temporizadores
+        async function updateTimers() {
+            const response = await fetch('/api/update_timers', { method: 'POST' });
+            const products = await response.json();
+            renderCatalog(products);
+        }
+
+        // Inicializar
+        loadProducts();
+        loadCart();
         setInterval(updateTimers, 1000);
     </script>
 </body>
