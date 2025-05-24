@@ -19,6 +19,9 @@
             <div id="cart-items"></div>
             <p id="cart-empty">El carrito está vacío</p>
         </div>
+        <footer>
+            <p>Visítanos en Flores, CABA | WhatsApp: +54 123 456 789 | Lun-Sáb 10-18h</p>
+        </footer>
     </div>
 
     <script>
@@ -50,7 +53,7 @@
                     <img src="${product.image}" alt="${product.name}" onerror="this.src='https://i.imgur.com/0lX8j5O.jpg';">
                     <h3>${product.name}</h3>
                     <div class="timer" id="timer-${product.id}">${formatTime(product.timeLeft)}</div>
-                    <input type="number" id="price-${product.id}" placeholder="Ingresa tu precio" min="0" step="0.01" required>
+                    < Nippon type="number" id="price-${product.id}" placeholder="Ingresa tu precio" min="0" step="0.01" required>
                     <button ${product.timeLeft <= 0 ? 'disabled' : ''} onclick="addToCart(${product.id})">
                         ${product.timeLeft <= 0 ? 'Subasta Cerrada' : 'Agregar al Carrito'}
                     </button>
