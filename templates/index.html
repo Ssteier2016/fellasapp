@@ -22,21 +22,24 @@
     </div>
 
     <script>
-        // Formatear tiempo en mm:ss
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Cargar productos
         async function loadProducts() {
-            const response = await fetch('/api/products');
-            const products = await response.json();
-            renderCatalog(products);
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) throw new Error('Error al cargar productos');
+                const products = await response.json();
+                renderCatalog(products);
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+                document.getElementById('catalog').innerHTML = '<p>Error al cargar los productos. Intenta de nuevo más tarde.</p>';
+            }
         }
 
-        // Renderizar catálogo
         function renderCatalog(products) {
             const catalog = document.getElementById('catalog');
             catalog.innerHTML = '';
@@ -44,7 +47,7 @@
                 const productDiv = document.createElement('div');
                 productDiv.className = 'product';
                 productDiv.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}">
+                    <img src="${product.image}" alt="${product.name}" onerror="this.src='https://i.imgur.com/0lX8j5O.jpg';">
                     <h3>${product.name}</h3>
                     <div class="timer" id="timer-${product.id}">${formatTime(product.timeLeft)}</div>
                     <input type="number" id="price-${product.id}" placeholder="Ingresa tu precio" min="0" step="0.01" required>
@@ -56,14 +59,18 @@
             });
         }
 
-        // Cargar carrito
         async function loadCart() {
-            const response = await fetch('/api/cart');
-            const cart = await response.json();
-            renderCart(cart);
+            try {
+                const response = await fetch('/api/cart');
+                if (!response.ok) throw new Error('Error al cargar el carrito');
+                const cart = await response.json();
+                renderCart(cart);
+            } catch (error) {
+                console.error('Error cargando carrito:', error);
+                alert('No se pudo cargar el carrito');
+            }
         }
 
-        // Renderizar carrito
         function renderCart(cart) {
             const cartItems = document.getElementById('cart-items');
             const cartEmpty = document.getElementById('cart-empty');
@@ -85,7 +92,6 @@
             }
         }
 
-        // Agregar al carrito
         async function addToCart(productId) {
             const priceInput = document.getElementById(`price-${productId}`);
             const price = parseFloat(priceInput.value);
@@ -105,35 +111,43 @@
 
                 if (response.ok) {
                     renderCart(result.cart);
-                    priceInput.value = ''; // Limpiar el campo
+                    priceInput.value = '';
                 } else {
-                    alert(result.error);
+                    alert(result.error || 'Error al agregar al carrito');
                 }
             } catch (error) {
+                console.error('Error al agregar al carrito:', error);
                 alert("Error al agregar al carrito. Intenta de nuevo.");
             }
         }
 
-        // Eliminar del carrito
         async function removeFromCart(index) {
-            const response = await fetch(`/api/cart/${index}`, { method: 'DELETE' });
-            const result = await response.json();
+            try {
+                const response = await fetch(`/api/cart/${index}`, { method: 'DELETE' });
+                const result = await response.json();
 
-            if (response.ok) {
-                renderCart(result.cart);
-            } else {
-                alert(result.error);
+                if (response.ok) {
+                    renderCart(result.cart);
+                } else {
+                    alert(result.error || 'Error al eliminar del carrito');
+                }
+            } catch (error) {
+                console.error('Error al eliminar del carrito:', error);
+                alert('Error al eliminar del carrito');
             }
         }
 
-        // Actualizar temporizadores
         async function updateTimers() {
-            const response = await fetch('/api/update_timers', { method: 'POST' });
-            const products = await response.json();
-            renderCatalog(products);
+            try {
+                const response = await fetch('/api/update_timers', { method: 'POST' });
+                if (!response.ok) throw new Error('Error al actualizar temporizadores');
+                const products = await response.json();
+                renderCatalog(products);
+            } catch (error) {
+                console.error('Error actualizando temporizadores:', error);
+            }
         }
 
-        // Inicializar
         loadProducts();
         loadCart();
         setInterval(updateTimers, 1000);
