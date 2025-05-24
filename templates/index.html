@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo con Precio Personalizado y Subasta</title>
+    <title>Showroom Más Amor - Prendas Únicas</title>
     <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>Catálogo de Productos</h1>
+        <header>
+            <h1>Showroom Más Amor</h1>
+            <p>Prendas únicas de marcas reconocidas, con amor desde Flores, CABA</p>
+        </header>
         <div class="catalog" id="catalog"></div>
         <div class="cart">
             <h2>Carrito de Compras 🛒</h2>
@@ -18,14 +22,14 @@
     </div>
 
     <script>
-        // Función para formatear el tiempo en mm:ss
+        // Formatear tiempo en mm:ss
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        // Cargar productos desde el backend
+        // Cargar productos
         async function loadProducts() {
             const response = await fetch('/api/products');
             const products = await response.json();
@@ -43,7 +47,7 @@
                     <img src="${product.image}" alt="${product.name}">
                     <h3>${product.name}</h3>
                     <div class="timer" id="timer-${product.id}">${formatTime(product.timeLeft)}</div>
-                    <input type="number" id="price-${product.id}" placeholder="Ingresa tu precio" min="0">
+                    <input type="number" id="price-${product.id}" placeholder="Ingresa tu precio" min="0" step="0.01" required>
                     <button ${product.timeLeft <= 0 ? 'disabled' : ''} onclick="addToCart(${product.id})">
                         ${product.timeLeft <= 0 ? 'Subasta Cerrada' : 'Agregar al Carrito'}
                     </button>
@@ -52,7 +56,7 @@
             });
         }
 
-        // Cargar carrito desde el backend
+        // Cargar carrito
         async function loadCart() {
             const response = await fetch('/api/cart');
             const cart = await response.json();
@@ -86,22 +90,27 @@
             const priceInput = document.getElementById(`price-${productId}`);
             const price = parseFloat(priceInput.value);
 
-            if (!price || price <= 0) {
-                alert("Por favor, ingresa un precio válido.");
+            if (isNaN(price) || price <= 0) {
+                alert("Por favor, ingresa un precio válido mayor que 0.");
                 return;
             }
 
-            const response = await fetch('/api/cart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, price })
-            });
-            const result = await response.json();
+            try {
+                const response = await fetch('/api/cart', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId, price })
+                });
+                const result = await response.json();
 
-            if (response.ok) {
-                renderCart(result.cart);
-            } else {
-                alert(result.error);
+                if (response.ok) {
+                    renderCart(result.cart);
+                    priceInput.value = ''; // Limpiar el campo
+                } else {
+                    alert(result.error);
+                }
+            } catch (error) {
+                alert("Error al agregar al carrito. Intenta de nuevo.");
             }
         }
 
