@@ -4,11 +4,11 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Lista de productos de ejemplo (prendas únicas)
+# Lista de productos con URLs de Imgur (reemplaza con tus URLs reales)
 products = [
-    {"id": 1, "name": "Camisa Gucci Edición Limitada", "image": "https://via.placeholder.com/300x400?text=Gucci", "timeLeft": 3600},
-    {"id": 2, "name": "Vestido Dior Vintage", "image": "https://via.placeholder.com/300x400?text=Dior", "timeLeft": 7200},
-    {"id": 3, "name": "Chaqueta Levi's Única", "image": "https://via.placeholder.com/300x400?text=Levi's", "timeLeft": 1800},
+    {"id": 1, "name": "Camisa Gucci Edición Limitada", "image": "https://i.imgur.com/0lX8j5O.jpg", "timeLeft": 3600},
+    {"id": 2, "name": "Vestido Dior Vintage", "image": "https://i.imgur.com/5Y7Qz9I.jpg", "timeLeft": 7200},
+    {"id": 3, "name": "Chaqueta Levi's Única", "image": "https://i.imgur.com/3Z2r4kL.jpg", "timeLeft": 1800},
 ]
 
 cart = []
@@ -34,7 +34,11 @@ def add_to_cart():
     if not product_id or price is None:
         return jsonify({"error": "ID del producto o precio no proporcionado"}), 400
     
-    price = float(price)  # Convertir a float
+    try:
+        price = float(price)
+    except (ValueError, TypeError):
+        return jsonify({"error": "El precio debe ser un número válido"}), 400
+    
     product = next((p for p in products if p['id'] == product_id), None)
     
     if not product:
@@ -42,7 +46,7 @@ def add_to_cart():
     if price <= 0:
         return jsonify({"error": "El precio debe ser mayor que 0"}), 400
     if product['timeLeft'] <= 0:
-        return jsonify({"error": "La subasta ha finalizado"}), 400
+        return jsonify({"error": "La subasta ha finalizada"}), 400
         
     cart.append({"id": product_id, "name": product['name'], "price": price})
     return jsonify({"message": "Producto agregado al carrito", "cart": cart})
