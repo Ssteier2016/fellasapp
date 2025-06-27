@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Showroom +Roma</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Showroom +Amor - Zapatillas únicas e importadas</title>
     <style>
+        /* Base styles and resets */
         * {
             margin: 0;
             padding: 0;
@@ -13,187 +13,273 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', sans-serif; /* Using Inter for a modern look */
+            line-height: 1.6;
+            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #333;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease-out; /* Slower transition for smoother fade */
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none; /* Allows clicks to pass through once hidden */
+        }
+
+        .logo-animation {
+            width: 150px; /* Slightly larger logo */
+            height: 150px;
+            margin-bottom: 30px;
+            animation: logoFloat 2s ease-in-out infinite, logoScale 1s ease-out; /* Added scale animation */
+        }
+
+        .logo-animation img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); /* Soft shadow for logo */
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); } /* More prominent float */
+        }
+
+        @keyframes logoScale {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .brand-text {
+            color: white;
+            font-size: 3rem; /* Larger text */
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.8s forwards; /* Delayed after logo scale */
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Text shadow for depth */
+        }
+
+        .loading-bar {
+            width: 80%; /* Responsive width */
+            max-width: 400px; /* Max width for larger screens */
+            height: 6px; /* Thicker bar */
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 30px; /* More space */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); /* Inner shadow for bar */
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            width: 0%;
+            animation: loadProgress 2.5s ease forwards; /* Faster loading visual */
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky; /* Sticky header for better scrolling */
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            padding: 0.8rem 1.5rem; /* Larger padding for easier touch */
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600; /* Slightly bolder */
+            color: #555; /* Default text color */
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-3px); /* More pronounced lift */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15); /* Soft shadow on hover */
+        }
+
+        .nav-item.active-nav { /* Class for active navigation item */
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-icon, .user-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 12px; /* Larger touch target */
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.2rem; /* Larger icon */
+            display: flex; /* Centering for icon */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cart-icon:hover, .user-icon:hover {
+            transform: scale(1.15); /* More prominent scale */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px; /* Adjusted position */
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 24px; /* Larger count bubble */
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem; /* Slightly larger font */
+            font-weight: bold;
+            border: 2px solid white; /* White border for contrast */
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px; /* Space for fixed header */
+            padding: 2rem;
+            flex-grow: 1; /* Allows main content to take available space */
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: #667eea;
-            transform: translateY(-2px);
-        }
-
-        .user-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.7rem 1.5rem;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .cart-icon {
-            position: relative;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #333;
-            transition: all 0.3s ease;
-        }
-
-        .cart-icon:hover {
-            color: #667eea;
-            transform: scale(1.1);
-        }
-
-        .cart-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ff6b6b;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        /* Main Content */
-        main {
-            margin-top: 100px;
-            padding: 2rem 0;
+            width: 100%; /* Ensure container fills width */
         }
 
         /* Hero Section */
         .hero {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 4rem 2rem;
+            padding: 3rem;
             text-align: center;
             margin-bottom: 3rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15); /* Stronger shadow */
+            overflow: hidden; /* For inner animations */
         }
 
         .hero h1 {
-            font-size: 3rem;
-            color: white;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 3.5rem; /* Larger hero title */
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideInFromLeft 0.8s ease-out; /* Animation for title */
         }
 
         .hero p {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
+            font-size: 1.3rem; /* Larger hero text */
+            color: #666;
+            margin-bottom: 2.5rem;
+            animation: slideInFromRight 0.8s ease-out; /* Animation for paragraph */
         }
 
-        /* Offer Timer */
-        .offer-timer {
-            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-            color: white;
-            padding: 1rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            text-align: center;
-            animation: pulse 2s infinite;
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+        @keyframes slideInFromRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        .timer-display {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-top: 0.5rem;
+        .hero .btn { /* Hero specific button styling */
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         /* Carousel */
@@ -202,65 +288,66 @@
             margin-bottom: 3rem;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: 400px; /* Fixed height for carousel */
+            width: 100%; /* Ensure it takes full width */
         }
 
         .carousel {
             display: flex;
-            transition: transform 0.5s ease;
-            height: 400px;
+            transition: transform 0.5s ease-in-out; /* Smoother transition */
+            height: 100%;
+            width: 100%; /* Ensure carousel takes full width of container */
         }
 
         .carousel-slide {
             min-width: 100%;
-            background-size: cover;
-            background-position: center;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-        }
-
-        .carousel-slide::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-        }
-
-        .carousel-content {
-            text-align: center;
             color: white;
-            z-index: 1;
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 1rem; /* Padding for text */
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Placeholder for actual images in future */
         }
 
-        .carousel-content h2 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-        }
+        /* Example slide images (replace with your own) */
+        .carousel-slide:nth-child(1) { background-image: url('https://placehold.co/1200x400/ff6b6b/ffffff?text=Ofertas+Especiales'); }
+        .carousel-slide:nth-child(2) { background-image: url('https://placehold.co/1200x400/4ecdc4/ffffff?text=Subastas+en+Vivo'); }
+        .carousel-slide:nth-child(3) { background-image: url('https://placehold.co/1200x400/667eea/ffffff?text=Nuevos+Modelos'); }
+
 
         .carousel-nav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255,255,255,0.8);
             border: none;
             width: 50px;
             height: 50px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.5rem;
-            color: #333;
+            font-size: 2rem; /* Larger arrows */
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            z-index: 10;
         }
 
         .carousel-nav:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: translateY(-50%) scale(1.1);
+            background: white;
+            transform: translateY(-50%) scale(1.15); /* More prominent scale */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .carousel-prev {
@@ -271,175 +358,243 @@
             right: 20px;
         }
 
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background: white;
-            transform: scale(1.2);
+        /* Section Title */
+        .section-title {
+            font-size: 2.8rem; /* Slightly smaller for sections */
+            text-align: center;
+            margin: 3.5rem 0 2.5rem; /* Adjusted margins */
+            color: white;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4); /* Stronger text shadow */
         }
 
         /* Product Grid */
-        .products-section {
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
-        }
-
-        .products-grid {
+        .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax for better fit */
             gap: 2rem;
+            margin-bottom: 3rem;
+            justify-content: center; /* Center items if not full grid */
         }
 
         .product-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15); /* Stronger shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
+            display: flex; /* Flex for content within card */
+            flex-direction: column;
         }
 
         .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(-12px); /* More lift on hover */
+            box-shadow: 0 18px 50px rgba(0,0,0,0.25); /* Stronger shadow on hover */
         }
 
         .product-image {
             width: 100%;
             height: 250px;
-            background-size: cover;
-            background-position: center;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #666;
             position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #eee; /* Separator for image */
         }
 
-        .product-badge {
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease; /* Zoom effect */
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05); /* Gentle zoom on hover */
+        }
+
+        .offer-badge, .auction-badge {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 15px;
+            right: 15px; /* Default to right for offer */
             background: #ff6b6b;
             color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
+            padding: 7px 18px; /* Larger padding */
+            border-radius: 25px; /* More rounded */
+            font-size: 1rem; /* Slightly larger font */
             font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 5; /* Ensure it's above image */
+        }
+
+        .auction-badge {
+            background: #4ecdc4;
+            left: 15px; /* Auction badge on left */
+            right: auto;
+            animation: pulse 2s ease-in-out infinite; /* Smoother pulse */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .product-info {
             padding: 1.5rem;
+            flex-grow: 1; /* Allows info section to expand */
+            display: flex;
+            flex-direction: column;
         }
 
-        .product-title {
-            font-size: 1.3rem;
+        .product-name {
+            font-size: 1.3rem; /* Slightly larger product name */
             font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
-
-        .product-description {
-            color: #666;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            margin-bottom: 0.8rem; /* More space */
+            color: #444;
         }
 
         .product-prices {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            gap: 1rem;
+            margin-bottom: 1.2rem; /* More space */
         }
 
         .price-original {
-            color: #999;
             text-decoration: line-through;
-            font-size: 0.9rem;
+            color: #999;
+            font-size: 1.1rem;
         }
 
-        .price-sale {
+        .price-offer {
             color: #ff6b6b;
-            font-size: 1.4rem;
+            font-size: 1.5rem; /* More prominent offer price */
             font-weight: bold;
+        }
+
+        .price-regular {
+            color: #333;
+            font-size: 1.5rem; /* Regular price same size as offer price */
+            font-weight: bold;
+        }
+
+        .offer-timer, .auction-timer {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px; /* More rounded timer */
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .auction-info {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 1.5rem; /* More padding for auction info */
+            border-radius: 15px; /* More rounded */
+            margin-bottom: 1rem;
+            flex-grow: 1; /* Allow auction info to grow */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .auction-current-bid {
+            font-size: 1.4rem; /* Larger bid amount */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .auction-timer {
+            font-size: 1.1rem; /* Larger timer font */
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.2); /* Semi-transparent background for timer in auction card */
+        }
+
+        .bid-input {
+            display: flex;
+            gap: 10px;
+            margin-top: auto; /* Push bid input to bottom of auction info */
+            align-items: stretch; /* Stretch input and button */
+        }
+
+        .bid-input input {
+            flex: 1;
+            padding: 10px 12px; /* More padding */
+            border: none;
+            border-radius: 8px; /* More rounded */
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .bid-btn {
+            background: #fff;
+            color: #4ecdc4;
+            border: none;
+            padding: 10px 20px; /* Larger padding */
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bid-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .product-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 1rem;
+            margin-top: auto; /* Push actions to bottom of product info */
+            padding-top: 1rem; /* Space from prices/timer */
+            border-top: 1px solid #eee;
         }
 
-        .btn-add-cart {
+        .btn {
             flex: 1;
+            padding: 14px; /* Larger buttons */
+            border: none;
+            border-radius: 12px; /* More rounded buttons */
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.05rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
-            border: none;
-            padding: 0.8rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
         }
 
-        .btn-add-cart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
         }
 
-        .btn-wishlist {
-            background: rgba(255, 107, 107, 0.1);
-            color: #ff6b6b;
-            border: 2px solid #ff6b6b;
-            padding: 0.8rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .btn:hover {
+            transform: translateY(-3px); /* More lift */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25); /* Stronger shadow */
         }
 
-        .btn-wishlist:hover {
-            background: #ff6b6b;
+        .btn-auction {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
             color: white;
         }
 
@@ -447,42 +602,62 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 2000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px); /* Stronger blur */
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto; /* Allow scrolling for modal content */
+            padding: 20px; /* Padding around modal */
+        }
+
+        .modal.active {
+            display: flex;
         }
 
         .modal-content {
             background: white;
-            margin: 5% auto;
-            padding: 2rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease;
+            padding: 2.5rem; /* More padding */
+            border-radius: 25px; /* More rounded */
+            max-width: 550px; /* Slightly wider */
+            width: 100%;
+            max-height: 90vh; /* Max height to prevent overflow */
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3); /* Stronger shadow for modals */
+            animation: fadeInScale 0.3s ease-out; /* Enter animation */
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes fadeInScale {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
+        .modal-close {
+            position: absolute;
+            top: 20px; /* Adjusted position */
+            right: 25px;
+            background: none;
+            border: none;
+            font-size: 2.5rem; /* Larger close button */
             cursor: pointer;
-            transition: color 0.3s ease;
+            color: #aaa;
+            transition: color 0.2s ease;
         }
 
-        .close:hover {
+        .modal-close:hover {
             color: #333;
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #667eea;
         }
 
         .form-group {
@@ -491,786 +666,1624 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #333;
+            margin-bottom: 0.8rem; /* More space */
+            font-weight: bold;
+            color: #444;
+            font-size: 1.05rem;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            padding: 14px; /* More padding */
+            border: 2px solid #e1e5e9;
+            border-radius: 12px; /* More rounded */
+            font-size: 1.05rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fcfcfc; /* Slight off-white background */
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.3); /* Focus glow */
         }
 
-        /* Cart Modal */
-        .cart-modal .modal-content {
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
+        .modal-content .btn-primary, .modal-content .btn-secondary {
+            width: 100%;
+            margin-top: 1rem;
         }
 
+        .modal-content p a {
+            font-weight: bold;
+        }
+
+        /* Cart Styles */
         .cart-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1rem;
+            gap: 1.2rem; /* More space */
+            padding: 1.2rem;
             border-bottom: 1px solid #eee;
         }
 
-        .cart-item-image {
-            width: 80px;
-            height: 80px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
+        .cart-item:last-child {
+            border-bottom: none; /* No border for last item */
+        }
+
+        .cart-item img {
+            width: 90px; /* Larger image */
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px; /* More rounded */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .cart-item-info {
             flex: 1;
         }
 
-        .cart-item-title {
+        .cart-item-name {
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.1rem;
         }
 
         .cart-item-price {
             color: #667eea;
-            font-weight: 600;
+            font-weight: bold;
+            font-size: 1.05rem;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
+            gap: 10px;
+            margin: 10px 0;
         }
 
         .quantity-btn {
+            width: 35px; /* Larger buttons */
+            height: 35px;
+            border: none;
             background: #667eea;
             color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
             border-radius: 50%;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem; /* Larger font for +/- */
+            transition: background 0.2s ease, transform 0.2s ease;
         }
 
-        .cart-total {
-            font-size: 1.5rem;
+        .quantity-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        .remove-item {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 18px; /* Larger padding */
+            border-radius: 8px; /* More rounded */
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .remove-item:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            border-top: 2px solid #eee;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
             font-weight: bold;
-            text-align: center;
-            margin: 1rem 0;
             color: #333;
         }
 
-        .hidden {
-            display: none !important;
+        .cart-summary-total {
+            font-size: 1.5rem;
+            color: #667eea;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
 
-            .hero h1 {
-                font-size: 2rem;
-            }
+        /* Payment Methods */
+        .payment-methods {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem; /* More padding */
+            margin: 2rem 0;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
 
-            .carousel-content h2 {
-                font-size: 2rem;
-            }
+        .payment-methods .section-title {
+            color: #333;
+            margin: 0 0 2.5rem 0; /* Adjusted margin for inner title */
+            text-shadow: none;
+        }
 
-            .section-title {
-                font-size: 2rem;
-            }
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Adjusted minmax for more columns on wider screens */
+            gap: 1.5rem; /* More space between methods */
+            margin-top: 1.5rem;
+        }
 
-            .products-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        .payment-method {
+            text-align: center;
+            padding: 1.5rem; /* More padding */
+            border: 2px solid #e1e5e9;
+            border-radius: 18px; /* More rounded */
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #fcfcfc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex; /* Flex for vertical centering */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-method:hover {
+            border-color: #667eea;
+            transform: translateY(-8px); /* More lift */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .payment-method img {
+            width: 100%; /* Image fills container width */
+            max-width: 120px; /* Max width for image */
+            height: 70px; /* Slightly taller */
+            object-fit: contain;
+            margin-bottom: 0.8rem;
+        }
+
+        .payment-method-name {
+            font-weight: bold;
+            font-size: 1rem; /* Slightly larger font */
+            color: #444;
+        }
+
+        /* Auction Modal Styles */
+        .auction-modal-content {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .auction-modal-content h2 {
+            color: white; /* Title white for auction modal */
+        }
+
+        .auction-form {
+            margin-top: 1rem;
+        }
+
+        .auction-form .form-group label {
+            color: white; /* Labels white for auction modal */
+        }
+
+        .auction-form .form-group input, .auction-form .form-group select {
+            background-color: rgba(255,255,255,0.9); /* Slightly transparent input for auction modal */
+            border-color: rgba(255,255,255,0.5);
+            color: #333;
+        }
+        .auction-form .form-group input::placeholder {
+            color: #666;
+        }
+
+        .auction-form .form-group input:focus, .auction-form .form-group select:focus {
+            border-color: white;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+
+        .time-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* More flexible grid */
+            gap: 12px; /* More space */
+            margin-top: 15px;
+        }
+
+        .time-option {
+            padding: 12px; /* More padding */
+            background: rgba(255,255,255,0.2);
+            border: 2px solid transparent;
+            border-radius: 12px; /* More rounded */
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .time-option:hover, .time-option.selected {
+            background: rgba(255,255,255,0.4); /* Stronger hover effect */
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 3.5rem 2rem 2.5rem; /* More padding */
+            margin-top: 4rem; /* More space from main content */
+            border-radius: 25px 25px 0 0; /* More rounded top corners */
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.1); /* Shadow facing upwards */
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem; /* More space */
+            font-size: 1.8rem;
+        }
+
+        .footer p {
+            color: #666;
+            margin-bottom: 0.7rem;
+            font-size: 1.05rem;
+        }
+
+        /* Loading animation for buttons */
+        .btn.loading {
+            position: relative;
+            color: transparent !important; /* Hide text, use !important to override gradient */
+            pointer-events: none; /* Disable clicks during loading */
+        }
+
+        .btn.loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px; /* Larger spinner */
+            height: 25px;
+            border: 3px solid transparent; /* Thicker border */
+            border-top: 3px solid white; /* Spinner color, ensure contrast */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite; /* Faster spin */
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease-out, bottom 0.3s ease-out;
+            z-index: 3000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex; /* For icon if needed */
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-toast.show {
+            opacity: 1;
+            bottom: 50px;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-menu {
                 gap: 1rem;
+            }
+            .nav-item {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            .brand-name {
+                font-size: 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .section-title {
+                font-size: 2.2rem;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.5rem;
+            }
+            .product-card {
+                padding-bottom: 1rem; /* Adjust padding for smaller cards */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+            .nav-item {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            .cart-icon, .user-icon {
+                padding: 10px;
+                font-size: 1rem;
+            }
+            .cart-count {
+                width: 20px;
+                height: 20px;
+                font-size: 0.75rem;
+                top: -5px;
+                right: -5px;
+            }
+            .hero {
+                padding: 2rem 1rem;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .carousel-container {
+                height: 300px; /* Shorter carousel on mobile */
+            }
+            .carousel-slide {
+                font-size: 1.8rem;
+            }
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+                margin: 2.5rem 0 1.5rem;
+            }
+            .product-grid {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+                gap: 1.5rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+                max-width: 95%;
+            }
+            .modal-content h2 {
+                font-size: 1.6rem;
+            }
+            .form-group label {
+                font-size: 1rem;
+            }
+            .form-group input, .form-group select {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            .bid-input input {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .bid-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-menu {
+                gap: 0.5rem;
+            }
+            .nav-item {
+                font-size: 0.8rem;
+            }
+            .brand-name {
+                font-size: 1.2rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 0.9rem;
+            }
+            .carousel-container {
+                height: 250px;
+            }
+            .carousel-slide {
+                font-size: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .product-info {
+                padding: 1rem;
+            }
+            .product-name {
+                font-size: 1.1rem;
+            }
+            .price-offer, .price-regular {
+                font-size: 1.3rem;
+            }
+            .btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            .bid-input input {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .bid-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <div class="logo">Showroom +Roma</div>
-            <div class="nav-links">
-                <a href="#home">Inicio</a>
-                <a href="#products">Productos</a>
-                <a href="#about">Nosotros</a>
-                <a href="#contact">Contacto</a>
-            </div>
-            <div class="user-actions">
-                <div class="cart-icon" onclick="openCart()">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cartCount">0</span>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="logo-animation">
+            <!-- Your provided logo SVG -->
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiByeD0iMjAiIGZpbGw9IndoaXRlIiBzdHJva2U9IiM2NjdlZWEiIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNMzAgNzBIMjBWMzBIMzBWNzBaIiBmaWxsPSIjZmY2YjZiIi8+CjxwYXRoIGQ9Ik01MCA1MEM1NSA0NSA2MCA0MCA2MCA0MEM2MCA0MCA2NSAzNSA3MCAzNUM3MCAzNSA3MCA0MCA3MCA0NUg1MFoiIGZpbGw9IiM0ZWNkYzQiLz4KPGNpcmNsZSBjeD0iNTAiIGN5PSI2NSIgcj0iMTAiIGZpbGw9IiNmZjZiNmIiLz4KPC9zdmc+" alt="Showroom +Amor Logo">
+        </div>
+        <div class="brand-text">Showroom +Amor</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo">
+                    <!-- Your provided logo SVG -->
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiByeD0iMjAiIGZpbGw9IndoaXRlIiBzdHJva2U9IiM2NjdlZWEiIHN0cm9rZS13aWR0aD0yIi8+CjxwYXRoIGQ9Ik0zMCA3MEgyMFYzMEgzMFY3MFoiIGZpbGw9IiNmZjZiNmIiLz4KPHBhdGggZD0iTTUwIDUwQzU1IDQ1IDYwIDQwIDYwIDQwQzYwIDQwIDY1IDM1IDcwIDM1QzcwIDM1IDcwIDQwIDcwIDQ1SDUwWiIgZmlsbD0iIzRlY2RjNCIvPgo8Y2lyY2xlIGN4PSI1MCIgY3k9IjY1IiByPSIxMCIgZmlsbD0iI2ZmNmI2YiIvPgo8L3N2Zz4K" alt="Logo">
                 </div>
-                <button class="btn btn-secondary" onclick="openLoginModal()">Iniciar Sesión</button>
-                <button class="btn btn-primary" onclick="openRegisterModal()">Registrarse</button>
+                <div class="brand-name">Showroom +Amor</div>
             </div>
-        </nav>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item active-nav" onclick="showSection('home', this)">Inicio</li>
+                    <li class="nav-item" onclick="showSection('catalog', this)">Catálogo</li>
+                    <li class="nav-item" onclick="showSection('auctions', this)">Subastas</li>
+                    <li class="nav-item" onclick="showSection('payments', this)">Pagos</li>
+                    <li class="cart-icon" onclick="toggleCart()">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </li>
+                    <li class="user-icon" onclick="toggleUserMenu()">👤</li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <main class="container">
-        <!-- Hero Section -->
-        <section class="hero" id="home">
-            <h1>Ropa en Edicion limitada</h1>
-            <p>Descubre las prendas importadas unicas y exclusivas </p>
-            <button class="btn btn-primary">Explorar Colección</button>
-        </section>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="homeSection">
+                <div class="hero">
+                    <h1>Zapatillas únicas e importadas</h1>
+                    <p>Descubre nuestra exclusiva colección de zapatillas importadas con los mejores precios y ofertas especiales</p>
+                    <button class="btn btn-primary" onclick="showSection('catalog', document.querySelector('.nav-item[onclick*=\'catalog\']'))">Ver Catálogo</button>
+                </div>
 
-        <!-- Offer Timer -->
-        <div class="offer-timer">
-            <h3><i class="fas fa-fire"></i> ¡Oferta Flash - 50% de Descuento!</h3>
-            <div class="timer-display" id="offerTimer">23:59:45</div>
-            <p>¡Apúrate! Esta oferta termina pronto</p>
+                <!-- Carousel -->
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel">
+                        <div class="carousel-slide" style="background: linear-gradient(45deg, #ff6b6b, #ff8e53);">
+                            🔥 ¡OFERTAS ESPECIALES! Hasta 50% de descuento
+                        </div>
+                        <div class="carousel-slide" style="background: linear-gradient(45deg, #4ecdc4, #44a08d);">
+                            ⚡ SUBASTAS EN VIVO - Puja por tus favoritas
+                        </div>
+                        <div class="carousel-slide" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                            🚀 NUEVOS MODELOS - Recién llegados
+                        </div>
+                    </div>
+                    <button class="carousel-nav carousel-prev" onclick="prevSlide()">‹</button>
+                    <button class="carousel-nav carousel-next" onclick="nextSlide()">›</button>
+                </div>
+            </section>
+
+            <!-- Catalog Section -->
+            <section id="catalogSection" style="display: none;">
+                <h2 class="section-title">Nuestro Catálogo</h2>
+                <div class="product-grid" id="productGrid">
+                    <!-- Products will be generated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Auctions Section -->
+            <section id="auctionsSection" style="display: none;">
+                <h2 class="section-title">Subastas Activas</h2>
+                <div class="product-grid" id="auctionGrid">
+                    <!-- Auction products will be generated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Payment Methods Section -->
+            <section id="paymentsSection" style="display: none;">
+                <div class="payment-methods">
+                    <h2 class="section-title" style="color: #333; margin: 0 0 2rem 0; text-shadow: none;">Métodos de Pago</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; color: #666; font-size: 1.1rem;">
+                        Todos los métodos de pago incluyen códigos QR para facilitar tus compras
+                    </p>
+                    <div class="payment-grid">
+                        <div class="payment-method">
+                            <!-- Placeholder for Mercado Pago Alias QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiMwMDlkZGEiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1QIEtsZWE8L3RleHQ+Cjwvc3ZnPgo=" alt="Mercado Pago Alias QR">
+                            <div class="payment-method-name">Mercado Pago (Alias)</div>
+                        </div>
+                        <div class="payment-method">
+                            <!-- Placeholder for Mercado Pago QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiMwMGIwZjAiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1QIFEgUiBEPC90ZXh0Pgo8L3N2Zz4K" alt="Mercado Pago QR">
+                            <div class="payment-method-name">Mercado Pago (QR)</div>
+                        </div>
+                        <div class="payment-method">
+                            <!-- Placeholder for Tarjeta Débito QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiM0ZWNkYzQiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRlYml0bzwvdGV4dD4KPC9zdmc+" alt="Tarjeta Débito QR">
+                            <div class="payment-method-name">Tarjeta Débito</div>
+                        </div>
+                        <div class="payment-method">
+                            <!-- Placeholder for Tarjeta Crédito QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiM2NjdlZWEiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNyZWRpdG88L3RleHQ+Cjwvc3ZnPgo=" alt="Tarjeta Crédito QR">
+                            <div class="payment-method-name">Tarjeta Crédito</div>
+                        </div>
+                        <div class="payment-method">
+                            <!-- Placeholder for Cuenta DNI QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiM3NjRiYTIiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkROSTwvdGV4dD4KPC9zdmc+" alt="Cuenta DNI QR">
+                            <div class="payment-method-name">Cuenta DNI</div>
+                        </div>
+                        <div class="payment-method">
+                            <!-- Placeholder for Modo QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNmZjhkNzEiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1vZG88L3RleHQ+Cjwvc3ZnPgo=" alt="Modo QR">
+                            <div class="payment-method-name">Modo</div>
+                        </div>
+                        <div class="payment-method">
+                            <!-- Placeholder for Nave QR -->
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiMzNGQ0NzIiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5hdmU8L2RvdWdpZW4+Cjwvc3ZnPgo=" alt="Nave QR">
+                            <div class="payment-method-name">Nave</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-
-        <!-- Carousel -->
-        <div class="carousel-container">
-            <div class="carousel" id="carousel">
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop')">
-                    <div class="carousel-content">
-                        <h2>Nueva Colección Invierno</h2>
-                        <button class="btn btn-primary">Ver Más</button>
-                    </div>
-                </div>
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&h=400&fit=crop')">
-                    <div class="carousel-content">
-                        <h2>Accesorios Exclusivos</h2>
-                        <button class="btn btn-primary">Explorar</button>
-                    </div>
-                </div>
-                <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&h=400&fit=crop')">
-                    <div class="carousel-content">
-                        <h2>Ofertas Especiales</h2>
-                        <button class="btn btn-primary">Comprar Ahora</button>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-nav carousel-prev" onclick="prevSlide()">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-nav carousel-next" onclick="nextSlide()">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <div class="carousel-dots" id="carouselDots"></div>
-        </div>
-
-        <!-- Products Section -->
-        <section class="products-section" id="products">
-            <h2 class="section-title">Nuestros Productos</h2>
-            
-            <div class="filters">
-                <button class="filter-btn active" onclick="filterProducts('all')">Todos</button>
-                <button class="filter-btn" onclick="filterProducts('shirts')">Camisas</button>
-                <button class="filter-btn" onclick="filterProducts('pants')">Pantalones</button>
-                <button class="filter-btn" onclick="filterProducts('dresses')">Zapatillas</button>
-                <button class="filter-btn" onclick="filterProducts('accessories')">Accesorios</button>
-            </div>
-
-            <div class="products-grid" id="productsGrid">
-                <!-- Products will be loaded here -->
-            </div>
-        </section>
     </main>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Showroom +Amor</h3>
+            <p>Zapatillas únicas e importadas</p>
+            <p>Contacto: info@showroom-amor.com</p>
+            <p>© 2025 Showroom +Amor. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Modals -->
     <!-- Login Modal -->
-    <div id="loginModal" class="modal">
+    <div class="modal" id="loginModal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
             <h2>Iniciar Sesión</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail">Email:</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Contraseña:</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
-            </form>
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Contraseña:</label>
+                <input type="password" id="loginPassword" placeholder="Tu contraseña">
+            </div>
+            <button class="btn btn-primary" onclick="login(this)">Iniciar Sesión</button>
             <p style="text-align: center; margin-top: 1rem;">
-                ¿No tienes cuenta? <a href="#" onclick="closeModal('loginModal'); openRegisterModal();" style="color: #667eea;">Regístrate aquí</a>
+                ¿No tienes cuenta? <a href="#" onclick="showModal('registerModal'); closeModal('loginModal'); return false;" style="color: #667eea;">Regístrate aquí</a>
             </p>
         </div>
     </div>
 
     <!-- Register Modal -->
-    <div id="registerModal" class="modal">
+    <div class="modal" id="registerModal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('registerModal')">&times;</span>
-            <h2>Registrarse</h2>
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="registerName">Nombre:</label>
-                    <input type="text" id="registerName" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerEmail">Email:</label>
-                    <input type="email" id="registerEmail" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Contraseña:</label>
-                    <input type="password" id="registerPassword" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirmar Contraseña:</label>
-                    <input type="password" id="confirmPassword" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Registrarse</button>
-            </form>
+            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            <h2>Crear Cuenta</h2>
+            <div class="form-group">
+                <label for="registerName">Nombre:</label>
+                <input type="text" id="registerName" placeholder="Tu nombre completo">
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Email:</label>
+                <input type="email" id="registerEmail" placeholder="tu@email.com">
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Contraseña:</label>
+                <input type="password" id="registerPassword" placeholder="Crea una contraseña">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña:</label>
+                <input type="password" id="confirmPassword" placeholder="Confirma tu contraseña">
+            </div>
+            <button class="btn btn-primary" onclick="register(this)">Crear Cuenta</button>
             <p style="text-align: center; margin-top: 1rem;">
-                ¿Ya tienes cuenta? <a href="#" onclick="closeModal('registerModal'); openLoginModal();" style="color: #667eea;">Inicia sesión aquí</a>
+                ¿Ya tienes cuenta? <a href="#" onclick="showModal('loginModal'); closeModal('registerModal'); return false;" style="color: #667eea;">Inicia sesión</a>
             </p>
         </div>
     </div>
 
     <!-- Cart Modal -->
-    <div id="cartModal" class="modal cart-modal">
+    <div class="modal" id="cartModal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('cartModal')">&times;</span>
+            <button class="modal-close" onclick="closeModal('cartModal')">&times;</button>
             <h2>Carrito de Compras</h2>
             <div id="cartItems">
-                <!-- Cart items will be loaded here -->
+                <!-- Cart items will be inserted here -->
             </div>
-            <div class="cart-total" id="cartTotal">Total: $0</div>
-            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="checkout()">
-                Proceder al Pago
-            </button>
+            <div class="cart-summary">
+                <div class="cart-summary-row">
+                    <span>Subtotal:</span>
+                    <span>$<span id="cartSubtotal">0</span></span>
+                </div>
+                <div class="cart-summary-row">
+                    <span>Envío:</span>
+                    <span>$<span>0</span></span> <!-- Simplified for demo -->
+                </div>
+                <div class="cart-summary-row cart-summary-total">
+                    <span>Total:</span>
+                    <span>$<span id="cartTotal">0</span></span>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="checkout(this)">Proceder al Pago</button>
+            </div>
         </div>
     </div>
 
+    <!-- Auction Modal (for creating auctions) -->
+    <div class="modal" id="auctionModal">
+        <div class="modal-content auction-modal-content">
+            <button class="modal-close" onclick="closeModal('auctionModal')" style="color: white;">&times;</button>
+            <h2>Crear Subasta</h2>
+            <div class="auction-form">
+                <div class="form-group">
+                    <label for="auctionProduct">Producto:</label>
+                    <select id="auctionProduct" onchange="updateMinAuctionPrice()">
+                        <option value="">Selecciona un producto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="auctionPrice">Precio Inicial (mínimo 50% del precio de lista):</label>
+                    <input type="number" id="auctionPrice" placeholder="Precio inicial" min="0">
+                    <small>Precio mínimo: $<span id="minPrice">0</span></small>
+                </div>
+                <div class="form-group">
+                    <label>Duración de la subasta:</label>
+                    <div class="time-selector" id="timeSelector">
+                        <div class="time-option" data-hours="6">6 horas</div>
+                        <div class="time-option" data-hours="12">12 horas</div>
+                        <div class="time-option" data-hours="24">24 horas</div>
+                        <div class="time-option" data-hours="48">48 horas</div>
+                        <div class="time-option" data-hours="72">72 horas</div>
+                        <div class="time-option" data-hours="168">1 semana</div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createAuction(this)" style="background: white; color: #4ecdc4;">Crear Subasta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Menu Modal -->
+    <div class="modal" id="userMenu">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('userMenu')">&times;</button>
+            <div id="userMenuContent">
+                <!-- Content will be dynamic based on login status -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="notification-toast"></div>
+
     <script>
-        // Global variables
-        let currentSlide = 0;
-        let cart = [];
-        let products = [];
-        let users = [];
-        let currentUser = null;
-        let offerTimeLeft = 24 * 60 * 60; // 24 hours in seconds
+        // Global variables for application state
+        let currentUser = null; // Stores currently logged-in user (simulated)
+        let cart = []; // Stores items in the shopping cart
+        let products = []; // Array to hold all product data
+        let auctions = []; // Array to hold all active auction data
+        let currentSlide = 0; // Current index of the carousel slide
+        let carouselInterval; // To store the carousel auto-play interval
+        let offerTimerInterval; // To update offer timers
+        let auctionTimerInterval; // To update auction timers
 
-        // Sample products data
-        const sampleProducts = [
-            {
-                id: 1,
-                title: "Camisa Elegante",
-                description: "Camisa de algodón premium, perfecta para ocasiones formales",
-                category: "shirts",
-                originalPrice: 89.99,
-                salePrice: 44.99,
-                image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=300&h=300&fit=crop",
-                badge: "50% OFF"
-            },
-            {
-                id: 2,
-                title: "Vestido Casual",
-                description: "Vestido cómodo y elegante para el día a día",
-                category: "dresses",
-                originalPrice: 120.00,
-                salePrice: 84.00,
-                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop",
-                badge: "30% OFF"
-            },
-            {
-                id: 3,
-                title: "Pantalón Deportivo",
-                description: "Pantalón cómodo para actividades deportivas",
-                category: "pants",
-                originalPrice: 65.00,
-                salePrice: 45.50,
-                image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop",
-                badge: "30% OFF"
-            },
-            {
-                id: 4,
-                title: "Collar de Moda",
-                description: "Accesorio elegante que complementa cualquier outfit",
-                category: "accessories",
-                originalPrice: 35.00,
-                salePrice: 17.50,
-                image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=300&h=300&fit=crop",
-                badge: "50% OFF"
-            },
-            {
-                id: 5,
-                title: "Adidas Drop Step",
-                description: "Adidas Originals Drop Step XL - Talle 43/44 ",
-                category: "dresses",
-                originalPrice: 85000.00,
-                salePrice: 80000.00,
-                image: "adidasdropstep.png",
-                badge: "30% OFF"
-            },
-            {
-                id: 6,
-                title: "Nike Air Max 95",
-                description: "Talle" 38,
-                category: "dresses",
-                originalPrice: 85000.00,
-                salePrice: 80000.00,
-                image: "imagen/nikeairmax95.jpg",
-                badge: "30% OFF"
+        // --- Utility Functions ---
+
+        /**
+         * Muestra un mensaje de notificación flotante en la parte inferior de la pantalla.
+         * @param {string} message - El mensaje a mostrar.
+         * @param {number} duration - Cuánto tiempo debe ser visible el mensaje en milisegundos (predeterminado: 3000).
+         */
+        function showNotification(message, duration = 3000) {
+            const toast = document.getElementById('notificationToast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        /**
+         * Muestra un modal añadiendo la clase 'active'.
+         * @param {string} modalId - El ID del elemento modal a mostrar.
+         */
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        /**
+         * Oculta un modal eliminando la clase 'active'.
+         * @param {string} modalId - El ID del elemento modal a ocultar.
+         */
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        /**
+         * Formatea un número como moneda (ej. 100000 -> 100.000).
+         * @param {number} amount - El número a formatear.
+         * @returns {string} La cadena de moneda formateada.
+         */
+        function formatCurrency(amount) {
+            return amount.toLocaleString('es-AR'); // Ajusta la configuración regional según sea necesario
+        }
+
+        /**
+         * Calcula y formatea el tiempo restante hasta una hora de finalización dada.
+         * @param {Date} endTime - La hora de finalización como un objeto Date.
+         * @returns {string} Cadena formateada como "5d 10h 30m" o "Finalizada".
+         */
+        function getTimeRemaining(endTime) {
+            const now = new Date();
+            const difference = endTime - now;
+
+            if (difference <= 0) return 'Finalizada';
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            let timeString = [];
+            if (days > 0) timeString.push(`${days}d`);
+            if (hours > 0 || days > 0) timeString.push(`${hours}h`); // Mostrar horas si existen días
+            if (minutes > 0 || hours > 0 || days > 0) timeString.push(`${minutes}m`); // Mostrar minutos si existen horas
+            if (timeString.length === 0) timeString.push(`${seconds}s`); // Mostrar segundos si no hay nada más
+
+            return timeString.join(' ');
+        }
+
+        /**
+         * Agrega una clase de carga a un botón y la elimina después de un retraso.
+         * @param {HTMLElement} button - El elemento del botón.
+         */
+        function showButtonLoading(button) {
+            button.classList.add('loading');
+            setTimeout(() => {
+                button.classList.remove('loading');
+            }, 2000); // Simular retraso de red
+        }
+
+        // --- Lógica principal de la aplicación ---
+
+        /**
+         * Inicializa datos de productos de ejemplo.
+         * En una aplicación real, esto provendría de una base de datos.
+         */
+        function initializeProducts() {
+            products = [];
+            for (let i = 1; i <= 50; i++) {
+                const isOnOffer = Math.random() > 0.6; // 40% de probabilidad de estar en oferta
+                const originalPrice = Math.floor(Math.random() * 80000) + 30000; // Precio entre 30k y 110k
+                const offerPrice = isOnOffer ? Math.floor(originalPrice * (0.5 + Math.random() * 0.2)) : null; // 50-70% del original
+                
+                products.push({
+                    id: i,
+                    name: `Zapatilla Showroom Modelo ${i}`,
+                    image: `${i}.jpg`, // Espera imágenes llamadas 1.jpg, 2.jpg, etc.
+                    originalPrice: originalPrice,
+                    offerPrice: offerPrice,
+                    isOnOffer: isOnOffer,
+                    // La oferta termina aleatoriamente dentro de las próximas 24-72 horas si está en oferta
+                    offerEndTime: isOnOffer ? new Date(Date.now() + (24 + Math.random() * 48) * 60 * 60 * 1000) : null
+                });
             }
-        ];
-
-        // Initialize app
-        function initApp() {
-            products = [...sampleProducts];
-            loadCartFromStorage();
             renderProducts();
-            initCarousel();
-            startOfferTimer();
-            updateCartUI();
+            populateAuctionProductDropdown(); // Rellenar el desplegable cuando los productos estén listos
+            startOfferTimers();
         }
 
-        // Carousel functionality
-        function initCarousel() {
-            const carousel = document.getElementById('carousel');
-            const slides = carousel.children.length;
-            const dotsContainer = document.getElementById('carouselDots');
-            
-            // Create dots
-            for (let i = 0; i < slides; i++) {
-                const dot = document.createElement('div');
-                dot.className = `dot ${i === 0 ? 'active' : ''}`;
-                dot.onclick = () => goToSlide(i);
-                dotsContainer.appendChild(dot);
-            }
+        /**
+         * Renderiza todos los productos en la cuadrícula del catálogo.
+         */
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = ''; // Limpiar productos existentes
 
-            // Auto-play carousel
-            setInterval(nextSlide, 5000);
-        }
-
-        function nextSlide() {
-            const carousel = document.getElementById('carousel');
-            const slides = carousel.children.length;
-            currentSlide = (currentSlide + 1) % slides;
-            updateCarousel();
-        }
-
-        function prevSlide() {
-            const carousel = document.getElementById('carousel');
-            const slides = carousel.children.length;
-            currentSlide = (currentSlide - 1 + slides) % slides;
-            updateCarousel();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
-        }
-
-        function updateCarousel() {
-            const carousel = document.getElementById('carousel');
-            const dots = document.querySelectorAll('.dot');
-            
-            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentSlide);
-            });
-        }
-
-        // Offer timer
-        function startOfferTimer() {
-            const timer = setInterval(() => {
-                offerTimeLeft--;
-                
-                const hours = Math.floor(offerTimeLeft / 3600);
-                const minutes = Math.floor((offerTimeLeft % 3600) / 60);
-                const seconds = offerTimeLeft % 60;
-                
-                document.getElementById('offerTimer').textContent = 
-                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (offerTimeLeft <= 0) {
-                    clearInterval(timer);
-                    document.querySelector('.offer-timer').style.display = 'none';
-                }
-            }, 1000);
-        }
-
-        // Products functionality
-        function renderProducts(filteredProducts = products) {
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
-
-            filteredProducts.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-image" style="background-image: url('${product.image}')">
-                        <div class="product-badge">${product.badge}</div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">${product.title}</h3>
-                        <p class="product-description">${product.description}</p>
-                        <div class="product-prices">
-                            <span class="price-original">$${product.originalPrice.toFixed(2)}</span>
-                            <span class="price-sale">$${product.salePrice.toFixed(2)}</span>
-                        </div>
-                        <div class="product-actions">
-                            <button class="btn-add-cart" onclick="addToCart(${product.id})">
-                                <i class="fas fa-shopping-cart"></i> Agregar al Carrito
-                            </button>
-                            <button class="btn-wishlist">
-                                <i class="fas fa-heart"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
+            products.forEach(product => {
+                const productCard = createProductCard(product);
                 grid.appendChild(productCard);
             });
         }
 
-        function filterProducts(category) {
-            // Update filter buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Filter products
-            const filteredProducts = category === 'all' 
-                ? products 
-                : products.filter(product => product.category === category);
+        /**
+         * Crea un solo elemento HTML de tarjeta de producto.
+         * @param {Object} product - El objeto de datos del producto.
+         * @returns {HTMLElement} El elemento de tarjeta de producto creado.
+         */
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
             
-            renderProducts(filteredProducts);
+            // Determinar el precio a mostrar
+            const displayPrice = product.isOnOffer ? product.offerPrice : product.originalPrice;
+            
+            card.innerHTML = `
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}" 
+                         onerror="this.src='https://placehold.co/250x250/f0f0f0/999999?text=Sin+Imagen'; this.style.objectFit='contain'; this.style.fontSize='14px';"
+                    >
+                    ${product.isOnOffer ? '<div class="offer-badge">¡OFERTA!</div>' : ''}
+                </div>
+                <div class="product-info">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-prices">
+                        ${product.isOnOffer ? 
+                            `<span class="price-original">$${formatCurrency(product.originalPrice)}</span>
+                             <span class="price-offer">$${formatCurrency(product.offerPrice)}</span>` :
+                            `<span class="price-regular">$${formatCurrency(product.originalPrice)}</span>`
+                        }
+                    </div>
+                    ${product.isOnOffer ? 
+                        `<div class="offer-timer" data-product-id="${product.id}">
+                            ⏰ Termina en: ${getTimeRemaining(product.offerEndTime)}
+                        </div>` : ''
+                    }
+                    <div class="product-actions">
+                        <button class="btn btn-primary" onclick="addToCart(${product.id})">Agregar al Carrito</button>
+                        <button class="btn btn-secondary" onclick="buyNow(${product.id})">Comprar Ahora</button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
         }
 
-        // Cart functionality
+        /**
+         * Inicia un intervalo de tiempo para actualizar las cuentas regresivas de las ofertas en las tarjetas de productos.
+         */
+        function startOfferTimers() {
+            // Limpiar el intervalo existente para evitar duplicados si se llama varias veces
+            if (offerTimerInterval) clearInterval(offerTimerInterval);
+
+            offerTimerInterval = setInterval(() => {
+                document.querySelectorAll('.offer-timer').forEach(timerElement => {
+                    const productId = parseInt(timerElement.dataset.productId);
+                    const product = products.find(p => p.id === productId);
+
+                    if (product && product.isOnOffer && product.offerEndTime) {
+                        const timeString = getTimeRemaining(product.offerEndTime);
+                        timerElement.textContent = `⏰ Termina en: ${timeString}`;
+
+                        if (timeString === 'Finalizada') {
+                            // Opcionalmente, actualizar el estado del producto y volver a renderizar
+                            product.isOnOffer = false;
+                            product.offerPrice = null;
+                            // Volver a renderizar solo esta tarjeta o toda la cuadrícula por simplicidad
+                            // Para el rendimiento, solo se actualizarían las partes relevantes
+                            renderProducts(); // Volver a renderizar para eliminar el temporizador y actualizar el precio
+                            showNotification(`La oferta para ${product.name} ha terminado.`);
+                        }
+                    }
+                });
+            }, 1000); // Actualizar cada segundo
+        }
+
+        /**
+         * Inicializa datos de subastas de ejemplo.
+         * En una aplicación real, esto provendría de una base de datos.
+         */
+        function initializeAuctions() {
+            auctions = [
+                {
+                    id: 1,
+                    productId: 3, // Enlazar a un producto existente
+                    currentBid: 35000,
+                    minBid: 25000, // Puja inicial mínima
+                    // 2 horas a partir de ahora para las subastas de demostración iniciales
+                    endTime: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                    bidders: [{name: 'Anónimo', bid: 35000}], // Rastrear postores y sus pujas
+                    isActive: true
+                },
+                {
+                    id: 2,
+                    productId: 7,
+                    currentBid: 48000,
+                    minBid: 30000,
+                    endTime: new Date(Date.now() + 5 * 60 * 60 * 1000),
+                    bidders: [{name: 'Anónimo', bid: 48000}],
+                    isActive: true
+                }
+            ];
+            renderAuctions();
+            startAuctionTimers();
+        }
+
+        /**
+         * Renderiza todas las subastas activas en la cuadrícula de subastas.
+         */
+        function renderAuctions() {
+            const grid = document.getElementById('auctionGrid');
+            grid.innerHTML = ''; // Limpiar subastas existentes
+
+            auctions.filter(auction => auction.isActive).forEach(auction => {
+                const product = products.find(p => p.id === auction.productId);
+                if (product) {
+                    const auctionCard = createAuctionCard(auction, product);
+                    grid.appendChild(auctionCard);
+                }
+            });
+        }
+
+        /**
+         * Crea un solo elemento HTML de tarjeta de subasta.
+         * @param {Object} auction - El objeto de datos de la subasta.
+         * @param {Object} product - El objeto de datos del producto asociado a la subasta.
+         * @returns {HTMLElement} El elemento de tarjeta de subasta creado.
+         */
+        function createAuctionCard(auction, product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            const timeRemaining = getTimeRemaining(auction.endTime);
+            
+            card.innerHTML = `
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}" 
+                         onerror="this.src='https://placehold.co/250x250/f0f0f0/999999?text=Sin+Imagen'; this.style.objectFit='contain'; this.style.fontSize='14px';"
+                    >
+                    <div class="auction-badge">SUBASTA</div>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">${product.name}</div>
+                    <div class="auction-info">
+                        <div class="auction-current-bid">Puja Actual: $${formatCurrency(auction.currentBid)}</div>
+                        <div class="auction-timer" data-auction-id="${auction.id}">
+                            ⏰ Termina en: ${timeRemaining}
+                        </div>
+                        <div class="bid-input">
+                            <input type="number" placeholder="Tu puja" min="${auction.currentBid + 1}" id="bid-${auction.id}">
+                            <button class="bid-btn" onclick="placeBid(${auction.id}, this)">Pujar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        /**
+         * Inicia un intervalo de tiempo para actualizar las cuentas regresivas de las subastas y gestionar el estado de la subasta.
+         */
+        function startAuctionTimers() {
+            // Limpiar el intervalo existente para evitar duplicados
+            if (auctionTimerInterval) clearInterval(auctionTimerInterval);
+
+            auctionTimerInterval = setInterval(() => {
+                auctions.forEach(auction => {
+                    if (auction.isActive) {
+                        const timerElement = document.querySelector(`.auction-timer[data-auction-id="${auction.id}"]`);
+                        if (timerElement) {
+                            const timeString = getTimeRemaining(auction.endTime);
+                            timerElement.textContent = `⏰ Termina en: ${timeString}`;
+
+                            if (timeString === 'Finalizada') {
+                                auction.isActive = false; // Marcar la subasta como finalizada
+                                renderAuctions(); // Volver a renderizar para eliminar la subasta finalizada
+                                const product = products.find(p => p.id === auction.productId);
+                                showNotification(`La subasta para ${product.name} ha finalizado. La puja ganadora fue $${formatCurrency(auction.currentBid)}.`);
+                                // En una aplicación real, notificar al ganador y procesar el pago
+                            }
+                        }
+                    }
+                });
+            }, 1000); // Actualizar cada segundo
+        }
+
+
+        // --- Funciones del carrito ---
+
+        /**
+         * Agrega un producto al carrito de compras.
+         * @param {number} productId - El ID del producto a agregar.
+         */
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
-            if (!product) return;
-
-            const existingItem = cart.find(item => item.id === productId);
+            if (!product) {
+                showNotification('Producto no encontrado.');
+                return;
+            }
             
+            const existingItem = cart.find(item => item.id === productId);
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
                 cart.push({
-                    ...product,
+                    id: productId,
+                    name: product.name,
+                    price: product.offerPrice || product.originalPrice, // Usar precio de oferta si está disponible
+                    image: product.image,
                     quantity: 1
                 });
             }
-
-            updateCartUI();
-            saveCartToStorage();
-            showNotification('Producto agregado al carrito');
+            
+            updateCartCount();
+            showNotification('Producto agregado al carrito.');
         }
 
+        /**
+         * Elimina un artículo del carrito de compras.
+         * @param {number} productId - El ID del producto a eliminar.
+         */
         function removeFromCart(productId) {
             cart = cart.filter(item => item.id !== productId);
-            updateCartUI();
-            saveCartToStorage();
+            updateCartCount();
+            renderCart(); // Volver a renderizar el carrito después de la eliminación
+            showNotification('Producto eliminado del carrito.');
         }
 
+        /**
+         * Actualiza la cantidad de un producto en el carrito.
+         * @param {number} productId - El ID del producto.
+         * @param {number} change - La cantidad para cambiar la cantidad (+1 o -1).
+         */
         function updateQuantity(productId, change) {
             const item = cart.find(item => item.id === productId);
-            if (!item) return;
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartCount();
+                    renderCart(); // Volver a renderizar el carrito para mostrar la cantidad actualizada
+                }
+            }
+        }
 
-            item.quantity += change;
+        /**
+         * Actualiza el número que se muestra en el icono del carrito.
+         */
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        /**
+         * Alterna la visibilidad del modal del carrito y actualiza su contenido.
+         */
+        function toggleCart() {
+            renderCart();
+            showModal('cartModal');
+        }
+
+        /**
+         * Renderiza el contenido actual del carrito de compras en el modal del carrito.
+         */
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartSubtotalElement = document.getElementById('cartSubtotal');
+            const cartTotalElement = document.getElementById('cartTotal'); // El total será igual al subtotal por simplicidad
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Tu carrito está vacío.</p>';
+                cartSubtotalElement.textContent = '0';
+                cartTotalElement.textContent = '0';
+                return;
+            }
             
-            if (item.quantity <= 0) {
-                removeFromCart(productId);
-            } else {
-                updateCartUI();
-                saveCartToStorage();
-            }
-        }
-
-        function updateCartUI() {
-            const cartCount = document.getElementById('cartCount');
-            const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
-
-            // Update cart count
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCount.textContent = totalItems;
-
-            // Update cart items
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Tu carrito está vacío</p>';
-                cartTotal.textContent = 'Total: $0.00';
-                return;
-            }
-
-            cartItems.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
-                    <div class="cart-item-info">
-                        <div class="cart-item-title">${item.title}</div>
-                        <div class="cart-item-price">$${item.salePrice.toFixed(2)}</div>
-                        <div class="quantity-controls">
-                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-                            <span style="margin: 0 1rem; font-weight: bold;">${item.quantity}</span>
-                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                            <button onclick="removeFromCart(${item.id})" style="margin-left: 1rem; color: #ff6b6b; background: none; border: none; cursor: pointer;">
-                                <i class="fas fa-trash"></i>
-                            </button>
+            let subtotal = 0;
+            cartItemsContainer.innerHTML = cart.map(item => {
+                subtotal += item.price * item.quantity;
+                return `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" 
+                             onerror="this.src='https://placehold.co/90x90/f0f0f0/999999?text=Img'; this.style.objectFit='contain'; this.style.fontSize='12px';"
+                        >
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">$${formatCurrency(item.price)}</div>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            </div>
                         </div>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">Eliminar</button>
                     </div>
-                </div>
-            `).join('');
-
-            // Update total
-            const total = cart.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
-            cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+                `;
+            }).join('');
+            
+            cartSubtotalElement.textContent = formatCurrency(subtotal);
+            cartTotalElement.textContent = formatCurrency(subtotal); // En esta demo, el total es igual al subtotal
         }
 
-        function checkout() {
+        /**
+         * Agrega un producto al carrito e inmediatamente abre el modal del carrito.
+         * @param {number} productId - El ID del producto para comprar ahora.
+         */
+        function buyNow(productId) {
+            addToCart(productId);
+            toggleCart();
+        }
+
+        /**
+         * Simula el proceso de pago.
+         * Comprueba el inicio de sesión del usuario y vacía el carrito.
+         * @param {HTMLElement} button - El botón de pago clicado.
+         */
+        function checkout(button) {
             if (cart.length === 0) {
-                showNotification('Tu carrito está vacío');
+                showNotification('Tu carrito está vacío.');
                 return;
             }
-
+            
             if (!currentUser) {
                 closeModal('cartModal');
-                openLoginModal();
-                showNotification('Debes iniciar sesión para continuar');
+                showModal('loginModal');
+                showNotification('Por favor, inicia sesión para proceder al pago.');
+                return;
+            }
+            
+            showButtonLoading(button);
+            showNotification('Procesando compra...');
+
+            setTimeout(() => {
+                cart = []; // Vaciar el carrito
+                updateCartCount();
+                renderCart(); // Actualizar la visualización del carrito
+                closeModal('cartModal');
+                showNotification('¡Compra realizada con éxito! Recibirás un correo de confirmación.');
+            }, 2000); // Simular tiempo de procesamiento
+        }
+
+        // --- Funciones de gestión de subastas ---
+
+        /**
+         * Rellena el desplegable de productos en el modal 'Crear Subasta'.
+         */
+        function populateAuctionProductDropdown() {
+            const select = document.getElementById('auctionProduct');
+            select.innerHTML = '<option value="">Selecciona un producto</option>'; // Restablecer opciones
+
+            // Filtrar productos que ya están en subastas activas para evitar duplicados
+            const productsAvailableForAuction = products.filter(p => 
+                !auctions.some(a => a.isActive && a.productId === p.id)
+            );
+
+            productsAvailableForAuction.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = `${product.name} ($${formatCurrency(product.originalPrice)})`;
+                select.appendChild(option);
+            });
+        }
+
+        /**
+         * Actualiza la visualización del precio mínimo de la subasta cuando se selecciona un producto.
+         */
+        function updateMinAuctionPrice() {
+            const productSelect = document.getElementById('auctionProduct');
+            const minPriceElement = document.getElementById('minPrice');
+            const auctionPriceInput = document.getElementById('auctionPrice');
+
+            const productId = parseInt(productSelect.value);
+            if (productId) {
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    const minAllowedPrice = Math.floor(product.originalPrice * 0.5);
+                    minPriceElement.textContent = formatCurrency(minAllowedPrice);
+                    auctionPriceInput.min = minAllowedPrice; // Establecer el atributo min de HTML
+                    auctionPriceInput.value = minAllowedPrice; // Sugerir el precio mínimo
+                }
+            } else {
+                minPriceElement.textContent = '0';
+                auctionPriceInput.min = '0';
+                auctionPriceInput.value = '';
+            }
+        }
+
+        /**
+         * Maneja la selección de una opción de duración de subasta en el modal.
+         * @param {HTMLElement} element - El elemento de opción de tiempo clicado.
+         */
+        function selectTimeOption(element) {
+            document.querySelectorAll('.time-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        /**
+         * Realiza una puja en una subasta activa.
+         * @param {number} auctionId - El ID de la subasta a pujar.
+         * @param {HTMLElement} button - El botón de puja clicado.
+         */
+        function placeBid(auctionId, button) {
+            if (!currentUser) {
+                showModal('loginModal');
+                showNotification('Por favor, inicia sesión para pujar.');
+                return;
+            }
+            
+            const auction = auctions.find(a => a.id === auctionId);
+            if (!auction || !auction.isActive) {
+                showNotification('Esta subasta ya no está activa.');
+                renderAuctions(); // Actualizar vista
                 return;
             }
 
-            const total = cart.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
-            showNotification(`¡Compra realizada! Total: $${total.toFixed(2)}`);
-            cart = [];
-            updateCartUI();
-            saveCartToStorage();
-            closeModal('cartModal');
-        }
-
-        // Storage functions
-        function saveCartToStorage() {
-            try {
-                // In a real app with localStorage: localStorage.setItem('cart', JSON.stringify(cart));
-                // For demo purposes, we keep cart in memory
-            } catch (e) {
-                console.log('Could not save cart');
-            }
-        }
-
-        function loadCartFromStorage() {
-            try {
-                // In a real app with localStorage: const savedCart = localStorage.getItem('cart');
-                // For demo purposes, cart starts empty
-                cart = [];
-            } catch (e) {
-                console.log('Could not load cart');
-                cart = [];
-            }
-        }
-
-        // Modal functionality
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function openLoginModal() {
-            openModal('loginModal');
-        }
-
-        function openRegisterModal() {
-            openModal('registerModal');
-        }
-
-        function openCart() {
-            updateCartUI();
-            openModal('cartModal');
-        }
-
-        // Authentication
-        function login(email, password) {
-            // In a real app, this would validate against a backend
-            const user = users.find(u => u.email === email && u.password === password);
+            const bidInput = document.getElementById(`bid-${auctionId}`);
+            const bidAmount = parseInt(bidInput.value);
             
-            if (user) {
-                currentUser = user;
-                updateUserUI();
-                closeModal('loginModal');
-                showNotification(`¡Bienvenido ${user.name}!`);
-                return true;
-            } else {
-                showNotification('Email o contraseña incorrectos');
-                return false;
+            if (isNaN(bidAmount) || bidAmount <= auction.currentBid) {
+                showNotification('La puja debe ser un número válido y mayor a la puja actual.');
+                return;
             }
+            
+            showButtonLoading(button);
+            showNotification(`Pujando $${formatCurrency(bidAmount)}...`);
+
+            setTimeout(() => {
+                auction.currentBid = bidAmount;
+                // Agregar postor si no está presente, o actualizar su puja
+                const existingBidder = auction.bidders.find(b => b.name === currentUser.name);
+                if (existingBidder) {
+                    existingBidder.bid = bidAmount;
+                } else {
+                    auction.bidders.push({ name: currentUser.name, bid: bidAmount });
+                }
+                
+                // Extender el tiempo de subasta si se realiza una puja en los últimos 10 minutos (600.000 ms)
+                const TEN_MINUTES = 10 * 60 * 1000;
+                const timeLeft = auction.endTime.getTime() - Date.now();
+
+                if (timeLeft < TEN_MINUTES) {
+                    auction.endTime = new Date(Date.now() + TEN_MINUTES); // Extender a 10 minutos a partir de ahora
+                    showNotification('¡Tiempo de subasta extendido debido a tu puja!');
+                }
+                
+                bidInput.value = ''; // Limpiar el campo de entrada
+                renderAuctions(); // Volver a renderizar las subastas para reflejar la nueva puja y el temporizador
+                showNotification('¡Puja realizada con éxito!');
+            }, 1000); // Simular tiempo de respuesta del servidor
         }
 
-        function register(name, email, password) {
-            // Check if user already exists
-            if (users.find(u => u.email === email)) {
-                showNotification('Este email ya está registrado');
-                return false;
+        /**
+         * Crea una nueva subasta basándose en la entrada del usuario desde el modal.
+         * @param {HTMLElement} button - El botón de crear subasta clicado.
+         */
+        function createAuction(button) {
+            if (!currentUser) {
+                showModal('loginModal');
+                showNotification('Debes iniciar sesión para crear una subasta.');
+                return;
+            }
+            
+            const productSelect = document.getElementById('auctionProduct');
+            const priceInput = document.getElementById('auctionPrice');
+            const selectedTimeOption = document.querySelector('.time-option.selected');
+            
+            if (!productSelect.value || !priceInput.value || !selectedTimeOption) {
+                showNotification('Por favor, complete todos los campos.');
+                return;
+            }
+            
+            const productId = parseInt(productSelect.value);
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                showNotification('Producto no válido.');
+                return;
             }
 
-            // Create new user
-            const newUser = {
-                id: users.length + 1,
-                name,
-                email,
-                password // In a real app, this would be hashed
-            };
+            const minAllowedPrice = Math.floor(product.originalPrice * 0.5);
+            const auctionPrice = parseInt(priceInput.value);
+            
+            if (auctionPrice < minAllowedPrice) {
+                showNotification(`El precio inicial debe ser al menos $${formatCurrency(minAllowedPrice)}.`);
+                return;
+            }
+            
+            const hours = parseInt(selectedTimeOption.dataset.hours);
+            const endTime = new Date(Date.now() + hours * 60 * 60 * 1000);
+            
+            showButtonLoading(button);
+            showNotification('Creando subasta...');
 
-            users.push(newUser);
-            currentUser = newUser;
-            updateUserUI();
-            closeModal('registerModal');
-            showNotification(`¡Cuenta creada exitosamente! Bienvenido ${name}!`);
-            return true;
+            setTimeout(() => {
+                const newAuction = {
+                    id: auctions.length > 0 ? Math.max(...auctions.map(a => a.id)) + 1 : 1,
+                    productId: productId,
+                    currentBid: auctionPrice,
+                    minBid: auctionPrice,
+                    endTime: endTime,
+                    bidders: [],
+                    isActive: true,
+                    creator: currentUser.name
+                };
+                
+                auctions.push(newAuction);
+                renderAuctions(); // Actualizar la visualización de la subasta
+                populateAuctionProductDropdown(); // Actualizar el desplegable ya que el producto ahora está subastado
+                closeModal('auctionModal');
+                showNotification('¡Subasta creada con éxito!');
+
+                // Restablecer los campos del formulario
+                productSelect.value = '';
+                priceInput.value = '';
+                document.querySelectorAll('.time-option').forEach(opt => opt.classList.remove('selected'));
+                updateMinAuctionPrice(); // Restablecer la visualización del precio mínimo
+            }, 1500); // Simular tiempo de creación
         }
 
+
+        // --- Autenticación de usuario (simulación del lado del cliente) ---
+
+        /**
+         * Simula el inicio de sesión del usuario.
+         * En una aplicación real, esto implicaría autenticación del lado del servidor.
+         * @param {HTMLElement} button - El botón de inicio de sesión clicado.
+         */
+        function login(button) {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showNotification('Por favor, ingrese su email y contraseña.');
+                return;
+            }
+            
+            showButtonLoading(button);
+            showNotification('Iniciando sesión...');
+
+            setTimeout(() => {
+                // Validación básica: solo comprobar si el email contiene '@' y la contraseña no está vacía
+                if (email.includes('@') && password.length >= 6) {
+                    currentUser = {
+                        name: email.split('@')[0], // Usar la parte antes de @ como nombre
+                        email: email
+                    };
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); // Persistir inicio de sesión
+                    updateUserMenu();
+                    closeModal('loginModal');
+                    showNotification(`¡Bienvenido ${currentUser.name}!`);
+                } else {
+                    showNotification('Credenciales inválidas. Intente de nuevo.');
+                }
+            }, 1000);
+        }
+
+        /**
+         * Simula el registro de usuario.
+         * En una aplicación real, esto implicaría el registro del lado del servidor.
+         * @param {HTMLElement} button - El botón de registro clicado.
+         */
+        function register(button) {
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showNotification('Por favor, complete todos los campos.');
+                return;
+            }
+            if (password !== confirmPassword) {
+                showNotification('Las contraseñas no coinciden.');
+                return;
+            }
+            if (password.length < 6) {
+                showNotification('La contraseña debe tener al menos 6 caracteres.');
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showNotification('Por favor, ingrese un email válido.');
+                return;
+            }
+
+            showButtonLoading(button);
+            showNotification('Creando cuenta...');
+
+            setTimeout(() => {
+                // Simular registro exitoso
+                currentUser = {
+                    name: name,
+                    email: email
+                };
+                sessionStorage.setItem('currentUser', JSON.stringify(currentUser)); // Persistir inicio de sesión
+                updateUserMenu();
+                closeModal('registerModal');
+                showNotification(`¡Bienvenido, ${currentUser.name}! Tu cuenta ha sido creada.`);
+            }, 1500);
+        }
+
+        /**
+         * Cierra la sesión del usuario actual.
+         */
         function logout() {
             currentUser = null;
-            updateUserUI();
-            showNotification('Sesión cerrada');
+            sessionStorage.removeItem('currentUser'); // Borrar inicio de sesión persistente
+            updateUserMenu();
+            closeModal('userMenu');
+            showNotification('Has cerrado sesión.');
         }
 
-        function updateUserUI() {
-            const userActions = document.querySelector('.user-actions');
-            
+        /**
+         * Actualiza el contenido del modal del menú de usuario según el estado de inicio de sesión.
+         */
+        function updateUserMenu() {
+            const userMenuContent = document.getElementById('userMenuContent');
             if (currentUser) {
-                userActions.innerHTML = `
-                    <div class="cart-icon" onclick="openCart()">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
-                    </div>
-                    <span style="color: #333; margin-right: 1rem;">Hola, ${currentUser.name}</span>
-                    <button class="btn btn-secondary" onclick="logout()">Cerrar Sesión</button>
+                userMenuContent.innerHTML = `
+                    <h2>Hola, ${currentUser.name}!</h2>
+                    <p style="margin-bottom: 1.5rem; color: #666;">Email: ${currentUser.email}</p>
+                    <button class="btn btn-primary" onclick="showModal('auctionModal'); closeModal('userMenu');" style="width: 100%; margin-bottom: 1rem;">Crear Subasta</button>
+                    <button class="btn btn-secondary" onclick="logout()" style="width: 100%;">Cerrar Sesión</button>
                 `;
             } else {
-                userActions.innerHTML = `
-                    <div class="cart-icon" onclick="openCart()">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count" id="cartCount">0</span>
-                    </div>
-                    <button class="btn btn-secondary" onclick="openLoginModal()">Iniciar Sesión</button>
-                    <button class="btn btn-primary" onclick="openRegisterModal()">Registrarse</button>
+                userMenuContent.innerHTML = `
+                    <h2>Mi Cuenta</h2>
+                    <button class="btn btn-primary" onclick="showModal('loginModal'); closeModal('userMenu');" style="width: 100%; margin-bottom: 1rem;">Iniciar Sesión</button>
+                    <button class="btn btn-secondary" onclick="showModal('registerModal'); closeModal('userMenu');" style="width: 100%; margin-bottom: 1rem;">Registrarse</button>
+                    <button class="btn btn-auction" onclick="showNotification('Inicia sesión para crear una subasta.'); closeModal('userMenu'); showModal('loginModal');" style="width: 100%;">Crear Subasta</button>
                 `;
             }
-            updateCartUI();
         }
 
-        // Form handlers
+        /**
+         * Alterna el modal del menú de usuario.
+         */
+        function toggleUserMenu() {
+            updateUserMenu(); // Asegurarse de que el contenido del menú esté actualizado
+            showModal('userMenu');
+        }
+
+        // --- Navegación y Carrusel ---
+
+        /**
+         * Muestra una sección específica y actualiza el elemento de navegación activo.
+         * @param {string} sectionId - El ID de la sección a mostrar (ej. 'home', 'catalog').
+         * @param {HTMLElement} clickedNavItem - El elemento de navegación que fue clicado.
+         */
+        function showSection(sectionId, clickedNavItem) {
+            // Ocultar todas las secciones primero
+            document.querySelectorAll('main section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Mostrar la sección solicitada
+            document.getElementById(sectionId + 'Section').style.display = 'block';
+
+            // Actualizar el estilo del elemento de navegación activo
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active-nav');
+            });
+            if (clickedNavItem) {
+                clickedNavItem.classList.add('active-nav');
+            }
+            // Si se llama desde el botón de héroe, buscar el elemento de navegación del catálogo para activarlo
+            if (sectionId === 'catalog' && !clickedNavItem) {
+                document.querySelector('.nav-item[onclick*=\'catalog\']').classList.add('active-nav');
+            }
+        }
+
+        /**
+         * Controla el carrusel: se mueve a la siguiente diapositiva.
+         */
+        function nextSlide() {
+            const carousel = document.getElementById('carousel');
+            const totalSlides = carousel.children.length;
+            currentSlide = (currentSlide + 1) % totalSlides;
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        /**
+         * Controla el carrusel: se mueve a la diapositiva anterior.
+         */
+        function prevSlide() {
+            const carousel = document.getElementById('carousel');
+            const totalSlides = carousel.children.length;
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        /**
+         * Inicia la transición automática de diapositivas del carrusel.
+         */
+        function startCarousel() {
+            // Limpiar cualquier intervalo existente para evitar múltiples temporizadores
+            if (carouselInterval) clearInterval(carouselInterval);
+            carouselInterval = setInterval(nextSlide, 5000); // Cambiar diapositiva cada 5 segundos
+        }
+
+        // --- Inicialización al cargar el documento ---
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Login form
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-                login(email, password);
-            });
+            // Comprobar el inicio de sesión de usuario persistente
+            const storedUser = sessionStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                updateUserMenu(); // Actualizar la interfaz de usuario inmediatamente si el usuario ha iniciado sesión
+                showNotification(`Bienvenido de nuevo, ${currentUser.name}!`);
+            }
 
-            // Register form
-            document.getElementById('registerForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('registerName').value;
-                const email = document.getElementById('registerEmail').value;
-                const password = document.getElementById('registerPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-
-                if (password !== confirmPassword) {
-                    showNotification('Las contraseñas no coinciden');
-                    return;
-                }
-
-                if (password.length < 6) {
-                    showNotification('La contraseña debe tener al menos 6 caracteres');
-                    return;
-                }
-
-                register(name, email, password);
-            });
-
-            // Close modals when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
-                }
-            });
-
-            // Initialize app
-            initApp();
-        });
-
-        // Utility functions
-        function showNotification(message) {
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 120px;
-                right: 20px;
-                background: linear-gradient(45deg, #667eea, #764ba2);
-                color: white;
-                padding: 1rem 2rem;
-                border-radius: 10px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-                z-index: 3000;
-                animation: slideInRight 0.3s ease;
-                max-width: 300px;
-            `;
-            
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            // Remove notification after 3 seconds
+            // Ocultar la pantalla de carga después de 3 segundos
             setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
+                document.getElementById('loadingScreen').classList.add('hidden');
+                // Asegurarse de que el contenido principal sea visible después de que la pantalla de carga se oculte
+                document.body.style.overflowY = 'auto'; // Volver a habilitar el desplazamiento
             }, 3000);
-        }
 
-        // Add animation styles
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOutRight {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Smooth scrolling for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+            initializeProducts(); // Generar y renderizar productos iniciales
+            initializeAuctions(); // Generar y renderizar subastas iniciales
+            updateCartCount(); // Asegurarse de que el recuento del carrito sea correcto al cargar
+            startCarousel(); // Iniciar el carrusel automático
+            
+            // Agregar oyentes de eventos para las opciones de tiempo de la subasta
+            document.querySelectorAll('.time-option').forEach(option => {
+                option.addEventListener('click', () => selectTimeOption(option));
             });
+
+            // Asegurarse de que la sección de inicio se muestre inicialmente
+            showSection('home', document.querySelector('.nav-item[onclick*=\'home\']'));
         });
     </script>
 </body>
 </html>
+
