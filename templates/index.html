@@ -1524,46 +1524,67 @@
             initializeLoadingScreen();
         });
 
-        // Initialize products
-        function initializeProducts() {
-            products = [];
-            const baseImageUrl = 'https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/';
-            for (let i = 1; i <= 17; i++) { // Cambiado a 17 imágenes
-                const isOnOffer = Math.random() > 0.6;
-                const originalPrice = Math.floor(Math.random() * 80000) + 30000;
-                let offerPrice = null;
-                let discountPercentage = null;
+     // Initialize products
+function initializeProducts() {
+    products = [];
+    const baseImageUrl = 'https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/';
+    
+    // Array de descripciones únicas para los 20 productos
+    const descriptions = [
+        'Zapatilla urbana con diseño minimalista, perfecta para el día a día con máxima comodidad.',
+        'Modelo deportivo con tecnología de amortiguación avanzada para running intensivo.',
+        'Zapatilla de cuero premium, ideal para eventos formales con un toque moderno.',
+        'Diseño retro inspirado en los años 90, combina estilo y versatilidad.',
+        'Zapatilla ligera con malla transpirable, ideal para entrenamientos de alta intensidad.',
+        'Modelo urbano con detalles reflectantes, perfecto para looks nocturnos.',
+        'Zapatilla de alta gama con suela reforzada para una mayor durabilidad.',
+        'Diseño futurista con colores vibrantes, ideal para destacar en cualquier ocasión.',
+        'Zapatilla casual con detalles en gamuza, cómoda y elegante.',
+        'Modelo de running con soporte adicional para largas distancias.',
+        'Zapatilla urbana con detalles en neón, perfecta para un estilo audaz.',
+        'Diseño clásico renovado con materiales reciclados, eco-friendly y moderno.',
+        'Zapatilla de entrenamiento con ajuste ergonómico para máximo rendimiento.',
+        'Modelo de lujo con detalles metálicos, ideal para eventos especiales.',
+        'Zapatilla versátil para uso diario con suela antideslizante.',
+        'Diseño inspirado en el streetwear, combina con cualquier outfit urbano.',
+        'Zapatilla de alto impacto con amortiguación reforzada para deportes extremos.',
+        'Modelo elegante con detalles en cuero sintético, perfecto para la oficina.',
+        'Zapatilla con diseño aerodinámico para runners que buscan velocidad.',
+        'Edición limitada con colores exclusivos, ideal para coleccionistas.'
+    ];
 
-                if (isOnOffer) {
-                    offerPrice = Math.floor(originalPrice * (0.5 + Math.random() * 0.2)); // 50-70% del original
-                    discountPercentage = Math.round(((originalPrice - offerPrice) / originalPrice) * 100);
-                }
+    for (let i = 1; i <= 20; i++) {
+        const isOnOffer = Math.random() > 0.6; // 40% de probabilidad de estar en oferta
+        const listPrice = Math.floor(Math.random() * (80000 - 30000 + 1)) + 30000; // Precio entre $30,000 y $80,000
+        let offerPrice = null;
+        let discountPercentage = null;
 
-                products.push({
-                    id: i,
-                    name: `Zapatilla Showroom Roma Modelo ${i}`, // Nombre de la zapatilla
-                    image: `${baseImageUrl}${i}.jpg`, // Imagen principal
-                    images: [ // Múltiples imágenes para el carrusel de detalle
-                        `${baseImageUrl}${i}.jpg`,
-                        // Puedes añadir más imágenes si las tienes, por ejemplo:
-                        // `${baseImageUrl}${i}_vista_lateral.jpg`,
-                        // `${baseImageUrl}${i}_suela.jpg`
-                        // Si no las tienes, placehold.co es un buen fallback
-                        `https://placehold.co/800x500/f0f0f0/999999?text=Vista+2+Modelo+${i}`,
-                        `https://placehold.co/800x500/e0e0e0/888888?text=Vista+3+Modelo+${i}`
-                    ],
-                    description: `Explora el estilo y la comodidad de la Zapatilla Showroom Roma Modelo ${i}. Ideal para el uso diario, esta zapatilla combina un diseño moderno con materiales duraderos que garantizan una experiencia de uso superior. Cuenta con una amortiguación excepcional y una suela antideslizante para una tracción segura en diversas superficies. Disponible en tallas limitadas.`,
-                    listPrice: originalPrice, // Precio de lista
-                    offerPrice: offerPrice,
-                    isOnOffer: isOnOffer,
-                    discountPercentage: discountPercentage,
-                    offerEndTime: isOnOffer ? new Date(Date.now() + (24 + Math.random() * 48) * 60 * 60 * 1000) : null
-                });
-            }
-            renderProducts();
-            populateAuctionProductDropdown();
-            startOfferTimers();
+        if (isOnOffer) {
+            offerPrice = Math.floor(listPrice * (0.5 + Math.random() * 0.2)); // 50-70% del precio original
+            discountPercentage = Math.round(((listPrice - offerPrice) / listPrice) * 100);
         }
+
+        products.push({
+            id: i,
+            name: `Zapatilla Showroom Roma Modelo ${i}`, // Título del producto
+            image: `${baseImageUrl}${i}.jpg`, // Imagen principal
+            images: [ // Múltiples imágenes para el carrusel
+                `${baseImageUrl}${i}.jpg`,
+                `https://placehold.co/800x500/f0f0f0/999999?text=Vista+2+Modelo+${i}`,
+                `https://placehold.co/800x500/e0e0e0/888888?text=Vista+3+Modelo+${i}`
+            ],
+            description: descriptions[i - 1] || `Zapatilla de alta calidad con diseño único, ideal para cualquier ocasión.`,
+            listPrice: listPrice,
+            offerPrice: offerPrice,
+            isOnOffer: isOnOffer,
+            discountPercentage: discountPercentage,
+            offerEndTime: isOnOffer ? new Date(Date.now() + (24 + Math.random() * 48) * 60 * 60 * 1000) : null
+        });
+    }
+    renderProducts();
+    populateAuctionProductDropdown();
+    startOfferTimers();
+}
 
         // Render products in catalog
         function renderProducts() {
@@ -2067,7 +2088,7 @@
                 updateCartCount();
                 renderCart();
                 closeModal('checkoutInfoModal');
-                showNotification('¡Pago iniciado! Por favor, revisa Mercado Pago y luego tu WhatsApp para finalizar la compra.');
+                showNotification('¡Pago iniciado! Por favor, revisa Mercado Pago y luego tu WhatsApp para enviar el comprobante de pago y finalizar la compra.');
             }, 1500);
         }
 
