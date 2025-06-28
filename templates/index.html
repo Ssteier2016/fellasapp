@@ -796,62 +796,41 @@
             color: #667eea;
         }
 
-        /* Payment Methods */
+        /* Payment Methods Section - Now simplified */
         .payment-methods {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2.5rem;
-            margin: 2rem 0;
+            margin: 2rem auto; /* Centrar en la pantalla */
+            max-width: 600px; /* Ancho máximo para el botón de pago */
+            text-align: center;
             box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
 
         .payment-methods .section-title {
             color: #333;
-            margin: 0 0 2.5rem 0;
+            margin: 0 0 2rem 0;
             text-shadow: none;
         }
 
-        .payment-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
+        .payment-method-single-btn {
+            padding: 18px 30px; /* Botón más grande */
+            font-size: 1.3rem; /* Texto más grande */
+            border-radius: 15px;
             margin-top: 1.5rem;
-        }
-
-        .payment-method {
-            text-align: center;
-            padding: 1.5rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 18px;
-            transition: all 0.3s ease;
+            display: inline-block; /* Para que se centre con text-align: center; */
+            background: linear-gradient(45deg, #00C853, #1DD1A1); /* Colores de Mercado Pago */
+            color: white;
             cursor: pointer;
-            background-color: #fcfcfc;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-decoration: none; /* Asegurar que no tenga subrayado de link */
         }
 
-        .payment-method:hover {
-            border-color: #667eea;
-            transform: translateY(-8px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .payment-method img {
-            width: 100%;
-            max-width: 120px;
-            height: 70px;
-            object-fit: contain;
-            margin-bottom: 0.8rem;
-        }
-
-        .payment-method-name {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #444;
+        .payment-method-single-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
         /* Auction Modal Styles */
@@ -1003,16 +982,68 @@
         .product-detail-carousel {
             height: 500px;
             margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
         }
 
         .product-detail-carousel .carousel-slide {
-            background-size: cover; /* Cambiado de 'contain' para mejor consistencia visual */
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0; /* Important for flex items in carousel */
         }
 
         .product-detail-info {
             text-align: center;
+        }
+
+        .product-detail-description {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 2rem auto;
+            max-width: 700px; /* Limitar ancho para legibilidad */
+            text-align: left; /* Descripción alineada a la izquierda */
+        }
+
+        .product-detail-price-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-detail-price-info .price-list {
+            font-size: 1.3rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price-info .price-offer-display {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price-info .price-regular-display {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price-info .discount-tag {
+            background: #4ecdc4;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
         }
 
         /* Responsive Design */
@@ -1042,6 +1073,9 @@
             }
             .product-card {
                 padding-bottom: 1rem;
+            }
+            .product-detail-carousel {
+                height: 400px;
             }
         }
 
@@ -1129,7 +1163,20 @@
                 font-size: 0.9rem;
             }
             .product-detail-carousel {
-                height: 350px;
+                height: 300px;
+            }
+            .product-detail {
+                padding: 1.5rem;
+            }
+            .product-detail-description {
+                font-size: 1rem;
+            }
+            .payment-methods {
+                padding: 1.5rem;
+            }
+            .payment-method-single-btn {
+                font-size: 1.1rem;
+                padding: 15px 25px;
             }
         }
 
@@ -1180,13 +1227,7 @@
                 font-size: 0.9rem;
             }
             .product-detail-carousel {
-                height: 250px;
-            }
-            .product-detail {
-                padding: 1.5rem;
-            }
-            #productDetailDescription {
-                font-size: 1rem;
+                height: 200px;
             }
         }
     </style>
@@ -1279,38 +1320,12 @@
                 <div class="payment-methods">
                     <h2 class="section-title" style="color: #333; margin: 0 0 2rem 0; text-shadow: none;">Métodos de Pago</h2>
                     <p style="text-align: center; margin-bottom: 2rem; color: #666; font-size: 1.1rem;">
-                        Todos los métodos de pago incluyen códigos QR para facilitar tus compras
+                        Realiza tu pago de forma segura a través de Mercado Pago.
                     </p>
-                    <div class="payment-grid">
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiMwMDlkZGEiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1QIEtsZWE8L3RleHQ+Cjwvc3ZnPgo=" alt="Mercado Pago Alias QR">
-                            <div class="payment-method-name">Mercado Pago (Alias)</div>
-                        </div>
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiMwMGIwZjAiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1QIFEgUiBEPC90ZXh0Pgo8L3N2Zz4K" alt="Mercado Pago QR">
-                            <div class="payment-method-name">Mercado Pago (QR)</div>
-                        </div>
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiM0ZWNkYzQiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkRlYml0bzwvdGV4dD4KPC9zdmc+" alt="Tarjeta Débito QR">
-                            <div class="payment-method-name">Tarjeta Débito</div>
-                        </div>
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiM2NjdlZWEiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkNyZWRpdG88L3RleHQ+Cjwvc3ZnPgo=" alt="Tarjeta Crédito QR">
-                            <div class="payment-method-name">Tarjeta Crédito</div>
-                        </div>
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiM3NjRiYTIiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMCIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkROSTwvdGV4dD4KPC9zdmc+" alt="Cuenta DNI QR">
-                            <div class="payment-method-name">Cuenta DNI</div>
-                        </div>
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiNmZjhkNzEiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk1vZG88L3RleHQ+Cjwvc3ZnPgo=" alt="Modo QR">
-                            <div class="payment-method-name">Modo</div>
-                        </div>
-                        <div class="payment-method">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTAwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiByeD0iMTAiIGZpbGw9IiMzNGQ0NzIiLz4KPHRleHQgeD0iNTAiIHk9IjM1IiBmaWxsPSJ3aGl0ZSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIHRleHQtYW5jaG9yPSJtaWRkbGUiPk5hdmU8L2RvdWdpZW4+Cjwvc3ZnPgo=" alt="Nave QR">
-                            <div class="payment-method-name">Nave</div>
-                        </div>
-                    </div>
+                    <!-- Simplified to a single Mercado Pago button -->
+                    <button class="payment-method-single-btn" onclick="openCheckoutInfoModal()">
+                        Pagar con Mercado Pago
+                    </button>
                 </div>
             </section>
 
@@ -1326,12 +1341,17 @@
                             <button class="carousel-nav carousel-next" onclick="nextProductSlide()">›</button>
                         </div>
                         <div class="product-detail-info">
-                            <p id="productDetailDescription" style="color: #666; font-size: 1.2rem; margin: 2rem 0;"></p>
-                            <div class="product-prices" id="productDetailPrices"></div>
+                            <p id="productDetailDescription" class="product-detail-description"></p>
+                            <div class="product-detail-price-info">
+                                <span id="productDetailListPrice" class="price-list" style="display: none;"></span>
+                                <span id="productDetailOfferPrice" class="price-offer-display" style="display: none;"></span>
+                                <span id="productDetailRegularPrice" class="price-regular-display" style="display: none;"></span>
+                                <span id="productDetailDiscount" class="discount-tag" style="display: none;"></span>
+                            </div>
                             <div id="productDetailTimer"></div>
                             <div class="product-actions">
                                 <button class="btn btn-primary" id="productDetailAddToCart">Agregar al Carrito</button>
-                                <button class="btn btn-secondary" id="productDetailBuyNow">Comprar Ahora</button>
+                                <button class="btn btn-secondary" id="productDetailBuyNow" onclick="openCheckoutInfoModal()">Comprar Ahora</button>
                             </div>
                         </div>
                     </div>
@@ -1418,7 +1438,7 @@
                     <span>Total:</span>
                     <span id="cartTotal">$0</span>
                 </div>
-                <button class="btn btn-primary" onclick="proceedToCheckout(this)">Proceder al Pago</button>
+                <button class="btn btn-primary" onclick="openCheckoutInfoModal()">Proceder al Pago</button>
             </div>
         </div>
     </div>
@@ -1453,6 +1473,34 @@
         </div>
     </div>
 
+    <!-- Checkout Info Modal (New) -->
+    <div class="modal" id="checkoutInfoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('checkoutInfoModal')">×</button>
+            <h2>Confirmar Datos de Envío</h2>
+            <p style="text-align: center; margin-bottom: 1.5rem; color: #666;">
+                Por favor, completa tus datos para que podamos coordinar el envío y pago.
+            </p>
+            <div class="form-group">
+                <label for="checkoutName">Nombre:</label>
+                <input type="text" id="checkoutName" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+                <label for="checkoutLastName">Apellido:</label>
+                <input type="text" id="checkoutLastName" placeholder="Tu apellido">
+            </div>
+            <div class="form-group">
+                <label for="checkoutWhatsapp">Número de WhatsApp:</label>
+                <input type="tel" id="checkoutWhatsapp" placeholder="Ej: 5491112345678 (incluye código de país)">
+            </div>
+            <button class="btn btn-primary" onclick="initiateMercadoPagoPayment(this)">Confirmar y Pagar</button>
+            <p style="text-align: center; margin-top: 1.5rem; color: #666; font-size: 0.9rem;">
+                Una vez confirmado, serás redirigido a Mercado Pago para completar tu compra y luego a WhatsApp para finalizar.
+                ¡Recuerda enviarnos la captura de pantalla del pago!
+            </p>
+        </div>
+    </div>
+
     <!-- Notification Toast -->
     <div class="notification-toast" id="notificationToast">
         <span id="notificationMessage"></span>
@@ -1480,24 +1528,35 @@
         function initializeProducts() {
             products = [];
             const baseImageUrl = 'https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/';
-            for (let i = 1; i <= 50; i++) {
+            for (let i = 1; i <= 17; i++) { // Cambiado a 17 imágenes
                 const isOnOffer = Math.random() > 0.6;
                 const originalPrice = Math.floor(Math.random() * 80000) + 30000;
-                const offerPrice = isOnOffer ? Math.floor(originalPrice * (0.5 + Math.random() * 0.2)) : null;
+                let offerPrice = null;
+                let discountPercentage = null;
+
+                if (isOnOffer) {
+                    offerPrice = Math.floor(originalPrice * (0.5 + Math.random() * 0.2)); // 50-70% del original
+                    discountPercentage = Math.round(((originalPrice - offerPrice) / originalPrice) * 100);
+                }
 
                 products.push({
                     id: i,
-                    name: `Zapatilla Showroom Modelo ${i}`,
-                    image: `${baseImageUrl}${i}.jpg`,
-                    images: [
+                    name: `Zapatilla Showroom Roma Modelo ${i}`, // Nombre de la zapatilla
+                    image: `${baseImageUrl}${i}.jpg`, // Imagen principal
+                    images: [ // Múltiples imágenes para el carrusel de detalle
                         `${baseImageUrl}${i}.jpg`,
-                        `${baseImageUrl}${i}_1.jpg`,
-                        `${baseImageUrl}${i}_2.jpg`
-                    ], // Soporte para múltiples imágenes
-                    description: `Descubre la Zapatilla Showroom Modelo ${i}, diseñada con materiales de alta calidad y un estilo moderno. Perfecta para cualquier ocasión, combina comodidad y elegancia. Características: suela antideslizante, tejido transpirable y diseño ergonómico.`,
-                    originalPrice: originalPrice,
+                        // Puedes añadir más imágenes si las tienes, por ejemplo:
+                        // `${baseImageUrl}${i}_vista_lateral.jpg`,
+                        // `${baseImageUrl}${i}_suela.jpg`
+                        // Si no las tienes, placehold.co es un buen fallback
+                        `https://placehold.co/800x500/f0f0f0/999999?text=Vista+2+Modelo+${i}`,
+                        `https://placehold.co/800x500/e0e0e0/888888?text=Vista+3+Modelo+${i}`
+                    ],
+                    description: `Explora el estilo y la comodidad de la Zapatilla Showroom Roma Modelo ${i}. Ideal para el uso diario, esta zapatilla combina un diseño moderno con materiales duraderos que garantizan una experiencia de uso superior. Cuenta con una amortiguación excepcional y una suela antideslizante para una tracción segura en diversas superficies. Disponible en tallas limitadas.`,
+                    listPrice: originalPrice, // Precio de lista
                     offerPrice: offerPrice,
                     isOnOffer: isOnOffer,
+                    discountPercentage: discountPercentage,
                     offerEndTime: isOnOffer ? new Date(Date.now() + (24 + Math.random() * 48) * 60 * 60 * 1000) : null
                 });
             }
@@ -1523,6 +1582,7 @@
             const card = document.createElement('div');
             card.className = 'product-card';
             card.onclick = (e) => {
+                // Ensure click is not on a button within the card to prevent double events
                 if (e.target.tagName !== 'BUTTON' && !e.target.closest('.product-actions')) {
                     showProductDetail(product.id);
                 }
@@ -1532,7 +1592,7 @@
 
             card.innerHTML = `
                 <div class="product-image">
-                    <img src="${product.image}" alt="${product.name}" 
+                    <img src="${product.image}" alt="${product.name}"
                          onerror="this.src='https://placehold.co/250x250/f0f0f0/999999?text=Sin+Imagen'; this.style.objectFit='contain'; this.style.fontSize='14px';"
                          loading="lazy">
                     ${product.isOnOffer ? '<div class="offer-badge">¡OFERTA!</div>' : ''}
@@ -1540,20 +1600,21 @@
                 <div class="product-info">
                     <div class="product-name">${product.name}</div>
                     <div class="product-prices">
-                        ${product.isOnOffer ? 
-                            `<span class="price-original">$${formatCurrency(product.originalPrice)}</span>
-                             <span class="price-offer">$${formatCurrency(product.offerPrice)}</span>` :
-                            `<span class="price-regular">$${formatCurrency(product.originalPrice)}</span>`
+                        ${product.isOnOffer ?
+                            `<span class="price-original">$${formatCurrency(product.listPrice)}</span>
+                             <span class="price-offer">$${formatCurrency(product.offerPrice)}</span>
+                             <span class="discount-tag">${product.discountPercentage}% OFF</span>` :
+                            `<span class="price-regular">$${formatCurrency(product.listPrice)}</span>`
                         }
                     </div>
-                    ${product.isOnOffer ? 
+                    ${product.isOnOffer ?
                         `<div class="offer-timer" data-product-id="${product.id}">
                             ⏰ Termina en: ${getTimeRemaining(product.offerEndTime)}
                         </div>` : ''
                     }
                     <div class="product-actions">
                         <button class="btn btn-primary" onclick="addToCart(${product.id})">Agregar al Carrito</button>
-                        <button class="btn btn-secondary" onclick="buyNow(${product.id})">Comprar Ahora</button>
+                        <button class="btn btn-secondary" onclick="openCheckoutInfoModal()">Comprar Ahora</button>
                     </div>
                 </div>
             `;
@@ -1572,7 +1633,7 @@
                     card.className = 'product-card';
                     card.innerHTML = `
                         <div class="product-image">
-                            <img src="${product.image}" alt="${product.name}" 
+                            <img src="${product.image}" alt="${product.name}"
                                  onerror="this.src='https://placehold.co/250x250/f0f0f0/999999?text=Sin+Imagen'; this.style.objectFit='contain'; this.style.fontSize='14px';"
                                  loading="lazy">
                             <div class="auction-badge">SUBASTA</div>
@@ -1630,6 +1691,7 @@
                         if (timeString === 'Finalizada') {
                             product.isOnOffer = false;
                             product.offerPrice = null;
+                            product.discountPercentage = null;
                             renderProducts();
                             if (document.getElementById('productDetailSection').style.display === 'block' && productId === parseInt(document.getElementById('productDetailTimer').querySelector('.offer-timer')?.dataset.productId)) {
                                 showProductDetail(productId);
@@ -1727,22 +1789,24 @@
             document.getElementById('productDetailName').textContent = product.name;
             document.getElementById('productDetailDescription').textContent = product.description;
 
-            const pricesElement = document.getElementById('productDetailPrices');
+            const listPriceElem = document.getElementById('productDetailListPrice');
+            const offerPriceElem = document.getElementById('productDetailOfferPrice');
+            const regularPriceElem = document.getElementById('productDetailRegularPrice');
+            const discountElem = document.getElementById('productDetailDiscount');
+
+            // Reset display styles
+            listPriceElem.style.display = 'none';
+            offerPriceElem.style.display = 'none';
+            regularPriceElem.style.display = 'none';
+            discountElem.style.display = 'none';
+
             const auction = auctions.find(a => a.productId === productId);
             if (auction) {
-                pricesElement.innerHTML = `
+                // If it's an auction, display auction info
+                document.getElementById('productDetailPrices').innerHTML = `
                     <div class="auction-current-bid">Puja actual: $${formatCurrency(auction.currentBid)}</div>
                 `;
-            } else {
-                pricesElement.innerHTML = product.isOnOffer ?
-                    `<span class="price-original">$${formatCurrency(product.originalPrice)}</span>
-                     <span class="price-offer">$${formatCurrency(product.offerPrice)}</span>` :
-                    `<span class="price-regular">$${formatCurrency(product.originalPrice)}</span>`;
-            }
-
-            const timerElement = document.getElementById('productDetailTimer');
-            if (auction) {
-                timerElement.innerHTML = `
+                document.getElementById('productDetailTimer').innerHTML = `
                     <div class="auction-timer" data-auction-id="${auction.id}">
                         ⏰ Termina en: ${getTimeRemaining(auction.endTime)}
                     </div>
@@ -1751,26 +1815,37 @@
                         <button class="bid-btn" onclick="placeBid(${auction.id}, this)">Pujar</button>
                     </div>
                 `;
-            } else if (product.isOnOffer) {
-                timerElement.innerHTML = `
-                    <div class="offer-timer" data-product-id="${product.id}">
-                        ⏰ Termina en: ${getTimeRemaining(product.offerEndTime)}
-                    </div>`;
+                document.getElementById('productDetailAddToCart').style.display = 'none';
+                document.getElementById('productDetailBuyNow').style.display = 'none';
             } else {
-                timerElement.innerHTML = '';
+                // Display product prices and discount
+                if (product.isOnOffer) {
+                    listPriceElem.textContent = `$${formatCurrency(product.listPrice)}`;
+                    listPriceElem.style.display = 'block';
+                    offerPriceElem.textContent = `$${formatCurrency(product.offerPrice)}`;
+                    offerPriceElem.style.display = 'block';
+                    discountElem.textContent = `${product.discountPercentage}% OFF`;
+                    discountElem.style.display = 'block';
+                    document.getElementById('productDetailTimer').innerHTML = `
+                        <div class="offer-timer" data-product-id="${product.id}">
+                            ⏰ Termina en: ${getTimeRemaining(product.offerEndTime)}
+                        </div>`;
+                } else {
+                    regularPriceElem.textContent = `$${formatCurrency(product.listPrice)}`;
+                    regularPriceElem.style.display = 'block';
+                    document.getElementById('productDetailTimer').innerHTML = ''; // No timer for regular products
+                }
+                document.getElementById('productDetailAddToCart').style.display = 'block';
+                document.getElementById('productDetailBuyNow').style.display = 'block';
+                document.getElementById('productDetailAddToCart').onclick = () => addToCart(product.id);
+                document.getElementById('productDetailBuyNow').onclick = () => openCheckoutInfoModal(); // Use unified checkout
             }
 
-            const addToCartBtn = document.getElementById('productDetailAddToCart');
-            const buyNowBtn = document.getElementById('productDetailBuyNow');
-            addToCartBtn.style.display = auction ? 'none' : 'block';
-            buyNowBtn.style.display = auction ? 'none' : 'block';
-            addToCartBtn.onclick = () => addToCart(product.id);
-            buyNowBtn.onclick = () => buyNow(product.id);
 
             const carousel = document.getElementById('productDetailCarousel');
             carousel.innerHTML = product.images.map(image => `
                 <div class="carousel-slide" style="background-image: url('${image}');"
-                     onerror="this.style.backgroundImage='url(https://placehold.co/1200x500/f0f0f0/999999?text=Sin+Imagen)'; this.style.fontSize='14px';">
+                     onerror="this.style.backgroundImage='url(https://placehold.co/800x500/f0f0f0/999999?text=Sin+Imagen)'; this.style.fontSize='14px';">
                 </div>
             `).join('');
 
@@ -1805,6 +1880,7 @@
             closeModal('loginModal');
             closeModal('registerModal');
             closeModal('auctionModal');
+            closeModal('checkoutInfoModal'); // Close new modal
         }
 
         // Toggle cart
@@ -1859,13 +1935,13 @@
             renderCart();
         }
 
-        // Buy now
+        // Buy now (now handled by openCheckoutInfoModal)
         function buyNow(productId) {
             if (!isLoggedIn) {
                 showModal('loginModal');
                 return;
             }
-            showNotification('Procediendo al pago...');
+            openCheckoutInfoModal();
         }
 
         // Remove from cart
@@ -1892,17 +1968,28 @@
             cartItems.innerHTML = '';
 
             let subtotal = 0;
+            const shippingCost = 5000; // Fixed shipping cost
+            document.getElementById('cartShipping').textContent = `$${formatCurrency(shippingCost)}`;
+
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Tu carrito está vacío.</p>';
+                cartSubtotal.textContent = '$0';
+                cartTotal.textContent = '$0';
+                return;
+            }
+
             cart.forEach(item => {
                 const product = products.find(p => p.id === item.productId);
                 if (!product) return;
 
-                const price = product.isOnOffer ? product.offerPrice : product.originalPrice;
+                const price = product.isOnOffer ? product.offerPrice : product.listPrice; // Use listPrice for original if no offer
                 subtotal += price * item.quantity;
 
                 const cartItem = document.createElement('div');
                 cartItem.className = 'cart-item';
                 cartItem.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" 
+                    <img src="${product.image}" alt="${product.name}"
                          onerror="this.src='https://placehold.co/90x90/f0f0f0/999999?text=Sin+Imagen'; this.style.objectFit='contain';">
                     <div class="cart-item-info">
                         <div class="cart-item-name">${product.name}</div>
@@ -1919,41 +2006,71 @@
             });
 
             cartSubtotal.textContent = `$${formatCurrency(subtotal)}`;
-            cartTotal.textContent = `$${formatCurrency(subtotal + 5000)}`; // 5000 es el costo de envío fijo
+            cartTotal.textContent = `$${formatCurrency(subtotal + shippingCost)}`;
         }
 
-        // Update quantity
-        function updateQuantity(productId, newQuantity) {
-            if (newQuantity < 1) {
-                removeFromCart(productId);
-                return;
-            }
-            const cartItem = cart.find(item => item.productId === productId);
-            if (cartItem) {
-                cartItem.quantity = newQuantity;
-                updateCartCount();
-                renderCart();
-            }
-        }
-
-        // Proceed to checkout
-        function proceedToCheckout(button) {
+        // Open checkout info modal
+        function openCheckoutInfoModal() {
             if (!isLoggedIn) {
                 showModal('loginModal');
                 return;
             }
             if (cart.length === 0) {
-                showNotification('El carrito está vacío.');
+                showNotification('Tu carrito está vacío. Agrega productos antes de proceder al pago.');
                 return;
             }
-            button.classList.add('loading');
+            closeModal('cartModal'); // Close cart modal if open
+            showModal('checkoutInfoModal');
+        }
+
+        // Initiate Mercado Pago payment and WhatsApp redirect
+        function initiateMercadoPagoPayment(button) {
+            const name = document.getElementById('checkoutName').value;
+            const lastName = document.getElementById('checkoutLastName').value;
+            const whatsapp = document.getElementById('checkoutWhatsapp').value;
+
+            if (!name || !lastName || !whatsapp) {
+                showNotification('Por favor, completa todos los campos.');
+                return;
+            }
+
+            // Basic WhatsApp number validation (can be more robust)
+            if (!/^\+?\d{10,15}$/.test(whatsapp)) {
+                showNotification('Por favor, ingresa un número de WhatsApp válido (solo números, incluyendo código de país).');
+                return;
+            }
+
+            showButtonLoading(button);
+            showNotification('Redirigiendo a Mercado Pago...');
+
             setTimeout(() => {
-                showNotification('Procesando pago...');
-                button.classList.remove('loading');
-                showSection('payments', document.querySelector('.nav-item[onclick*="payments"]'));
-                closeModal('cartModal');
+                // Open Mercado Pago link in a new tab
+                window.open('https://link.mercadopago.com.ar/neigame', '_blank');
+
+                // Prepare WhatsApp message
+                const message = encodeURIComponent(
+                    `¡Hola! Acabo de realizar un pago en Showroom +Roma. Mis datos son:\n` +
+                    `Nombre: ${name}\n` +
+                    `Apellido: ${lastName}\n` +
+                    `WhatsApp: ${whatsapp}\n\n` +
+                    `Por favor, confirma mi pago. ¡Te enviaré la captura de pantalla a continuación!`
+                );
+
+                // Redirect to WhatsApp Business after a short delay
+                // This delay helps ensure the Mercado Pago tab has a chance to open first
+                setTimeout(() => {
+                    window.location.href = `https://wa.me/message/BBSYRPQOO5YKH1?text=${message}`;
+                }, 1000); // 1 second delay
+
+                // Clear cart after initiating payment
+                cart = [];
+                updateCartCount();
+                renderCart();
+                closeModal('checkoutInfoModal');
+                showNotification('¡Pago iniciado! Por favor, revisa Mercado Pago y luego tu WhatsApp para finalizar la compra.');
             }, 1500);
         }
+
 
         // Login
         function login(button) {
@@ -2111,3 +2228,4 @@
     </script>
 </body>
 </html>
+
