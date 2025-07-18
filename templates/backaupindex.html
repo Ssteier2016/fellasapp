@@ -496,7 +496,7 @@
         }
 
         .auction-info {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
             color: white;
             padding: 1.5rem;
             border-radius: 15px;
@@ -1125,6 +1125,18 @@
             padding: 20px;
         }
 
+        #couponCardManagementSection .card-front {
+            /* Updated background for coupon card to match example */
+            background: linear-gradient(135deg, #FF7F50 0%, #FF6347 100%); /* Coral to Tomato */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute content vertically */
+            align-items: center; /* Center horizontally */
+            padding: 20px;
+            text-align: center;
+        }
+
+
         #giftCardManagementSection .card-back, #couponCardManagementSection .card-back {
             background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
             transform: rotateY(180deg);
@@ -1142,6 +1154,12 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 10px;
+        }
+
+        #couponCardManagementSection .logo-section {
+            margin-bottom: 0; /* Adjust spacing for new layout */
+            width: 100%;
+            justify-content: center;
         }
 
         #giftCardManagementSection .logo-icon, #couponCardManagementSection .logo-icon {
@@ -1173,6 +1191,17 @@
             margin-bottom: 20px;
             text-align: center;
         }
+        #couponCardManagementSection .coupon-card-title {
+            font-size: 2.2em; /* Larger title */
+            font-weight: 800;
+            margin: 10px 0; /* Adjust margin */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            flex-grow: 1; /* Allow it to take available space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
 
         #giftCardManagementSection .card-number, #couponCardManagementSection .card-number {
             font-size: 18px;
@@ -1184,6 +1213,16 @@
             padding: 8px;
             border-radius: 8px;
         }
+        #couponCardManagementSection .card-number {
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            margin-top: auto; /* Push to bottom */
+            background: none; /* Remove background for cleaner look */
+            padding: 0;
+            border-radius: 0;
+            opacity: 0.8;
+        }
+
 
         #giftCardManagementSection .recipient-name, #couponCardManagementSection .recipient-name {
             font-size: 16px;
@@ -1192,6 +1231,14 @@
             background: rgba(255,255,255,0.1);
             padding: 8px;
             border-radius: 8px;
+        }
+        #couponCardManagementSection .recipient-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: none; /* Remove background for cleaner look */
+            padding: 0;
+            border-radius: 0;
         }
 
         #giftCardManagementSection .amount {
@@ -1209,6 +1256,13 @@
             font-size: 12px;
             opacity: 0.8;
         }
+        #couponCardManagementSection .card-footer {
+            width: 100%; /* Ensure footer spans full width */
+            justify-content: space-around; /* Distribute items evenly */
+            margin-top: 10px; /* Add some space from content above */
+            font-size: 0.9em;
+        }
+
 
         #giftCardManagementSection .description, #couponCardManagementSection .description {
             font-size: 14px;
@@ -1223,6 +1277,16 @@
             margin-bottom: 20px;
             text-align: center;
         }
+        /* New class for main content on coupon card front */
+        #couponCardManagementSection .coupon-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1; /* Allow it to take available space */
+            justify-content: center;
+            width: 100%;
+        }
+
 
         #giftCardManagementSection .address, #couponCardManagementSection .address {
             font-size: 12px;
@@ -1400,7 +1464,7 @@
         #giftCardManagementSection .history-table td,
         #couponCardManagementSection .history-table th,
         #couponCardManagementSection .history-table td {
-            padding: SXSW
+            padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -1468,28 +1532,34 @@
         /* Coupon Card Specific Styles */
         #couponCardManagementSection .purchase-circles {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(5, 1fr); /* 5 columns for circles */
             gap: 10px;
-            margin: 20px 0;
+            margin: 20px auto; /* Center the grid */
+            width: 90%; /* Control width of the circles container */
+            max-width: 250px; /* Max width for larger screens */
         }
 
         #couponCardManagementSection .circle {
-            width: 40px;
-            height: 40px;
-            border: 2px solid white;
+            width: 45px; /* Larger circles */
+            height: 45px; /* Larger circles */
+            border: 3px solid white; /* Thicker border */
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 1.1em; /* Larger number inside */
+            font-weight: bold;
             text-align: center;
             background: rgba(255,255,255,0.2);
             color: white;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         #couponCardManagementSection .circle.filled {
-            background: #51cf66;
+            background: #28a745; /* Darker green for filled */
             color: white;
+            border-color: #28a745; /* Border matches filled color */
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); /* Glowing effect */
         }
 
         /* Responsive Design */
@@ -1703,68 +1773,57 @@
             }
         }
 
+        /* Print-specific styles for the gift card */
         @media print {
-            body * {
-                visibility: hidden;
+            body > *:not(#print-area) {
+                display: none !important; /* Hide everything except the print area */
             }
-            #giftCardManagementSection, #giftCardManagementSection *, 
-            #couponCardManagementSection, #couponCardManagementSection * {
-                visibility: visible;
-            }
-            #giftCardManagementSection, #couponCardManagementSection {
+
+            #print-area {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
                 margin: 0;
                 padding: 0;
-                background: none;
-                box-shadow: none;
-                border-radius: 0;
+                background: white; /* Ensure white background for printing */
             }
-            #giftCardManagementSection .gift-card-container,
-            #couponCardManagementSection .coupon-card-container {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 90vw;
-                max-width: 600px;
-                height: auto;
-                margin: 0;
-                padding: 0;
+
+            #print-area .gift-card-container,
+            #print-area .coupon-card-container {
+                width: 90%; /* Adjust width for print */
+                max-width: 600px; /* Max width for print */
+                height: auto; /* Allow height to adjust */
+                margin: auto; /* Center the container */
+                perspective: none; /* Disable perspective for print */
+                box-shadow: none; /* Remove shadow for print */
             }
-            #giftCardManagementSection .gift-card,
-            #couponCardManagementSection .coupon-card {
-                transform: none !important;
+
+            #print-area .gift-card,
+            #print-area .coupon-card {
+                transform: none !important; /* Ensure no rotation */
                 width: 100%;
                 height: auto;
-                aspect-ratio: 1.586 / 1;
+                aspect-ratio: 1.586 / 1; /* Maintain aspect ratio (credit card ratio) */
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Add a subtle shadow for definition */
+                border: 1px solid #ddd; /* Add a light border */
             }
-            #giftCardManagementSection .card-back,
-            #couponCardManagementSection .card-back {
-                display: none;
+
+            #print-area .card-back {
+                display: none !important; /* Hide the back of the card */
             }
-            #giftCardManagementSection .decorative-elements,
-            #couponCardManagementSection .decorative-elements {
-                display: none;
+
+            #print-area .decorative-elements {
+                display: none !important; /* Hide decorative elements */
             }
-            #giftCardManagementSection .logo-section .logo-icon,
-            #couponCardManagementSection .logo-section .logo-icon {
-                border: none;
-                background: none;
-            }
-            #giftCardManagementSection .header,
-            #giftCardManagementSection .form-section,
-            #giftCardManagementSection .history-section,
-            #couponCardManagementSection .header,
-            #couponCardManagementSection .form-section,
-            #couponCardManagementSection .history-section {
-                display: none;
+
+            #print-area .logo-section .logo-icon {
+                border: none !important;
+                background: none !important;
             }
         }
     </style>
@@ -2038,18 +2097,25 @@
                                             <div class="brand-name">SHOWROOM +ROMA</div>
                                         </div>
                                         
-                                        <div class="card-details">
+                                        <div class="coupon-main-content">
                                             <div class="coupon-card-title">CUPONERA</div>
-                                            <div class="card-number" id="couponCardNumber">XXXX-XXXX-XXXX</div>
                                             <div class="recipient-name" id="couponRecipientName">NOMBRE DEL DESTINATARIO</div>
-                                            <div class="coupon-details">
-                                                <strong>¡Acumula compras y gana!</strong><br>
-                                                Compra en días diferentes y obtén:<br>
-                                                - 5 compras: 40% OFF en una prenda<br>
-                                                - 8 compras: 75% OFF en una prenda<br>
-                                                - 10 compras: 100% OFF en una prenda<br>
-                                                Válida por 1 año. Canje invalida la tarjeta.
+                                            
+                                            <!-- Moved purchase circles to the front -->
+                                            <div class="purchase-circles" id="couponPurchaseCircles">
+                                                <div class="circle">1</div>
+                                                <div class="circle">2</div>
+                                                <div class="circle">3</div>
+                                                <div class="circle">4</div>
+                                                <div class="circle">5</div>
+                                                <div class="circle">6</div>
+                                                <div class="circle">7</div>
+                                                <div class="circle">8</div>
+                                                <div class="circle">9</div>
+                                                <div class="circle">10</div>
                                             </div>
+
+                                            <div class="card-number" id="couponCardNumber">XXXX-XXXX-XXXX</div>
                                         </div>
                                         
                                         <div class="card-footer">
@@ -2062,19 +2128,14 @@
                                         <div class="description">
                                             <strong>¡Tu Cuponera SHOWROOM +ROMA!</strong><br>
                                             Registra tus compras en los círculos. Cada círculo debe ser de un día diferente.
+                                            <br><br>
+                                            <strong>¡Acumula compras y gana!</strong><br>
+                                            - 5 compras: 40% OFF en una prenda<br>
+                                            - 8 compras: 75% OFF en una prenda<br>
+                                            - 10 compras: 100% OFF en una prenda<br>
+                                            Válida por 1 año. Canje invalida la tarjeta.
                                         </div>
-                                        <div class="purchase-circles" id="couponPurchaseCircles">
-                                            <div class="circle">1</div>
-                                            <div class="circle">2</div>
-                                            <div class="circle">3</div>
-                                            <div class="circle">4</div>
-                                            <div class="circle">5</div>
-                                            <div class="circle">6</div>
-                                            <div class="circle">7</div>
-                                            <div class="circle">8</div>
-                                            <div class="circle">9</div>
-                                            <div class="circle">10</div>
-                                        </div>
+                                        
                                         <div class="address">
                                             📍 <strong>Dirección:</strong><br>
                                             Av. Rivadavia 7055 Local 52<br>
@@ -2241,12 +2302,28 @@
                 </div>
             </div>
 
+            <!-- Confirmation Modal (for replacing window.confirm) -->
+            <div id="confirmationModal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal('confirmationModal')">&times;</span>
+                    <h2 id="confirmationModalTitle">Confirmación</h2>
+                    <p id="confirmationModalMessage" style="text-align: center; margin-bottom: 20px;"></p>
+                    <div class="form-buttons">
+                        <button class="btn btn-danger" id="confirmActionBtn">Sí</button>
+                        <button class="btn btn-secondary" onclick="closeModal('confirmationModal')">No</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Notification Toast -->
             <div class="notification-toast" id="notificationToast">
                 <span id="notificationMessage"></span>
             </div>
         </div>
     </main>
+
+    <!-- Hidden Print Area -->
+    <div id="print-area" style="display: none;"></div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -2354,9 +2431,20 @@
             });
         }
 
-        function filterCouponHistory() {
+        function filterCouponCards() {
             const searchInput = document.getElementById('couponSearchInput').value.toLowerCase();
             const statusFilter = document.getElementById('couponStatusFilter').value;
+
+            return couponCards.filter(card => {
+                const matchesSearch = !searchInput ||
+                    card.recipient.toLowerCase().includes(searchInput) ||
+                    card.number.toLowerCase().includes(searchInput);
+                const matchesStatus = !statusFilter || card.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+        }
+
+        function filterCouponHistory() {
             updateCouponHistory();
         }
 
@@ -2465,18 +2553,39 @@
         }
 
         function printCouponCard() {
-            updateCouponCardPreview({
-                number: document.getElementById('couponCardNumber').textContent,
-                recipient: document.getElementById('couponRecipientName').textContent,
-                purchases: []
-            });
-            window.print();
+            const couponCardElement = document.getElementById('couponCard');
+            const printArea = document.getElementById('print-area');
+            const clonedCard = couponCardElement.cloneNode(true); // Clone the entire card
+
+            // Ensure the cloned card is in its front-facing state for printing
+            clonedCard.style.transform = 'none';
+            const cardBack = clonedCard.querySelector('.card-back');
+            if (cardBack) {
+                cardBack.style.display = 'none'; // Hide the back
+            }
+
+            printArea.innerHTML = ''; // Clear previous content
+            printArea.appendChild(clonedCard); // Add the cloned card to the print area
+
+            window.print(); // Trigger print dialog
+
+            // Clean up the print area after printing (optional, but good practice)
+            setTimeout(() => {
+                printArea.innerHTML = '';
+            }, 1000); // Give some time for print dialog to appear
         }
 
         // Initialize Coupon Card Section
         function initCouponCardSection() {
             if (couponCards.length > 0) {
                 updateCouponCardPreview(couponCards[couponCards.length - 1]);
+            } else {
+                // Set default preview if no cards exist
+                updateCouponCardPreview({
+                    number: 'XXXX-XXXX-XXXX',
+                    recipient: 'NOMBRE DEL DESTINATARIO',
+                    purchases: []
+                });
             }
             updateCouponHistory();
         }
@@ -2661,6 +2770,20 @@
             if (sectionId === 'couponCardManagement') {
                 initCouponCardSection();
             }
+            // Ensure gift card preview is updated when navigating to its section
+            if (sectionId === 'giftCardManagement') {
+                if (giftCards.length > 0) {
+                    updateGiftCardPreview(giftCards[giftCards.length - 1]);
+                } else {
+                    // Set default preview if no cards exist
+                    updateGiftCardPreview({
+                        cardNumber: 'XXXX-XXXX-XXXX',
+                        recipientName: 'NOMBRE DEL DESTINATARIO',
+                        amount: 0
+                    });
+                }
+                updateHistoryTable(); // Refresh history table
+            }
         }
 
         // Carousel Functions
@@ -2804,6 +2927,268 @@
             updateAuctionGrid();
             initCouponCardSection();
         });
+
+        // Gift Card Functions (integrated and improved)
+        let giftCards = JSON.parse(localStorage.getItem('giftCards')) || [];
+        let currentCard = null; // This will hold the currently displayed gift card data
+
+        function generateRandomCardNumber() {
+            const segments = [];
+            for (let i = 0; i < 3; i++) {
+                segments.push(Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+            }
+            return segments.join('-');
+        }
+
+        function generateGiftCard() {
+            const recipientName = document.getElementById('recipientInput').value.trim();
+            const amount = document.getElementById('amountInput').value;
+            
+            if (!recipientName || !amount) {
+                showNotification('Por favor completa todos los campos de la Gift Card.');
+                return;
+            }
+
+            const parsedAmount = parseInt(amount);
+            if (isNaN(parsedAmount) || parsedAmount < 0) {
+                showNotification('Por favor, ingresa un monto válido (número positivo).');
+                return;
+            }
+
+            const cardNumber = generateRandomCardNumber();
+            const now = new Date();
+            
+            const newCard = {
+                id: Date.now(),
+                cardNumber: cardNumber,
+                recipientName: recipientName,
+                amount: parsedAmount,
+                createdDate: now.toLocaleDateString(),
+                status: 'active',
+                usedDate: null
+            };
+
+            giftCards.push(newCard);
+            saveGiftCards();
+            
+            // Update preview with the newly created card
+            updateGiftCardPreview(newCard);
+            
+            currentCard = newCard; // Set the newly created card as the current card for printing
+            
+            // Limpiar formulario
+            document.getElementById('recipientInput').value = '';
+            document.getElementById('amountInput').value = '';
+            
+            updateHistoryTable();
+            
+            showNotification(`¡Gift Card creada exitosamente!\nNúmero: ${cardNumber}\nDestinatario: ${recipientName}\nMonto: $${parsedAmount.toLocaleString()}`);
+        }
+
+        function updateGiftCardPreview(cardData) {
+            document.getElementById('cardNumber').textContent = cardData.cardNumber;
+            document.getElementById('recipientName').textContent = cardData.recipientName.toUpperCase();
+            document.getElementById('amount').textContent = `$${cardData.amount.toLocaleString()}`;
+        }
+
+        function printCard() {
+            // If no card has been generated or selected, use the current preview values
+            let cardToPrint = currentCard;
+            if (!cardToPrint) {
+                // Fallback to current preview if no card was explicitly generated/selected
+                cardToPrint = {
+                    cardNumber: document.getElementById('cardNumber').textContent,
+                    recipientName: document.getElementById('recipientName').textContent,
+                    amount: parseFloat(document.getElementById('amount').textContent.replace('$', '').replace(/\./g, '').replace(/,/g, '.')) || 0 // Parse current amount
+                };
+            }
+
+            // Temporarily update the preview with the card to be printed
+            updateGiftCardPreview(cardToPrint);
+
+            const giftCardElement = document.getElementById('giftCard');
+            const printArea = document.getElementById('print-area');
+            const clonedCard = giftCardElement.cloneNode(true); // Clone the entire card
+
+            // Ensure the cloned card is in its front-facing state for printing
+            clonedCard.style.transform = 'none';
+            const cardBack = clonedCard.querySelector('.card-back');
+            if (cardBack) {
+                cardBack.style.display = 'none'; // Hide the back
+            }
+
+            printArea.innerHTML = ''; // Clear previous content
+            printArea.appendChild(clonedCard); // Add the cloned card to the print area
+
+            window.print(); // Trigger print dialog
+
+            // Clean up the print area after printing (optional, but good practice)
+            setTimeout(() => {
+                printArea.innerHTML = '';
+            }, 1000); // Give some time for print dialog to appear
+        }
+
+        function markAsUsed(cardId) {
+            showConfirmationModal('¿Estás seguro de que deseas marcar esta gift card como usada?', (confirmed) => {
+                if (confirmed) {
+                    const card = giftCards.find(c => c.id === cardId);
+                    if (card) {
+                        card.status = 'used';
+                        card.usedDate = new Date().toLocaleDateString();
+                        saveGiftCards();
+                        updateHistoryTable();
+                        showNotification('Gift card marcada como usada.');
+                    }
+                }
+            });
+        }
+
+        function deleteCard(cardId) {
+            showConfirmationModal('¿Estás seguro de que deseas eliminar esta gift card? Esta acción no se puede deshacer.', (confirmed) => {
+                if (confirmed) {
+                    giftCards = giftCards.filter(c => c.id !== cardId);
+                    saveGiftCards();
+                    updateHistoryTable();
+                    showNotification('Gift card eliminada.');
+                }
+            });
+        }
+
+        function openRechargeModal(cardId) {
+            const card = giftCards.find(c => c.id === cardId);
+            if (card) {
+                document.getElementById('rechargeCardNumber').value = card.cardNumber;
+                document.getElementById('rechargeCardName').value = card.recipientName;
+                document.getElementById('rechargeCurrentAmount').value = `$${card.amount.toLocaleString()}`;
+                document.getElementById('rechargeAmount').value = '';
+                showModal('rechargeModal');
+                
+                // Guardar referencia para la recarga
+                window.currentRechargeCard = card;
+            }
+        }
+
+        function confirmRecharge() {
+            const rechargeAmount = document.getElementById('rechargeAmount').value;
+            
+            if (!rechargeAmount || parseInt(rechargeAmount) <= 0 || isNaN(parseInt(rechargeAmount))) {
+                showNotification('Por favor ingresa un monto válido para recargar.');
+                return;
+            }
+
+            if (window.currentRechargeCard) {
+                window.currentRechargeCard.amount += parseInt(rechargeAmount);
+                window.currentRechargeCard.status = 'active'; // Reactivar si estaba usada
+                window.currentRechargeCard.usedDate = null;
+                
+                saveGiftCards();
+                updateHistoryTable();
+                closeModal('rechargeModal');
+                
+                showNotification(`Gift card recargada exitosamente!\nNuevo monto: $${window.currentRechargeCard.amount.toLocaleString()}`);
+            }
+        }
+
+        function printCardById(cardId) {
+            const card = giftCards.find(c => c.id === cardId);
+            if (card) {
+                // Set the current card for printing
+                currentCard = card;
+                printCard(); // Use the general print function
+            } else {
+                showNotification('Tarjeta no encontrada para imprimir.');
+            }
+        }
+
+        function updateHistoryTable() {
+            const tbody = document.getElementById('historyBody');
+            
+            // Filter cards based on search and status
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filteredCards = giftCards.filter(card => {
+                const matchesSearch = !searchTerm || 
+                    card.recipientName.toLowerCase().includes(searchTerm) ||
+                    card.cardNumber.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || card.status === statusFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+
+            tbody.innerHTML = ''; // Clear existing rows
+            
+            if (filteredCards.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-records">No hay gift cards registradas</td></tr>';
+                return;
+            }
+            
+            filteredCards.forEach(card => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${card.cardNumber}</td>
+                    <td>${card.recipientName}</td>
+                    <td>$${card.amount.toLocaleString()}</td>
+                    <td>${card.createdDate}</td>
+                    <td><span class="status ${card.status}">${card.status === 'active' ? 'Activa' : 'Usada'}</span></td>
+                    <td>${card.usedDate || '-'}</td>
+                    <td class="action-buttons">
+                        ${card.status === 'active' ? `
+                            <button class="action-btn btn-danger" onclick="markAsUsed(${card.id})">Marcar Usada</button>
+                        ` : ''}
+                        <button class="action-btn btn-warning" onclick="openRechargeModal(${card.id})">Recargar</button>
+                        <button class="action-btn btn-secondary" onclick="printCardById(${card.id})">Imprimir</button>
+                        <button class="action-btn btn-danger" onclick="deleteCard(${card.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterHistory() {
+            updateHistoryTable(); // Simply call updateHistoryTable to re-render with filters
+        }
+
+        function saveGiftCards() {
+            localStorage.setItem('giftCards', JSON.stringify(giftCards));
+            console.log('Gift cards saved to localStorage:', giftCards);
+        }
+
+        function loadGiftCards() {
+            giftCards = JSON.parse(localStorage.getItem('giftCards')) || [];
+            console.log('Gift cards loaded from localStorage:', giftCards);
+            if (giftCards.length > 0) {
+                updateGiftCardPreview(giftCards[giftCards.length - 1]); // Show the last created card
+            }
+        }
+
+        // Custom Confirmation Modal
+        let confirmationCallback = null; // For custom confirmation modal
+
+        function showConfirmationModal(message, callback) {
+            document.getElementById('confirmationModalMessage').textContent = message;
+            confirmationCallback = callback;
+            showModal('confirmationModal');
+            document.getElementById('confirmActionBtn').onclick = () => {
+                if (confirmationCallback) {
+                    confirmationCallback(true);
+                }
+                closeModal('confirmationModal');
+            };
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        };
     </script>
 </body>
 </html>
+
