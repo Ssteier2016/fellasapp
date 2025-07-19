@@ -1562,6 +1562,43 @@
             box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); /* Glowing effect */
         }
 
+        /* Coupon Card Models */
+        .coupon-card.model-classic .card-front {
+            background: linear-gradient(135deg, #FF7F50 0%, #FF6347 100%); /* Coral to Tomato */
+        }
+        .coupon-card.model-ocean .card-front {
+            background: linear-gradient(135deg, #4ECDC4 0%, #49A09D 100%); /* Teal to Dark Teal */
+        }
+        .coupon-card.model-sunset .card-front {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); /* Gold to Orange */
+        }
+
+        .coupon-canje-indicator {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFFF00; /* Bright yellow for emphasis */
+            margin-top: 15px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            animation: pulse-canje 1.5s infinite alternate;
+        }
+
+        @keyframes pulse-canje {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* Gift Card Models */
+        .gift-card.model-classic .card-front {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%); /* Original Red/Orange */
+        }
+        .gift-card.model-elegant .card-front {
+            background: linear-gradient(135deg, #5A2D82 0%, #825CD0 100%); /* Deep Purple to Lavender */
+        }
+        .gift-card.model-modern .card-front {
+            background: linear-gradient(135deg, #00BFFF 0%, #1E90FF 100%); /* Deep Sky Blue to Dodger Blue */
+        }
+
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .nav-menu {
@@ -2034,6 +2071,14 @@
                                 <label for="amountInput">Monto:</label>
                                 <input type="number" id="amountInput" placeholder="Ingresa el monto" min="0" step="1">
                             </div>
+                            <div class="form-group">
+                                <label for="giftCardModel">Modelo de Tarjeta:</label>
+                                <select id="giftCardModel">
+                                    <option value="model-classic">Clásico</option>
+                                    <option value="model-elegant">Elegante</option>
+                                    <option value="model-modern">Moderno</option>
+                                </select>
+                            </div>
                             <div class="form-buttons">
                                 <button class="btn btn-primary" onclick="generateGiftCard()">Crear Gift Card</button>
                                 <button class="btn btn-secondary" onclick="printCard()">Imprimir Tarjeta</button>
@@ -2114,6 +2159,9 @@
                                                 <div class="circle">9</div>
                                                 <div class="circle">10</div>
                                             </div>
+                                            <div class="coupon-canje-indicator" id="couponCanjeIndicator" style="display: none;">
+                                                ¡CANJE DISPONIBLE!
+                                            </div>
 
                                             <div class="card-number" id="couponCardNumber">XXXX-XXXX-XXXX</div>
                                         </div>
@@ -2156,6 +2204,14 @@
                             <div class="form-group">
                                 <label for="couponRecipientInput">Nombre del destinatario:</label>
                                 <input type="text" id="couponRecipientInput" placeholder="Ingresa el nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="couponCardModel">Modelo de Tarjeta:</label>
+                                <select id="couponCardModel">
+                                    <option value="model-classic">Clásico</option>
+                                    <option value="model-ocean">Océano</option>
+                                    <option value="model-sunset">Atardecer</option>
+                                </select>
                             </div>
                             <div class="form-buttons">
                                 <button class="btn btn-primary" onclick="generateCouponCard()">Crear Cuponera</button>
@@ -2279,7 +2335,7 @@
                     <h2>Registrar Compra en Cuponera</h2>
                     <div class="form-group">
                         <label for="purchaseCardNumber">Número de Cuponera:</label>
-                        <input type="text" id="purchaseCardNumber" placeholder="Ingresa el número de la cuponera">
+                        <input type="text" id="purchaseCardNumber" placeholder="Ingresa el número de la cuponera" readonly>
                     </div>
                     <div class="form-group">
                         <label for="purchaseDate">Fecha de Compra:</label>
@@ -2296,11 +2352,73 @@
                     <h2>Canjear Cuponera</h2>
                     <div class="form-group">
                         <label for="redeemCardNumber">Número de Cuponera:</label>
-                        <input type="text" id="redeemCardNumber" placeholder="Ingresa el número de la cuponera">
+                        <input type="text" id="redeemCardNumber" placeholder="Ingresa el número de la cuponera" readonly>
                     </div>
                     <button class="btn btn-primary" onclick="redeemCouponCard()">Canjear Descuento</button>
                 </div>
             </div>
+
+            <!-- Modify Coupon Modal -->
+            <div class="modal" id="modifyCouponModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal('modifyCouponModal')">&times;</button>
+                    <h2>Modificar Cuponera</h2>
+                    <input type="hidden" id="modifyCouponId">
+                    <div class="form-group">
+                        <label for="modifyCouponRecipientName">Nombre del destinatario:</label>
+                        <input type="text" id="modifyCouponRecipientName" placeholder="Nuevo nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponCardModel">Modelo de Tarjeta:</label>
+                        <select id="modifyCouponCardModel">
+                            <option value="model-classic">Clásico</option>
+                            <option value="model-ocean">Océano</option>
+                            <option value="model-sunset">Atardecer</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveModifiedCouponCard()">Guardar Cambios</button>
+                </div>
+            </div>
+
+            <!-- Manage Purchases Modal -->
+            <div class="modal" id="managePurchasesModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal('managePurchasesModal')">&times;</button>
+                    <h2>Gestionar Compras de Cuponera</h2>
+                    <input type="hidden" id="managePurchasesCouponId">
+                    <p>Cuponera: <strong id="managePurchasesCardNumber"></strong></p>
+                    <div id="purchaseList">
+                        <!-- Purchase dates will be listed here -->
+                    </div>
+                    <button class="btn btn-secondary" onclick="closeModal('managePurchasesModal')">Cerrar</button>
+                </div>
+            </div>
+
+            <!-- Recharge Gift Card Modal -->
+            <div class="modal" id="rechargeModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="closeModal('rechargeModal')">&times;</button>
+                    <h2>Recargar Gift Card</h2>
+                    <div class="form-group">
+                        <label for="rechargeCardNumber">Número de Tarjeta:</label>
+                        <input type="text" id="rechargeCardNumber" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rechargeCardName">Nombre del Destinatario:</label>
+                        <input type="text" id="rechargeCardName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rechargeCurrentAmount">Monto Actual:</label>
+                        <input type="text" id="rechargeCurrentAmount" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rechargeAmount">Monto a Recargar:</label>
+                        <input type="number" id="rechargeAmount" placeholder="Ingresa el monto a recargar" min="1" step="1">
+                    </div>
+                    <button class="btn btn-primary" onclick="confirmRecharge()">Recargar</button>
+                </div>
+            </div>
+
 
             <!-- Confirmation Modal (for replacing window.confirm) -->
             <div id="confirmationModal" class="modal">
@@ -2345,7 +2463,9 @@
         }
 
         function formatDate(date) {
-            return date.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            // Ensure date is a Date object
+            const d = new Date(date);
+            return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
         function showNotification(message, duration = 3000) {
@@ -2367,10 +2487,18 @@
 
         // Coupon Card Management
         let couponCards = JSON.parse(localStorage.getItem('couponCards')) || [];
+        let currentCouponCardPreview = null; // Holds the data for the card currently displayed in the preview
+
+        function saveCouponCards() {
+            localStorage.setItem('couponCards', JSON.stringify(couponCards));
+        }
 
         function generateCouponCard() {
             const recipientInput = document.getElementById('couponRecipientInput');
+            const couponCardModel = document.getElementById('couponCardModel');
             const recipient = recipientInput.value.trim();
+            const model = couponCardModel.value;
+
             if (!recipient) {
                 showNotification('Por favor, ingresa el nombre del destinatario.');
                 return;
@@ -2381,14 +2509,15 @@
                 id: generateUUID(),
                 number: cardNumber,
                 recipient: recipient,
-                purchases: [],
+                purchases: [], // Stores ISO date strings
                 status: 'active',
                 createdAt: new Date().toISOString(),
-                redeemedAt: null
+                redeemedAt: null,
+                model: model // Store the selected model
             };
 
             couponCards.push(newCard);
-            localStorage.setItem('couponCards', JSON.stringify(couponCards));
+            saveCouponCards();
             updateCouponCardPreview(newCard);
             updateCouponHistory();
             recipientInput.value = '';
@@ -2396,12 +2525,27 @@
         }
 
         function updateCouponCardPreview(card) {
+            const couponCardElement = document.getElementById('couponCard');
             document.getElementById('couponCardNumber').textContent = card.number;
-            document.getElementById('couponRecipientName').textContent = card.recipient;
+            document.getElementById('couponRecipientName').textContent = card.recipient.toUpperCase();
+
+            // Clear existing model classes and add the new one
+            couponCardElement.classList.remove('model-classic', 'model-ocean', 'model-sunset');
+            couponCardElement.classList.add(card.model || 'model-classic'); // Default to classic if not set
+
             const circles = document.getElementById('couponPurchaseCircles').children;
             Array.from(circles).forEach((circle, index) => {
                 circle.classList.toggle('filled', index < card.purchases.length);
             });
+
+            const canjeIndicator = document.getElementById('couponCanjeIndicator');
+            const purchaseCount = card.purchases.length;
+            if (card.status === 'active' && (purchaseCount >= 5 || purchaseCount >= 8 || purchaseCount >= 10)) {
+                canjeIndicator.style.display = 'block';
+            } else {
+                canjeIndicator.style.display = 'none';
+            }
+            currentCouponCardPreview = card; // Update the global preview variable
         }
 
         function updateCouponHistory() {
@@ -2425,8 +2569,12 @@
                     <td class="action-buttons">
                         <button class="action-btn btn-primary" onclick="showModal('registerPurchaseModal'); document.getElementById('purchaseCardNumber').value = '${card.number}'">Registrar Compra</button>
                         <button class="action-btn btn-warning" onclick="showModal('redeemCouponModal'); document.getElementById('redeemCardNumber').value = '${card.number}'">Canjear</button>
+                        <button class="action-btn btn-secondary" onclick="editCouponCard('${card.id}')">Modificar</button>
+                        <button class="action-btn btn-info" onclick="managePurchases('${card.id}')">Gestionar Compras</button>
+                        <button class="action-btn btn-danger" onclick="deleteCouponCard('${card.id}')">Eliminar</button>
                     </td>
                 `;
+                row.onclick = () => updateCouponCardPreview(card); // Add click event to row
                 tbody.appendChild(row);
             });
         }
@@ -2458,8 +2606,8 @@
 
             const purchaseDate = new Date(purchaseDateInput);
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            purchaseDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0); // Normalize today's date to midnight
+            purchaseDate.setHours(0, 0, 0, 0); // Normalize purchase date to midnight
 
             if (purchaseDate > today) {
                 showNotification('La fecha de compra no puede ser futura.');
@@ -2477,6 +2625,7 @@
                 return;
             }
 
+            // Check if a purchase already exists for this date
             const existingPurchase = card.purchases.find(p => {
                 const pDate = new Date(p);
                 pDate.setHours(0, 0, 0, 0);
@@ -2484,12 +2633,12 @@
             });
 
             if (existingPurchase) {
-                showNotification('Ya se registró una compra en esta fecha.');
+                showNotification('Ya se registró una compra en esta fecha para esta cuponera.');
                 return;
             }
 
-            card.purchases.push(purchaseDate.toISOString());
-            localStorage.setItem('couponCards', JSON.stringify(couponCards));
+            card.purchases.push(purchaseDate.toISOString()); // Store as ISO string
+            saveCouponCards();
             updateCouponCardPreview(card);
             updateCouponHistory();
             closeModal('registerPurchaseModal');
@@ -2515,12 +2664,20 @@
                 return;
             }
 
-            card.status = 'redeemed';
-            card.redeemedAt = new Date().toISOString();
-            localStorage.setItem('couponCards', JSON.stringify(couponCards));
-            updateCouponHistory();
-            closeModal('redeemCouponModal');
-            showNotification(`Cuponera canjeada: ${discount}% de descuento aplicado.`);
+            showConfirmationModal(`¿Estás seguro de que deseas canjear esta cuponera por un ${discount}% de descuento? Esto la invalidará.`, (confirmed) => {
+                if (confirmed) {
+                    card.status = 'redeemed';
+                    card.redeemedAt = new Date().toISOString();
+                    saveCouponCards();
+                    updateCouponHistory();
+                    closeModal('redeemCouponModal');
+                    showNotification(`Cuponera canjeada: ${discount}% de descuento aplicado.`);
+                    // Update preview if this was the current card
+                    if (currentCouponCardPreview && currentCouponCardPreview.id === card.id) {
+                        updateCouponCardPreview(card);
+                    }
+                }
+            });
         }
 
         function applyCouponCard() {
@@ -2532,27 +2689,45 @@
             }
 
             const purchaseCount = card.purchases.length;
-            let discount = 0;
-            if (purchaseCount >= 5) discount = 40;
-            if (purchaseCount >= 8) discount = 75;
-            if (purchaseCount >= 10) discount = 100;
+            let discountPercentage = 0;
+            if (purchaseCount >= 5) discountPercentage = 40;
+            if (purchaseCount >= 8) discountPercentage = 75;
+            if (purchaseCount >= 10) discountPercentage = 100;
 
-            if (discount === 0) {
+            if (discountPercentage === 0) {
                 showNotification('La cuponera no tiene suficientes compras para aplicar descuento.');
                 return;
             }
 
             // Apply discount logic to cart (simplified for demo)
             const cartTotalElement = document.getElementById('cartTotal');
-            let cartTotal = parseFloat(cartTotalElement.textContent.replace('$', '')) || 0;
-            const discountAmount = cartTotal * (discount / 100);
-            cartTotal -= discountAmount;
-            document.getElementById('cartDiscount').textContent = `-${discountAmount.toFixed(2)}`;
-            cartTotalElement.textContent = `$${cartTotal.toFixed(2)}`;
-            showNotification(`Descuento de ${discount}% aplicado al carrito.`);
+            const cartSubtotalElement = document.getElementById('cartSubtotal');
+            const cartDiscountElement = document.getElementById('cartDiscount');
+
+            let currentSubtotal = parseFloat(cartSubtotalElement.textContent.replace('$', '')) || 0;
+            let appliedDiscount = currentSubtotal * (discountPercentage / 100);
+            let finalTotal = currentSubtotal - appliedDiscount;
+
+            cartDiscountElement.textContent = `-$${appliedDiscount.toFixed(2)}`;
+            cartTotalElement.textContent = `$${finalTotal.toFixed(2)}`;
+            showNotification(`Descuento de ${discountPercentage}% aplicado al carrito.`);
+            
+            // Optionally, mark the card as redeemed here if the discount is applied to a final checkout
+            // For this demo, we'll keep it separate for "redeem" action in the management section.
         }
 
         function printCouponCard() {
+            // Use the currently displayed coupon card for printing
+            let cardToPrint = currentCouponCardPreview;
+
+            if (!cardToPrint) {
+                showNotification('No hay una cuponera seleccionada o creada para imprimir.');
+                return;
+            }
+            
+            // Temporarily update the preview with the card to be printed
+            updateCouponCardPreview(cardToPrint);
+
             const couponCardElement = document.getElementById('couponCard');
             const printArea = document.getElementById('print-area');
             const clonedCard = couponCardElement.cloneNode(true); // Clone the entire card
@@ -2575,6 +2750,123 @@
             }, 1000); // Give some time for print dialog to appear
         }
 
+        function editCouponCard(cardId) {
+            const card = couponCards.find(c => c.id === cardId);
+            if (card) {
+                document.getElementById('modifyCouponId').value = card.id;
+                document.getElementById('modifyCouponRecipientName').value = card.recipient;
+                document.getElementById('modifyCouponCardModel').value = card.model || 'model-classic'; // Set current model
+                showModal('modifyCouponModal');
+            } else {
+                showNotification('Cuponera no encontrada.');
+            }
+        }
+
+        function saveModifiedCouponCard() {
+            const cardId = document.getElementById('modifyCouponId').value;
+            const newRecipientName = document.getElementById('modifyCouponRecipientName').value.trim();
+            const newModel = document.getElementById('modifyCouponCardModel').value;
+
+            if (!newRecipientName) {
+                showNotification('El nombre del destinatario no puede estar vacío.');
+                return;
+            }
+
+            const cardIndex = couponCards.findIndex(c => c.id === cardId);
+            if (cardIndex > -1) {
+                couponCards[cardIndex].recipient = newRecipientName;
+                couponCards[cardIndex].model = newModel;
+                saveCouponCards();
+                updateCouponHistory();
+                closeModal('modifyCouponModal');
+                showNotification('Cuponera modificada exitosamente.');
+                // Update preview if this was the current card
+                if (currentCouponCardPreview && currentCouponCardPreview.id === cardId) {
+                    updateCouponCardPreview(couponCards[cardIndex]);
+                }
+            } else {
+                showNotification('Error al modificar la cuponera.');
+            }
+        }
+
+        function deleteCouponCard(cardId) {
+            showConfirmationModal('¿Estás seguro de que deseas eliminar esta cuponera? Esta acción no se puede deshacer.', (confirmed) => {
+                if (confirmed) {
+                    couponCards = couponCards.filter(c => c.id !== cardId);
+                    saveCouponCards();
+                    updateCouponHistory();
+                    showNotification('Cuponera eliminada.');
+                    // If the deleted card was in preview, reset preview
+                    if (currentCouponCardPreview && currentCouponCardPreview.id === cardId) {
+                        if (couponCards.length > 0) {
+                            updateCouponCardPreview(couponCards[couponCards.length - 1]);
+                        } else {
+                            updateCouponCardPreview({
+                                number: 'XXXX-XXXX-XXXX',
+                                recipient: 'NOMBRE DEL DESTINATARIO',
+                                purchases: [],
+                                model: 'model-classic'
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function managePurchases(cardId) {
+            const card = couponCards.find(c => c.id === cardId);
+            if (!card) {
+                showNotification('Cuponera no encontrada.');
+                return;
+            }
+
+            document.getElementById('managePurchasesCouponId').value = card.id;
+            document.getElementById('managePurchasesCardNumber').textContent = card.number;
+            const purchaseList = document.getElementById('purchaseList');
+            purchaseList.innerHTML = ''; // Clear previous list
+
+            if (card.purchases.length === 0) {
+                purchaseList.innerHTML = '<p style="text-align: center; color: #666;">No hay compras registradas para esta cuponera.</p>';
+            } else {
+                card.purchases.sort((a, b) => new Date(a) - new Date(b)); // Sort by date
+                card.purchases.forEach((purchaseDateISO, index) => {
+                    const date = new Date(purchaseDateISO);
+                    const listItem = document.createElement('div');
+                    listItem.style.display = 'flex';
+                    listItem.style.justifyContent = 'space-between';
+                    listItem.style.alignItems = 'center';
+                    listItem.style.padding = '8px 0';
+                    listItem.style.borderBottom = '1px dashed #eee';
+                    listItem.innerHTML = `
+                        <span>Compra ${index + 1}: ${formatDate(date)}</span>
+                        <button class="action-btn btn-danger" onclick="removePurchase('${card.id}', '${purchaseDateISO}')">Eliminar</button>
+                    `;
+                    purchaseList.appendChild(listItem);
+                });
+            }
+            showModal('managePurchasesModal');
+        }
+
+        function removePurchase(cardId, purchaseDateISO) {
+            showConfirmationModal('¿Estás seguro de que deseas eliminar esta compra?', (confirmed) => {
+                if (confirmed) {
+                    const card = couponCards.find(c => c.id === cardId);
+                    if (card) {
+                        card.purchases = card.purchases.filter(p => p !== purchaseDateISO);
+                        saveCouponCards();
+                        updateCouponHistory();
+                        managePurchases(cardId); // Refresh the list in the modal
+                        showNotification('Compra eliminada exitosamente.');
+                        // Update preview if this was the current card
+                        if (currentCouponCardPreview && currentCouponCardPreview.id === card.id) {
+                            updateCouponCardPreview(card);
+                        }
+                    }
+                }
+            });
+        }
+
+
         // Initialize Coupon Card Section
         function initCouponCardSection() {
             if (couponCards.length > 0) {
@@ -2584,7 +2876,8 @@
                 updateCouponCardPreview({
                     number: 'XXXX-XXXX-XXXX',
                     recipient: 'NOMBRE DEL DESTINATARIO',
-                    purchases: []
+                    purchases: [],
+                    model: 'model-classic'
                 });
             }
             updateCouponHistory();
@@ -2639,7 +2932,7 @@
             });
 
             document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('cartDiscount').textContent = '$0.00';
+            document.getElementById('cartDiscount').textContent = '$0.00'; // Reset discount on cart update
             document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
             cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
@@ -2724,6 +3017,8 @@
 
         function updateAuctionTimer(auction) {
             const timerElement = document.getElementById(`auctionTimer_${auction.id}`);
+            if (!timerElement) return; // Guard against element not existing
+
             const update = () => {
                 const now = new Date();
                 const end = new Date(auction.endTime);
@@ -2732,6 +3027,7 @@
                     auction.status = 'ended';
                     localStorage.setItem('auctions', JSON.stringify(auctions));
                     updateAuctionGrid();
+                    timerElement.textContent = 'Subasta terminada.';
                     return;
                 }
                 const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -2745,6 +3041,10 @@
 
         function placeBid(auctionId, button) {
             const auction = auctions.find(a => a.id === auctionId);
+            if (!auction || auction.status !== 'active') {
+                showNotification('Esta subasta no está activa.');
+                return;
+            }
             const input = button.previousElementSibling;
             const bid = parseFloat(input.value);
             if (isNaN(bid) || bid <= auction.currentBid) {
@@ -2779,7 +3079,8 @@
                     updateGiftCardPreview({
                         cardNumber: 'XXXX-XXXX-XXXX',
                         recipientName: 'NOMBRE DEL DESTINATARIO',
-                        amount: 0
+                        amount: 0,
+                        model: 'model-classic'
                     });
                 }
                 updateHistoryTable(); // Refresh history table
@@ -2930,7 +3231,7 @@
 
         // Gift Card Functions (integrated and improved)
         let giftCards = JSON.parse(localStorage.getItem('giftCards')) || [];
-        let currentCard = null; // This will hold the currently displayed gift card data
+        let currentGiftCardPreview = null; // This will hold the currently displayed gift card data
 
         function generateRandomCardNumber() {
             const segments = [];
@@ -2943,6 +3244,8 @@
         function generateGiftCard() {
             const recipientName = document.getElementById('recipientInput').value.trim();
             const amount = document.getElementById('amountInput').value;
+            const giftCardModel = document.getElementById('giftCardModel');
+            const model = giftCardModel.value;
             
             if (!recipientName || !amount) {
                 showNotification('Por favor completa todos los campos de la Gift Card.');
@@ -2965,7 +3268,8 @@
                 amount: parsedAmount,
                 createdDate: now.toLocaleDateString(),
                 status: 'active',
-                usedDate: null
+                usedDate: null,
+                model: model // Store the selected model
             };
 
             giftCards.push(newCard);
@@ -2974,7 +3278,7 @@
             // Update preview with the newly created card
             updateGiftCardPreview(newCard);
             
-            currentCard = newCard; // Set the newly created card as the current card for printing
+            currentGiftCardPreview = newCard; // Set the newly created card as the current card for printing
             
             // Limpiar formulario
             document.getElementById('recipientInput').value = '';
@@ -2986,21 +3290,23 @@
         }
 
         function updateGiftCardPreview(cardData) {
+            const giftCardElement = document.getElementById('giftCard');
             document.getElementById('cardNumber').textContent = cardData.cardNumber;
             document.getElementById('recipientName').textContent = cardData.recipientName.toUpperCase();
             document.getElementById('amount').textContent = `$${cardData.amount.toLocaleString()}`;
+
+            // Clear existing model classes and add the new one
+            giftCardElement.classList.remove('model-classic', 'model-elegant', 'model-modern');
+            giftCardElement.classList.add(cardData.model || 'model-classic'); // Default to classic if not set
+            currentGiftCardPreview = cardData; // Update the global preview variable
         }
 
         function printCard() {
             // If no card has been generated or selected, use the current preview values
-            let cardToPrint = currentCard;
+            let cardToPrint = currentGiftCardPreview;
             if (!cardToPrint) {
-                // Fallback to current preview if no card was explicitly generated/selected
-                cardToPrint = {
-                    cardNumber: document.getElementById('cardNumber').textContent,
-                    recipientName: document.getElementById('recipientName').textContent,
-                    amount: parseFloat(document.getElementById('amount').textContent.replace('$', '').replace(/\./g, '').replace(/,/g, '.')) || 0 // Parse current amount
-                };
+                showNotification('No hay una Gift Card seleccionada o creada para imprimir.');
+                return;
             }
 
             // Temporarily update the preview with the card to be printed
@@ -3038,6 +3344,9 @@
                         saveGiftCards();
                         updateHistoryTable();
                         showNotification('Gift card marcada como usada.');
+                        if (currentGiftCardPreview && currentGiftCardPreview.id === card.id) {
+                            updateGiftCardPreview(card);
+                        }
                     }
                 }
             });
@@ -3050,6 +3359,18 @@
                     saveGiftCards();
                     updateHistoryTable();
                     showNotification('Gift card eliminada.');
+                    if (currentGiftCardPreview && currentGiftCardPreview.id === cardId) {
+                        if (giftCards.length > 0) {
+                            updateGiftCardPreview(giftCards[giftCards.length - 1]);
+                        } else {
+                            updateGiftCardPreview({
+                                cardNumber: 'XXXX-XXXX-XXXX',
+                                recipientName: 'NOMBRE DEL DESTINATARIO',
+                                amount: 0,
+                                model: 'model-classic'
+                            });
+                        }
+                    }
                 }
             });
         }
@@ -3086,6 +3407,9 @@
                 closeModal('rechargeModal');
                 
                 showNotification(`Gift card recargada exitosamente!\nNuevo monto: $${window.currentRechargeCard.amount.toLocaleString()}`);
+                if (currentGiftCardPreview && currentGiftCardPreview.id === window.currentRechargeCard.id) {
+                    updateGiftCardPreview(window.currentRechargeCard);
+                }
             }
         }
 
@@ -3093,7 +3417,7 @@
             const card = giftCards.find(c => c.id === cardId);
             if (card) {
                 // Set the current card for printing
-                currentCard = card;
+                currentGiftCardPreview = card;
                 printCard(); // Use the general print function
             } else {
                 showNotification('Tarjeta no encontrada para imprimir.');
@@ -3143,6 +3467,7 @@
                     </td>
                 </tr>
             `;
+                row.onclick = () => updateGiftCardPreview(card); // Add click event to row
                 tbody.appendChild(row);
             });
         }
