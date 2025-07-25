@@ -2239,8 +2239,10 @@
                                             Registra tus compras en los círculos. Cada círculo debe ser de un día diferente.
                                             <br><br>
                                             <strong>¡Acumula compras y gana!</strong><br>
-                                            - 5 compras: 45% OFF en una prenda<br>
-                                            - 10 compras: 90% OFF en una prenda<br>
+                                            - 5 compras: 40% OFF en una prenda<br>
+                                            - 8 compras: 75% OFF en una prenda<br>
+                                            - 10 compras: 100% OFF en una prenda<br>
+                                            Válida por 1 año. Canje invalida la tarjeta.
                                         </div>
                                         
                                         <div class="address">
@@ -2839,7 +2841,7 @@
             const canjeIndicator = document.getElementById('couponCanjeIndicator');
             const purchaseCount = card.purchases.length;
             // Show canje indicator if manual discount is set OR if purchase count meets thresholds
-            if (card.status === 'active' && (card.manualDiscount !== null || purchaseCount >= 5 || purchaseCount >= 10 || purchaseCount >= 10)) {
+            if (card.status === 'active' && (card.manualDiscount !== null || purchaseCount >= 5 || purchaseCount >= 8 || purchaseCount >= 10)) {
                 canjeIndicator.style.display = 'block';
             } else {
                 canjeIndicator.style.display = 'none';
