@@ -1,0 +1,4126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showroom +Roma - Zapatillas únicas e importadas</title>
+    <style>
+        /* Base styles and resets */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease-out;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo-animation {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 30px;
+            animation: logoFloat 2s ease-in-out infinite, logoScale 1s ease-out;
+        }
+
+        .logo-animation img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes logoScale {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .brand-text {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.8s forwards;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .loading-bar {
+            width: 80%;
+            max-width: 400px;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 30px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            width: 0%;
+            animation: loadProgress 2.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .nav-item.active-nav {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .cart-icon, .user-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cart-icon:hover, .user-icon:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideInFromLeft 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 2.5rem;
+            animation: slideInFromRight 0.8s ease-out;
+        }
+
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInFromRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .hero .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Carousel */
+        .carousel-container {
+            position: relative;
+            margin-bottom: 3rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: 400px;
+            width: 100%;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+            width: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.2rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 1rem;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .carousel-slide:nth-child(1) { background-image: url('https://placehold.co/1200x400/ff6b6b/ffffff?text=Ofertas+Especiales'); }
+        .carousel-slide:nth-child(2) { background-image: url('https://placehold.co/1200x400/4ecdc4/ffffff?text=Subastas+en+Vivo'); }
+        .carousel-slide:nth-child(3) { background-image: url('https://placehold.co/1200x400/667eea/ffffff?text=Nuevos+Modelos'); }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.8);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: white;
+            transform: translateY(-50%) scale(1.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .carousel-prev {
+            left: 20px;
+        }
+
+        .carousel-next {
+            right: 20px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 2.8rem;
+            text-align: center;
+            margin: 3.5rem 0 2.5rem;
+            color: white;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            justify-content: center;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #666;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .offer-badge, .auction-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff6b6b;
+            color: white;
+            padding: 7px 18px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 5;
+        }
+
+        .auction-badge {
+            background: #4ecdc4;
+            left: 15px;
+            right: auto;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.08); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            color: #444;
+        }
+
+        .product-prices {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .price-offer {
+            color: #ff6b6b;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .price-regular {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .offer-timer, .auction-timer {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .auction-info {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .auction-current-bid {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .auction-timer {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .bid-input {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+            align-items: stretch;
+        }
+
+        .bid-input input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .bid-btn {
+            background: #fff;
+            color: #4ecdc4;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bid-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.05rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+        .btn-auction {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 25px;
+            max-width: 550px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            animation: fadeInScale 0.3s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: #aaa;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: bold;
+            color: #444;
+            font-size: 1.05rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #fcfcfc;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.3);
+        }
+
+        .modal-content .btn-primary, .modal-content .btn-secondary {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .modal-content p a {
+            font-weight: bold;
+        }
+
+        /* Cart Styles */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1.2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 0.6rem;
+            font-size: 1.1rem;
+        }
+
+        .cart-item-price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        .remove-item {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .remove-item:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            border-top: 2px solid #eee;
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .cart-summary-total {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+
+        /* Payment Methods Section */
+        .payment-methods {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .payment-methods .section-title {
+            color: #333;
+            margin: 0 0 2rem 0;
+            text-shadow: none;
+        }
+
+        .payment-method-single-btn {
+            padding: 18px 30px;
+            font-size: 1.3rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            display: inline-block;
+            background: linear-gradient(45deg, #00C853, #1DD1A1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-decoration: none;
+        }
+
+        .payment-method-single-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Auction Modal Styles */
+        .auction-modal-content {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .auction-modal-content h2 {
+            color: white;
+        }
+
+        .auction-form .form-group label {
+            color: white;
+        }
+
+        .auction-form .form-group input, .auction-form .form-group select {
+            background-color: rgba(255,255,255,0.9);
+            border-color: rgba(255,255,255,0.5);
+            color: #333;
+        }
+
+        .auction-form .form-group input::placeholder {
+            color: #666;
+        }
+
+        .auction-form .form-group input:focus, .auction-form .form-group select:focus {
+            border-color: white;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+        }
+
+        .time-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .time-option {
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .time-option:hover, .time-option.selected {
+            background: rgba(255,255,255,0.4);
+            border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 3.5rem 2rem 2.5rem;
+            margin-top: 4rem;
+            border-radius: 25px 25px 0 0;
+            box-shadow: 0 -5px 30px rgba(0,0,0,0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer h3 {
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .footer p {
+            color: #666;
+            margin-bottom: 0.7rem;
+            font-size: 1.05rem;
+        }
+
+        /* Loading animation for buttons */
+        .btn.loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+
+        .btn.loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 25px;
+            height: 25px;
+            border: 3px solid transparent;
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease-out, bottom 0.3s ease-out;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-toast.show {
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        /* Product Detail Section */
+        .product-detail {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            margin-bottom: 3rem;
+        }
+
+        .product-detail-carousel {
+            height: 500px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .product-detail-carousel .carousel-slide {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .product-detail-info {
+            text-align: center;
+        }
+
+        .product-detail-description {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin: 2rem auto;
+            max-width: 700px;
+            text-align: left;
+        }
+
+        .product-detail-price-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-detail-price-info .price-list {
+            font-size: 1.3rem;
+            color: #999;
+            text-decoration: line-through;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price-info .price-offer-display {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price-info .price-regular-display {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-detail-price-info .discount-tag {
+            background: #4ecdc4;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Gift Card and Coupon Card Section Styles */
+        #giftCardManagementSection, #couponCardManagementSection {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            margin-bottom: 3rem;
+        }
+
+        #giftCardManagementSection .header, #couponCardManagementSection .header {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        #giftCardManagementSection .header h1, #couponCardManagementSection .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: none;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #giftCardManagementSection .header p, #couponCardManagementSection .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            color: #555;
+        }
+
+        #giftCardManagementSection .main-content, #couponCardManagementSection .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        #giftCardManagementSection .gift-card-container, #couponCardManagementSection .coupon-card-container {
+            perspective: 1000px;
+            width: 100%;
+            /* Increased height for coupon card to accommodate 10 circles */
+            height: 300px; /* Adjusted from 250px */
+            margin-bottom: 20px;
+        }
+
+        #giftCardManagementSection .gift-card, #couponCardManagementSection .coupon-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        #giftCardManagementSection .gift-card:hover, #couponCardManagementSection .coupon-card:hover {
+            transform: rotateY(180deg);
+        }
+
+        #giftCardManagementSection .card-front, #giftCardManagementSection .card-back,
+        #couponCardManagementSection .card-front, #couponCardManagementSection .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            background-size: cover; /* Ensure background image covers the card */
+            background-position: center; /* Center the background image */
+        }
+
+        /* Base styles for card fronts - will be overridden by model-specific styles */
+        #giftCardManagementSection .card-front, #couponCardManagementSection .card-front {
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            /* Ensure text color and font family are applied directly */
+            color: var(--card-text-color, white);
+            font-family: var(--card-font-family, 'Inter', sans-serif);
+        }
+
+        #couponCardManagementSection .card-front {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute content vertically */
+            align-items: center; /* Center horizontally */
+            padding: 20px;
+            text-align: center;
+        }
+
+
+        #giftCardManagementSection .card-back, #couponCardManagementSection .card-back {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            transform: rotateY(180deg);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #giftCardManagementSection .logo-section, #couponCardManagementSection .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        #couponCardManagementSection .logo-section {
+            margin-bottom: 0; /* Adjust spacing for new layout */
+            width: 100%;
+            justify-content: center;
+        }
+
+        #giftCardManagementSection .logo-icon, #couponCardManagementSection .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        #giftCardManagementSection .logo-icon img, #couponCardManagementSection .logo-icon img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        #giftCardManagementSection .brand-name, #couponCardManagementSection .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        #giftCardManagementSection .gift-card-title, #couponCardManagementSection .coupon-card-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        #couponCardManagementSection .coupon-card-title {
+            font-size: 2.2em; /* Larger title */
+            font-weight: 800;
+            margin: 10px 0; /* Adjust margin */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            flex-grow: 1; /* Allow it to take available space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        #giftCardManagementSection .card-number, #couponCardManagementSection .card-number {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        #couponCardManagementSection .card-number {
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            margin-top: auto; /* Push to bottom */
+            background: none; /* Remove background for cleaner look */
+            padding: 0;
+            border-radius: 0;
+            opacity: 0.8;
+        }
+
+
+        #giftCardManagementSection .recipient-name, #couponCardManagementSection .recipient-name {
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        #couponCardManagementSection .recipient-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            background: none; /* Remove background for cleaner look */
+            padding: 0;
+            border-radius: 0;
+        }
+
+        #giftCardManagementSection .amount {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        #giftCardManagementSection .card-footer, #couponCardManagementSection .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        #couponCardManagementSection .card-footer {
+            width: 100%; /* Ensure footer spans full width */
+            justify-content: space-around; /* Distribute items evenly */
+            margin-top: 10px; /* Add some space from content above */
+            font-size: 0.9em;
+        }
+
+
+        #giftCardManagementSection .description, #couponCardManagementSection .description {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #couponCardManagementSection .coupon-details {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        /* New class for main content on coupon card front */
+        #couponCardManagementSection .coupon-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1; /* Allow it to take available space */
+            justify-content: center;
+            width: 100%;
+        }
+
+
+        #giftCardManagementSection .address, #couponCardManagementSection .address {
+            font-size: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        #giftCardManagementSection .qr-section, #couponCardManagementSection .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #giftCardManagementSection .qr-section img, #couponCardManagementSection .qr-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            background: white;
+            padding: 5px;
+        }
+
+        #giftCardManagementSection .qr-text, #couponCardManagementSection .qr-text {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        #giftCardManagementSection .decorative-elements, #couponCardManagementSection .decorative-elements {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        #giftCardManagementSection .form-section, #couponCardManagementSection .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        #giftCardManagementSection .form-section h3, #couponCardManagementSection .form-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #giftCardManagementSection .form-group, #couponCardManagementSection .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group.loading-overlay {
+            position: relative;
+        }
+
+        .form-group.loading-overlay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .form-group.loading-overlay .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 11;
+        }
+
+        #giftCardManagementSection .form-group label, #couponCardManagementSection .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        #giftCardManagementSection .form-group input, #giftCardManagementSection .form-group select,
+        #couponCardManagementSection .form-group input, #couponCardManagementSection .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        #giftCardManagementSection .form-group input:focus, #giftCardManagementSection .form-group select:focus,
+        #couponCardManagementSection .form-group input:focus, #couponCardManagementSection .form-group select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        #giftCardManagementSection .form-buttons, #couponCardManagementSection .form-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #giftCardManagementSection .btn, #couponCardManagementSection .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #giftCardManagementSection .btn:hover, #couponCardManagementSection .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        #giftCardManagementSection .btn-primary, #couponCardManagementSection .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+            color: white;
+        }
+
+        #giftCardManagementSection .btn-secondary, #couponCardManagementSection .btn-secondary {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+        }
+
+        #giftCardManagementSection .btn-success, #couponCardManagementSection .btn-success {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+            color: white;
+        }
+
+        #giftCardManagementSection .btn-danger, #couponCardManagementSection .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #e55353 100%);
+            color: white;
+        }
+
+        #giftCardManagementSection .btn-warning, #couponCardManagementSection .btn-warning {
+            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+            color: white;
+        }
+
+        #giftCardManagementSection .btn-info, #couponCardManagementSection .btn-info {
+            background: linear-gradient(135deg, #5bc0de 0%, #337ab7 100%);
+            color: white;
+        }
+
+        #giftCardManagementSection .history-section, #couponCardManagementSection .history-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        #giftCardManagementSection .history-section h3, #couponCardManagementSection .history-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #giftCardManagementSection .history-controls, #couponCardManagementSection .history-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #giftCardManagementSection .search-box, #couponCardManagementSection .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        #giftCardManagementSection .search-box input, #couponCardManagementSection .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        #giftCardManagementSection .filter-select, #couponCardManagementSection .filter-select {
+            min-width: 150px;
+        }
+
+        #giftCardManagementSection .history-table, #couponCardManagementSection .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #giftCardManagementSection .history-table th,
+        #giftCardManagementSection .history-table td,
+        #couponCardManagementSection .history-table th,
+        #couponCardManagementSection .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #giftCardManagementSection .history-table th,
+        #couponCardManagementSection .history-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        #giftCardManagementSection .history-table tr:hover,
+        #couponCardManagementSection .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        #giftCardManagementSection .status, #couponCardManagementSection .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        #giftCardManagementSection .status.active, #couponCardManagementSection .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        #giftCardManagementSection .status.used, #couponCardManagementSection .status.used {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        #giftCardManagementSection .status.redeemed, #couponCardManagementSection .status.redeemed {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        #giftCardManagementSection .action-buttons, #couponCardManagementSection .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        #giftCardManagementSection .action-btn, #couponCardManagementSection .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        #giftCardManagementSection .action-btn:hover, #couponCardManagementSection .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        #giftCardManagementSection .no-records, #couponCardManagementSection .no-records {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        /* Coupon Card Specific Styles */
+        #couponCardManagementSection .purchase-circles {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 columns for better spacing */
+            gap: 8px; /* Reduced gap */
+            margin: 15px auto; /* Center the grid */
+            width: 95%; /* Control width of the circles container */
+            max-width: 280px; /* Max width for larger screens */
+        }
+
+        #couponCardManagementSection .circle {
+            width: 40px; /* Slightly smaller circles */
+            height: 40px; /* Slightly smaller circles */
+            border: 2px solid currentColor; /* Border uses text color for better contrast */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em; /* Adjusted font size */
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255,255,255,0.2);
+            color: inherit; /* Inherit text color */
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        #couponCardManagementSection .circle.filled {
+            background: #28a745; /* Darker green for filled */
+            color: white; /* White text for filled circles */
+            border-color: #28a745; /* Border matches filled color */
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.5); /* Glowing effect */
+        }
+
+        .coupon-canje-indicator {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFFF00; /* Bright yellow for emphasis */
+            margin-top: 15px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            animation: pulse-canje 1.5s infinite alternate;
+        }
+
+        @keyframes pulse-canje {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* Circle control buttons */
+        .circle-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .circle-control-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .circle-control-btn:hover {
+            transform: scale(1.1);
+            background: #5a67d8;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            .nav-item {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            .brand-name {
+                font-size: 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            .section-title {
+                font-size: 2.2rem;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.5rem;
+            }
+            .product-card {
+                padding-bottom: 1rem;
+            }
+            .product-detail-carousel {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.8rem;
+            }
+            .nav-item {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            .cart-icon, .user-icon {
+                padding: 10px;
+                font-size: 1rem;
+            }
+            .cart-count {
+                width: 20px;
+                height: 20px;
+                font-size: 0.75rem;
+                top: -5px;
+                right: -5px;
+            }
+            .hero {
+                padding: 2rem 1rem;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .carousel-container {
+                height: 300px;
+            }
+            .carousel-slide {
+                font-size: 1.8rem;
+            }
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+                margin: 2.5rem 0 1.5rem;
+            }
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+                max-width: 95%;
+            }
+            .modal-content h2 {
+                font-size: 1.6rem;
+            }
+            .form-group label {
+                font-size: 1rem;
+            }
+            .form-group input, .form-group select {
+                padding: 10px;
+                font-size: 0.95rem;
+            }
+            .btn {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            .bid-input input {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .bid-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            .product-detail-carousel {
+                height: 300px;
+            }
+            .product-detail {
+                padding: 1.5rem;
+            }
+            .product-detail-description {
+                font-size: 1rem;
+            }
+            .payment-methods {
+                padding: 1.5rem;
+            }
+            .payment-method-single-btn {
+                font-size: 1.1rem;
+                padding: 15px 25px;
+            }
+
+            /* Gift Card and Coupon Card Section Responsive */
+            #giftCardManagementSection .main-content, #couponCardManagementSection .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            #giftCardManagementSection .form-buttons, #couponCardManagementSection .form-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            #giftCardManagementSection .history-controls, #couponCardManagementSection .history-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            #giftCardManagementSection .history-table, #couponCardManagementSection .history-table {
+                font-size: 12px;
+            }
+            
+            #giftCardManagementSection .action-buttons, #couponCardManagementSection .action-buttons {
+                flex-direction: column;
+            }
+
+            #couponCardManagementSection .purchase-circles {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            #couponCardManagementSection .coupon-card-container {
+                height: 280px; /* Adjusted for smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-menu {
+                gap: 0.5rem;
+            }
+            .nav-item {
+                font-size: 0.8rem;
+            }
+            .brand-name {
+                font-size: 1.2rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 0.9rem;
+            }
+            .carousel-container {
+                height: 250px;
+            }
+            .carousel-slide {
+                font-size: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .product-info {
+                padding: 1rem;
+            }
+            .product-name {
+                font-size: 1.1rem;
+            }
+            .price-offer, .price-regular {
+                font-size: 1.3rem;
+            }
+            .btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            .bid-input input {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            .bid-btn {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            .product-detail-carousel {
+                height: 200px;
+            }
+        }
+
+        /* Print-specific styles for the gift card */
+        @media print {
+            body > *:not(#print-area) {
+                display: none !important; /* Hide everything except the print area */
+            }
+
+            #print-area {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                padding: 0;
+                background: white; /* Ensure white background for printing */
+            }
+
+            #print-area .gift-card-container,
+            #print-area .coupon-card-container {
+                width: 90%; /* Adjust width for print */
+                max-width: 600px; /* Max width for print */
+                height: auto; /* Allow height to adjust */
+                margin: auto; /* Center the container */
+                perspective: none; /* Disable perspective for print */
+                box-shadow: none; /* Remove shadow for print */
+            }
+
+            #print-area .gift-card,
+            #print-area .coupon-card {
+                transform: none !important; /* Ensure no rotation */
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1.586 / 1; /* Maintain aspect ratio (credit card ratio) */
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Add a subtle shadow for definition */
+                border: 1px solid #ddd; /* Add a light border */
+            }
+
+            #print-area .card-back {
+                display: none !important; /* Hide the back of the card */
+            }
+
+            #print-area .decorative-elements {
+                display: none !important; /* Hide decorative elements */
+            }
+
+            #print-area .logo-section .logo-icon {
+                border: none !important;
+                background: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="logo-animation">
+            <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo" loading="lazy">
+        </div>
+        <div class="brand-text">Showroom +Roma</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo" loading="lazy">
+                </div>
+                <div class="brand-name">Showroom +Roma</div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item active-nav" onclick="window.showSection('home', this)">Inicio</li>
+                    <li class="nav-item" onclick="window.showSection('catalog', this)">Catálogo</li>
+                    <li class="nav-item" onclick="window.showSection('auctions', this)">Subastas</li>
+                    <li class="nav-item" onclick="window.showSection('payments', this)">Pagos</li>
+                    <li class="nav-item" onclick="window.showSection('giftCardManagement', this)">Gift Cards</li>
+                    <li class="nav-item" onclick="window.showSection('couponCardManagement', this)">Cuponera</li>
+                    <li class="cart-icon" onclick="window.toggleCart()">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </li>
+                    <li class="user-icon" onclick="window.toggleUserMenu()">👤</li>
+                </ul>
+            </nav>
+        </div>
+        <div style="text-align: center; margin-top: 10px; color: #555; font-size: 0.9rem;">
+            User ID: <span id="currentUserId">Cargando...</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="homeSection">
+                <div class="hero">
+                    <h1>Zapatillas únicas e importadas</h1>
+                    <p>Descubre nuestra exclusiva colección de zapatillas importadas con los mejores precios y ofertas especiales</p>
+                    <button class="btn btn-primary" onclick="window.showSection('catalog', document.querySelector('.nav-item[onclick*=\'catalog\']'))">Ver Catálogo</button>
+                </div>
+
+                <!-- Carousel -->
+                <div class="carousel-container">
+                    <div class="carousel" id="carousel">
+                        <div class="carousel-slide" style="background: linear-gradient(45deg, #ff6b6b, #ff8e53);">
+                            🔥 ¡OFERTAS ESPECIALES! Hasta 50% de descuento
+                        </div>
+                        <div class="carousel-slide" style="background: linear-gradient(45deg, #4ecdc4, #44a08d);">
+                            ⚡ SUBASTAS EN VIVO - Puja por tus favoritas
+                        </div>
+                        <div class="carousel-slide" style="background: linear-gradient(45deg, #667eea, #764ba2);">
+                            🚀 NUEVOS MODELOS - Recién llegados
+                        </div>
+                    </div>
+                    <button class="carousel-nav carousel-prev" onclick="window.prevSlide()">‹</button>
+                    <button class="carousel-nav carousel-next" onclick="window.nextSlide()">›</button>
+                </div>
+            </section>
+
+            <!-- Catalog Section -->
+            <section id="catalogSection" style="display: none;">
+                <h2 class="section-title">Nuestro Catálogo</h2>
+                <div class="product-grid" id="productGrid">
+                    <!-- Products will be generated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Auctions Section -->
+            <section id="auctionsSection" style="display: none;">
+                <h2 class="section-title">Subastas Activas</h2>
+                <button class="btn btn-auction" onclick="window.showModal('auctionModal')" style="margin-bottom: 1.5rem;">Crear Nueva Subasta</button>
+                <div class="product-grid" id="auctionGrid">
+                    <!-- Auction products will be generated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Payment Methods Section -->
+            <section id="paymentsSection" style="display: none;">
+                <div class="payment-methods">
+                    <h2 class="section-title" style="color: #333; margin: 0 0 2rem 0; text-shadow: none;">Métodos de Pago</h2>
+                    <p style="text-align: center; margin-bottom: 2rem; color: #666; font-size: 1.1rem;">
+                        Realiza tu pago de forma segura a través de Mercado Pago o por transferencia bancaria.
+                    </p>
+                    <!-- Botón de Mercado Pago -->
+                    <button class="payment-method-single-btn" onclick="window.openCheckoutInfoModal()">
+                        Pagar con Mercado Pago
+                    </button>
+                    <!-- Información de transferencia bancaria -->
+                    <div style="text-align: center; margin-top: 2rem; color: #333;">
+                        <p style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                            También puedes pagar por transferencia bancaria:
+                        </p>
+                        <p style="font-size: 1rem; color: #666;">
+                            <strong>Alias:</strong> Showroomasroma<br>
+                            <strong>CVU:</strong> 0000003100091982420429
+                        </p>
+                        <p style="font-size: 0.9rem; color: #ff6b6b; margin-top: 0.5rem;">
+                            Si usas transferencia, por favor envía la captura de pantalla del comprobante vía WhatsApp (+5491124689196).
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Detail Section -->
+            <section id="productDetailSection" style="display: none;">
+                <div class="container">
+                    <button class="btn btn-secondary" onclick="window.showSection('catalog', document.querySelector('.nav-item[onclick*=\'catalog\']'))" style="margin-bottom: 1.5rem;">← Volver al Catálogo</button>
+                    <div class="product-detail">
+                        <h2 class="section-title" id="productDetailName"></h2>
+                        <div class="carousel-container product-detail-carousel">
+                            <div class="carousel" id="productDetailCarousel"></div>
+                            <button class="carousel-nav carousel-prev" onclick="window.prevProductSlide()">‹</button>
+                            <button class="carousel-nav carousel-next" onclick="window.nextProductSlide()">›</button>
+                        </div>
+                        <div class="product-detail-info">
+                            <p id="productDetailDescription" class="product-detail-description"></p>
+                            <div class="product-detail-price-info">
+                                <span id="productDetailListPrice" class="price-list" style="display: none;"></span>
+                                <span id="productDetailOfferPrice" class="price-offer-display" style="display: none;"></span>
+                                <span id="productDetailRegularPrice" class="price-regular-display" style="display: none;"></span>
+                                <span id="productDetailDiscount" class="discount-tag" style="display: none;"></span>
+                            </div>
+                            <div id="productDetailTimer"></div>
+                            <div class="product-actions">
+                                <button class="btn btn-primary" id="productDetailAddToCart">Agregar al Carrito</button>
+                                <button class="btn btn-secondary" id="productDetailBuyNow" onclick="window.openCheckoutInfoModal()">Comprar Ahora</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gift Card Management Section -->
+            <section id="giftCardManagementSection" style="display: none;">
+                <div class="container">
+                    <div class="header">
+                        <h1>SHOWROOM +ROMA</h1>
+                        <p>Sistema de Gestión de Gift Cards</p>
+                    </div>
+
+                    <div class="main-content">
+                        <div class="card-preview">
+                            <div class="gift-card-container">
+                                <div class="gift-card" id="giftCard">
+                                    <div class="card-front">
+                                        <div class="decorative-elements"></div>
+                                        <div class="logo-section">
+                                            <div class="logo-icon">
+                                                <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo">
+                                            </div>
+                                            <div class="brand-name">SHOWROOM +ROMA</div>
+                                        </div>
+                                        
+                                        <div class="card-details">
+                                            <div class="gift-card-title">GIFT CARD</div>
+                                            <div class="card-number" id="cardNumber">XXXX-XXXX-XXXX</div>
+                                            <div class="recipient-name" id="recipientName">NOMBRE DEL DESTINATARIO</div>
+                                            <div class="amount" id="amount">$0</div>
+                                        </div>
+                                        
+                                        <div class="card-footer">
+                                            <span>Válida por 12 meses</span>
+                                            <span>Ropa Importada</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-back">
+                                        <div class="description">
+                                            <strong>¡Tu Gift Card SHOWROOM +ROMA!</strong><br>
+                                            Canjeable por ropa importada exclusiva. Válida en nuestro local físico. No acumulable con otras promociones.
+                                        </div>
+                                        
+                                        <div class="address">
+                                            📍 <strong>Dirección:</strong><br>
+                                            Av. Rivadavia 7055 Local 52<br>
+                                            Flores, Buenos Aires
+                                        </div>
+                                        
+                                        <div class="qr-section">
+                                            <img src="https://placehold.co/100x100?text=QR+Code" alt="WhatsApp QR Code">
+                                            <div class="qr-text">Escanea para ver nuestro catálogo en WhatsApp</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Crear Nueva Gift Card</h3>
+                            <div class="form-group">
+                                <label for="recipientInput">Nombre del destinatario:</label>
+                                <input type="text" id="recipientInput" placeholder="Ingresa el nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="amountInput">Monto:</label>
+                                <input type="number" id="amountInput" placeholder="Ingresa el monto" min="0" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="giftCardModel">Modelo de Tarjeta:</label>
+                                <select id="giftCardModel">
+                                    <!-- Options populated by JavaScript -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="giftCardBgColor">Color de Fondo:</label>
+                                <input type="color" id="giftCardBgColor" value="#ff6b6b">
+                            </div>
+                            <div class="form-group">
+                                <label for="giftCardTextColor">Color de Texto:</label>
+                                <input type="color" id="giftCardTextColor" value="#ffffff">
+                            </div>
+                            <div class="form-group">
+                                <label for="giftCardFontFamily">Fuente del Texto:</label>
+                                <select id="giftCardFontFamily">
+                                    <option value="Inter, sans-serif">Inter</option>
+                                    <option value="Roboto, sans-serif">Roboto</option>
+                                    <option value="Open Sans, sans-serif">Open Sans</option>
+                                    <option value="Lato, sans-serif">Lato</option>
+                                    <option value="Montserrat, sans-serif">Montserrat</option>
+                                </select>
+                            </div>
+                            <div class="form-buttons">
+                                <button class="btn btn-primary" onclick="window.generateGiftCard()">Crear Gift Card</button>
+                                <button class="btn btn-secondary" onclick="window.printCard()">Imprimir Tarjeta</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-section">
+                        <h3>Historial de Gift Cards</h3>
+                        <div class="history-controls">
+                            <div class="search-box">
+                                <input type="text" id="searchInput" placeholder="Buscar por nombre o número..." onkeyup="window.filterHistory()">
+                            </div>
+                            <select id="statusFilter" class="filter-select" onchange="window.filterHistory()">
+                                <option value="">Todos los estados</option>
+                                <option value="active">Activas</option>
+                                <option value="used">Usadas</option>
+                            </select>
+                        </div>
+                        
+                        <table class="history-table" id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Nombre</th>
+                                    <th>Monto</th>
+                                    <th>Creación</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Uso</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody">
+                                <tr>
+                                    <td colspan="7" class="no-records">No hay gift cards registradas</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Coupon Card Management Section -->
+            <section id="couponCardManagementSection" style="display: none;">
+                <div class="container">
+                    <div class="header">
+                        <h1>SHOWROOM +ROMA</h1>
+                        <p>Sistema de Gestión de Cuponera</p>
+                    </div>
+
+                    <div class="main-content">
+                        <div class="card-preview">
+                            <div class="coupon-card-container">
+                                <div class="coupon-card" id="couponCard">
+                                    <div class="card-front">
+                                        <div class="decorative-elements"></div>
+                                        <div class="logo-section">
+                                            <div class="logo-icon">
+                                                <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo">
+                                            </div>
+                                            <div class="brand-name">SHOWROOM +ROMA</div>
+                                        </div>
+                                        
+                                        <div class="coupon-main-content">
+                                            <div class="coupon-card-title">CUPONERA</div>
+                                            <div class="recipient-name" id="couponRecipientName">NOMBRE DEL DESTINATARIO</div>
+                                            
+                                            <!-- Purchase circles will be dynamically generated here -->
+                                            <div class="purchase-circles" id="couponPurchaseCircles"></div>
+
+                                            <div class="coupon-canje-indicator" id="couponCanjeIndicator" style="display: none;">
+                                                ¡CANJE DISPONIBLE!
+                                            </div>
+
+                                            <div class="card-number" id="couponCardNumber">XXXX-XXXX-XXXX</div>
+                                        </div>
+                                        
+                                        <div class="card-footer">
+                                            <span>Válida por 12 meses</span>
+                                            <span>Ropa Importada</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card-back">
+                                        <div class="description">
+                                            <strong>¡Tu Cuponera SHOWROOM +ROMA!</strong><br>
+                                            Registra tus compras en los círculos. Cada círculo debe ser de un día diferente.
+                                            <br><br>
+                                            <strong>¡Acumula compras y gana!</strong><br>
+                                            - 5 compras: 40% OFF en una prenda<br>
+                                            - 8 compras: 75% OFF en una prenda<br>
+                                            - 10 compras: 100% OFF en una prenda<br>
+                                            Válida por 1 año. Canje invalida la tarjeta.
+                                        </div>
+                                        
+                                        <div class="address">
+                                            📍 <strong>Dirección:</strong><br>
+                                            Av. Rivadavia 7055 Local 52<br>
+                                            Flores, Buenos Aires
+                                        </div>
+                                        
+                                        <div class="qr-section">
+                                            <img src="https://placehold.co/100x100?text=QR+Code" alt="WhatsApp QR Code">
+                                            <div class="qr-text">Escanea para ver nuestro catálogo en WhatsApp</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="circle-controls">
+                                <button class="circle-control-btn" onclick="window.removeCouponCircle()">-</button>
+                                <button class="circle-control-btn" onclick="window.addCouponCircle()">+</button>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Crear Nueva Cuponera</h3>
+                            <div class="form-group">
+                                <label for="couponRecipientInput">Nombre del destinatario:</label>
+                                <input type="text" id="couponRecipientInput" placeholder="Ingresa el nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="couponCardModel">Modelo de Tarjeta:</label>
+                                <select id="couponCardModel">
+                                    <!-- Options populated by JavaScript -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="couponCircleCount">Número de Círculos (1-10):</label>
+                                <input type="number" id="couponCircleCount" value="10" min="1" max="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="couponBgColor">Color de Fondo:</label>
+                                <input type="color" id="couponBgColor" value="#FF7F50">
+                            </div>
+                            <div class="form-group">
+                                <label for="couponTextColor">Color de Texto:</label>
+                                <input type="color" id="couponTextColor" value="#ffffff">
+                            </div>
+                            <div class="form-group">
+                                <label for="couponFontFamily">Fuente del Texto:</label>
+                                <select id="couponFontFamily">
+                                    <option value="Inter, sans-serif">Inter</option>
+                                    <option value="Roboto, sans-serif">Roboto</option>
+                                    <option value="Open Sans, sans-serif">Open Sans</option>
+                                    <option value="Lato, sans-serif">Lato</option>
+                                    <option value="Montserrat, sans-serif">Montserrat</option>
+                                </select>
+                            </div>
+                            <div class="form-buttons">
+                                <button class="btn btn-primary" onclick="window.generateCouponCard()">Crear Cuponera</button>
+                                <button class="btn btn-secondary" onclick="window.printCouponCard()">Imprimir Tarjeta</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="history-section">
+                        <h3>Historial de Cuponeras</h3>
+                        <div class="history-controls">
+                            <div class="search-box">
+                                <input type="text" id="couponSearchInput" placeholder="Buscar por nombre o número..." onkeyup="window.filterCouponHistory()">
+                            </div>
+                            <select id="couponStatusFilter" class="filter-select" onchange="window.filterCouponHistory()">
+                                <option value="">Todos los estados</option>
+                                <option value="active">Activas</option>
+                                <option value="redeemed">Canjeadas</option>
+                            </select>
+                        </div>
+                        
+                        <table class="history-table" id="couponHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Nombre</th>
+                                    <th>Compras</th>
+                                    <th>Círculos</th>
+                                    <th>Descuento Manual</th>
+                                    <th>Creación</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Canje</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="couponHistoryBody">
+                                <tr>
+                                    <td colspan="9" class="no-records">No hay cuponeras registradas</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Modals -->
+            <!-- Cart Modal -->
+            <div class="modal" id="cartModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('cartModal')">&times;</button>
+                    <h2>Tu Carrito</h2>
+                    <div id="cartItems"></div>
+                    <div class="cart-summary" id="cartSummary" style="display: none;">
+                        <div class="cart-summary-row">
+                            <span>Subtotal:</span>
+                            <span id="cartSubtotal">$0.00</span>
+                        </div>
+                        <div class="cart-summary-row">
+                            <span>Descuento:</span>
+                            <span id="cartDiscount">$0.00</span>
+                        </div>
+                        <div class="cart-summary-row">
+                            <span>Total:</span>
+                            <span id="cartTotal" class="cart-summary-total">$0.00</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="window.openCheckoutInfoModal()">Proceder al Pago</button>
+                    </div>
+                    <p id="emptyCartMessage">Tu carrito está vacío.</p>
+                </div>
+            </div>
+
+            <!-- Checkout Info Modal -->
+            <div class="modal" id="checkoutInfoModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('checkoutInfoModal')">&times;</button>
+                    <h2>Información de Pago</h2>
+                    <p>Por favor, completa tu compra a través de Mercado Pago o transferencia bancaria.</p>
+                    <p><strong>Alias:</strong> Showroomasroma</p>
+                    <p><strong>CVU:</strong> 0000003100091982420429</p>
+                    <p style="color: #ff6b6b; font-size: 0.9rem; margin-top: 1rem;">
+                        Si usas transferencia, envía la captura del comprobante vía WhatsApp (+5491124689196).
+                    </p>
+                    <div class="form-group">
+                        <label for="couponCardInput">Cuponera (Opcional):</label>
+                        <input type="text" id="couponCardInput" placeholder="Ingresa el número de la cuponera">
+                    </div>
+                    <button class="btn btn-primary" onclick="window.applyCouponCard()">Aplicar Cuponera</button>
+                    <button class="btn btn-secondary" onclick="window.closeModal('checkoutInfoModal')">Cerrar</button>
+                </div>
+            </div>
+
+            <!-- Auction Modal -->
+            <div class="modal" id="auctionModal">
+                <div class="modal-content auction-modal-content">
+                    <button class="modal-close" onclick="window.closeModal('auctionModal')">&times;</button>
+                    <h2>Crear Nueva Subasta</h2>
+                    <div class="auction-form">
+                        <div class="form-group">
+                            <label for="auctionProductName">Nombre del Producto:</label>
+                            <input type="text" id="auctionProductName" placeholder="Ingresa el nombre del producto">
+                        </div>
+                        <div class="form-group">
+                            <label for="auctionBasePrice">Precio Base:</label>
+                            <input type="number" id="auctionBasePrice" placeholder="Ingresa el precio base" min="0" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="auctionDuration">Duración de la Subasta:</label>
+                            <div class="time-selector" id="auctionDuration">
+                                <div class="time-option" data-value="24">24 horas</div>
+                                <div class="time-option" data-value="48">48 horas</div>
+                                <div class="time-option" data-value="72">72 horas</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="window.createAuction()">Crear Subasta</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Purchase Modal -->
+            <div class="modal" id="registerPurchaseModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('registerPurchaseModal')">&times;</button>
+                    <h2>Registrar Compra en Cuponera</h2>
+                    <div class="form-group">
+                        <label for="purchaseCardNumber">Número de Cuponera:</label>
+                        <input type="text" id="purchaseCardNumber" placeholder="Ingresa el número de la cuponera" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="purchaseDate">Fecha de Compra:</label>
+                        <input type="date" id="purchaseDate">
+                    </div>
+                    <button class="btn btn-primary" onclick="window.registerPurchase()">Registrar Compra</button>
+                </div>
+            </div>
+
+            <!-- Redeem Coupon Modal -->
+            <div class="modal" id="redeemCouponModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('redeeemCouponModal')">&times;</button>
+                    <h2>Canjear Cuponera</h2>
+                    <div class="form-group">
+                        <label for="redeemCardNumber">Número de Cuponera:</label>
+                        <input type="text" id="redeemCardNumber" placeholder="Ingresa el número de la cuponera" readonly>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.redeemCouponCard()">Canjear Descuento</button>
+                </div>
+            </div>
+
+            <!-- Modify Coupon Modal -->
+            <div class="modal" id="modifyCouponModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('modifyCouponModal')">&times;</button>
+                    <h2>Modificar Cuponera</h2>
+                    <input type="hidden" id="modifyCouponId">
+                    <div class="form-group">
+                        <label for="modifyCouponRecipientName">Nombre del destinatario:</label>
+                        <input type="text" id="modifyCouponRecipientName" placeholder="Nuevo nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponCardModel">Modelo de Tarjeta:</label>
+                        <select id="modifyCouponCardModel">
+                            <!-- Options populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponCircleCount">Número de Círculos (1-10):</label>
+                        <input type="number" id="modifyCouponCircleCount" min="1" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponPurchasesCount">Compras Registradas (0-10):</label>
+                        <input type="number" id="modifyCouponPurchasesCount" min="0" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponManualDiscount">Descuento Manual (%):</label>
+                        <input type="number" id="modifyCouponManualDiscount" min="0" max="100" placeholder="Ej: 25 (opcional)">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponBgColor">Color de Fondo:</label>
+                        <input type="color" id="modifyCouponBgColor">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponTextColor">Color de Texto:</label>
+                        <input type="color" id="modifyCouponTextColor">
+                    </div>
+                    <div class="form-group">
+                        <label for="modifyCouponFontFamily">Fuente del Texto:</label>
+                        <select id="modifyCouponFontFamily">
+                            <option value="Inter, sans-serif">Inter</option>
+                            <option value="Roboto, sans-serif">Roboto</option>
+                            <option value="Open Sans, sans-serif">Open Sans</option>
+                            <option value="Lato, sans-serif">Lato</option>
+                            <option value="Montserrat, sans-serif">Montserrat</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="window.saveModifiedCouponCard()">Guardar Cambios</button>
+                </div>
+            </div>
+
+            <!-- Manage Purchases Modal -->
+            <div class="modal" id="managePurchasesModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('managePurchasesModal')">&times;</button>
+                    <h2>Gestionar Compras de Cuponera</h2>
+                    <input type="hidden" id="managePurchasesCouponId">
+                    <p>Cuponera: <strong id="managePurchasesCardNumber"></strong></p>
+                    <div id="purchaseList">
+                        <!-- Purchase dates will be listed here -->
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="addPurchaseDate">Añadir Compra Manualmente:</label>
+                        <input type="date" id="addPurchaseDate">
+                        <button class="btn btn-primary" style="width: auto; margin-top: 10px;" onclick="window.addPurchaseManually()">Añadir Compra</button>
+                    </div>
+                    <button class="btn btn-secondary" onclick="window.closeModal('managePurchasesModal')">Cerrar</button>
+                </div>
+            </div>
+
+            <!-- Recharge Gift Card Modal -->
+            <div class="modal" id="rechargeModal">
+                <div class="modal-content">
+                    <button class="modal-close" onclick="window.closeModal('rechargeModal')">&times;</button>
+                    <h2>Recargar Gift Card</h2>
+                    <div class="form-group">
+                        <label for="rechargeCardNumber">Número de Tarjeta:</label>
+                        <input type="text" id="rechargeCardNumber" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rechargeCardName">Nombre del Destinatario:</label>
+                        <input type="text" id="rechargeCardName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rechargeCurrentAmount">Monto Actual:</label>
+                        <input type="text" id="rechargeCurrentAmount" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="rechargeAmount">Monto a Recargar:</label>
+                        <input type="number" id="rechargeAmount" placeholder="Ingresa el monto a recargar" min="1" step="1">
+                    </div>
+                    <button class="btn btn-primary" onclick="window.confirmRecharge()">Recargar</button>
+                </div>
+            </div>
+
+
+            <!-- Confirmation Modal (for replacing window.confirm) -->
+            <div id="confirmationModal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="window.closeModal('confirmationModal')">&times;</span>
+                    <h2 id="confirmationModalTitle">Confirmación</h2>
+                    <p id="confirmationModalMessage" style="text-align: center; margin-bottom: 20px;"></p>
+                    <div class="form-buttons">
+                        <button class="btn btn-danger" id="confirmActionBtn">Sí</button>
+                        <button class="btn btn-secondary" onclick="window.closeModal('confirmationModal')">No</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Toast -->
+            <div class="notification-toast" id="notificationToast">
+                <span id="notificationMessage"></span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Hidden Print Area -->
+    <div id="print-area" style="display: none;"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>Showroom +Roma</h3>
+            <p>📍 Av. Rivadavia 7055 Local 52, Flores, Buenos Aires</p>
+            <p>📞 Contacto: +5491124689196</p>
+            <p>✉️ Email: showroomasroma@gmail.com</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase variables
+        let app;
+        let db;
+        let auth;
+        let userId;
+        let isAuthReady = false;
+
+        // Global variables for data (will be populated from Firestore)
+        window.giftCards = [];
+        window.couponCards = [];
+        window.auctions = [];
+        window.cart = JSON.parse(localStorage.getItem('cart')) || []; // Cart still uses localStorage for simplicity
+
+        // Initialize Firebase
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Listen for auth state changes
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    document.getElementById('currentUserId').textContent = userId;
+                    isAuthReady = true;
+                    console.log("Firebase authenticated. User ID:", userId);
+                    // Load data after authentication
+                    window.loadGiftCards();
+                    window.initCouponCardSection();
+                    window.loadAuctions(); // Load auctions from Firestore
+                } else {
+                    console.log("No user signed in. Attempting anonymous sign-in.");
+                    userId = null; // Reset userId if no user
+                    document.getElementById('currentUserId').textContent = 'Anónimo';
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined') {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (error) {
+                        console.error("Error during anonymous sign-in:", error);
+                        window.showNotification("Error de autenticación. Algunas funciones pueden no estar disponibles.");
+                    }
+                }
+            });
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+            window.showNotification("Error al inicializar la aplicación. Intenta de nuevo más tarde.");
+        }
+
+        // Utility Functions
+        window.generateUUID = function() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        window.formatDate = function(date) {
+            const d = new Date(date);
+            return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        window.showNotification = function(message, duration = 3000) {
+            const toast = document.getElementById('notificationToast');
+            const messageElement = document.getElementById('notificationMessage');
+            messageElement.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        window.showLoading = function(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.add('loading-overlay');
+                element.insertAdjacentHTML('beforeend', '<div class="spinner"></div>');
+            }
+        }
+
+        window.hideLoading = function(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.remove('loading-overlay');
+                const spinner = element.querySelector('.spinner');
+                if (spinner) {
+                    spinner.remove();
+                }
+            }
+        }
+
+        // Modal Functions
+        window.showModal = function(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // --- Card Model Definitions ---
+        const couponCardModels = {
+            'model-classic': { name: 'Clásico', background: 'linear-gradient(135deg, #FF7F50 0%, #FF6347 100%)', backgroundUrl: '' },
+            'model-ocean': { name: 'Océano', background: 'linear-gradient(135deg, #4ECDC4 0%, #49A09D 100%)', backgroundUrl: '' },
+            'model-sunset': { name: 'Atardecer', background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', backgroundUrl: '' },
+            'model-forest': { name: 'Bosque', background: 'linear-gradient(135deg, #32CD32 0%, #228B22 100%)', backgroundUrl: '' },
+            'model-galaxy': { name: 'Galaxia', background: 'linear-gradient(135deg, #4B0082 0%, #8A2BE2 100%)', backgroundUrl: '' }
+        };
+
+        const giftCardModels = {
+            'model-classic': { name: 'Clásico', background: 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%)', backgroundUrl: '' },
+            'model-elegant': { name: 'Elegante', background: 'linear-gradient(135deg, #5A2D82 0%, #825CD0 100%)', backgroundUrl: '' },
+            'model-modern': { name: 'Moderno', background: 'linear-gradient(135deg, #00BFFF 0%, #1E90FF 100%)', backgroundUrl: '' },
+            'model-marble': { name: 'Mármol', background: 'linear-gradient(135deg, #C0C0C0 0%, #A9A9A9 100%)', backgroundUrl: '' },
+            'model-gold': { name: 'Oro', background: 'linear-gradient(135deg, #FFD700 0%, #DAA520 100%)', backgroundUrl: '' }
+        };
+
+        // Populate model dropdowns
+        window.populateModelDropdowns = function() {
+            const couponModelSelect = document.getElementById('couponCardModel');
+            const modifyCouponModelSelect = document.getElementById('modifyCouponCardModel');
+            const giftModelSelect = document.getElementById('giftCardModel');
+
+            // Clear existing options
+            couponModelSelect.innerHTML = '';
+            modifyCouponModelSelect.innerHTML = '';
+            giftModelSelect.innerHTML = '';
+
+            for (const key in couponCardModels) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = couponCardModels[key].name;
+                couponModelSelect.appendChild(option);
+
+                const modifyOption = document.createElement('option');
+                modifyOption.value = key;
+                modifyOption.textContent = couponCardModels[key].name;
+                modifyCouponModelSelect.appendChild(modifyOption);
+            }
+
+            for (const key in giftCardModels) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = giftCardModels[key].name;
+                giftModelSelect.appendChild(option);
+            }
+        }
+
+
+        // Coupon Card Management
+        let currentCouponCardPreview = null; // Holds the data for the card currently displayed in the preview
+
+        window.generateCouponCard = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('couponCardManagementSection');
+
+            const recipientInput = document.getElementById('couponRecipientInput');
+            const couponCardModelSelect = document.getElementById('couponCardModel');
+            const couponCircleCountInput = document.getElementById('couponCircleCount');
+            const couponBgColorInput = document.getElementById('couponBgColor');
+            const couponTextColorInput = document.getElementById('couponTextColor');
+            const couponFontFamilySelect = document.getElementById('couponFontFamily');
+
+            const recipient = recipientInput.value.trim();
+            const model = couponCardModelSelect.value;
+            const circleCount = parseInt(couponCircleCountInput.value);
+            const bgColor = couponBgColorInput.value;
+            const textColor = couponTextColorInput.value;
+            const fontFamily = couponFontFamilySelect.value;
+
+            if (!recipient) {
+                window.showNotification('Por favor, ingresa el nombre del destinatario.');
+                window.hideLoading('couponCardManagementSection');
+                return;
+            }
+            if (isNaN(circleCount) || circleCount < 1 || circleCount > 10) {
+                window.showNotification('El número de círculos debe estar entre 1 y 10.');
+                window.hideLoading('couponCardManagementSection');
+                return;
+            }
+
+            const cardNumber = window.generateUUID().slice(0, 14).replace(/-/g, '').match(/.{1,4}/g).join('-');
+            const newCard = {
+                number: cardNumber,
+                recipient: recipient,
+                purchases: [], // Stores ISO date strings
+                status: 'active',
+                createdAt: new Date().toISOString(),
+                redeemedAt: null,
+                model: model,
+                circleCount: circleCount,
+                bgColor: bgColor,
+                textColor: textColor,
+                fontFamily: fontFamily,
+                manualDiscount: null // New field for manual discount
+            };
+
+            try {
+                const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/couponCards`), newCard);
+                newCard.id = docRef.id; // Add Firestore ID to the local object
+                window.couponCards.push(newCard); // Add to local array for immediate preview
+                window.updateCouponCardPreview(newCard);
+                window.updateCouponHistory(); // Update history table (will be refreshed by onSnapshot)
+                document.getElementById('couponRecipientInput').value = '';
+                document.getElementById('couponCircleCount').value = 10;
+                document.getElementById('couponBgColor').value = '#FF7F50';
+                document.getElementById('couponTextColor').value = '#ffffff';
+                document.getElementById('couponFontFamily').value = 'Inter, sans-serif';
+                window.showNotification('Cuponera creada exitosamente.');
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                window.showNotification('Error al crear la cuponera.');
+            } finally {
+                window.hideLoading('couponCardManagementSection');
+            }
+        }
+
+
+        window.updateCouponCardPreview = function(card) {
+            const couponCardElement = document.getElementById('couponCard');
+            const cardFront = couponCardElement.querySelector('.card-front');
+            
+            cardFront.style.background = '';
+            cardFront.style.backgroundImage = '';
+            cardFront.style.backgroundColor = '';
+            cardFront.style.color = '';
+            cardFront.style.fontFamily = '';
+
+            if (card.bgColor) {
+                cardFront.style.backgroundColor = card.bgColor;
+            } else {
+                const selectedModel = couponCardModels[card.model] || couponCardModels['model-classic'];
+                cardFront.style.background = selectedModel.background;
+            }
+
+            cardFront.style.color = card.textColor || 'white';
+            cardFront.style.fontFamily = card.fontFamily || 'Inter, sans-serif';
+
+            document.getElementById('couponCardNumber').textContent = card.number;
+            document.getElementById('couponRecipientName').textContent = card.recipient.toUpperCase();
+
+            const circlesContainer = document.getElementById('couponPurchaseCircles');
+            circlesContainer.innerHTML = '';
+            for (let i = 1; i <= card.circleCount; i++) {
+                const circle = document.createElement('div');
+                circle.classList.add('circle');
+                circle.textContent = i;
+                if (i <= card.purchases.length) {
+                    circle.classList.add('filled');
+                }
+                circlesContainer.appendChild(circle);
+            }
+
+            const canjeIndicator = document.getElementById('couponCanjeIndicator');
+            const purchaseCount = card.purchases.length;
+            // Show canje indicator if manual discount is set OR if purchase count meets thresholds
+            if (card.status === 'active' && (card.manualDiscount !== null || purchaseCount >= 5 || purchaseCount >= 8 || purchaseCount >= 10)) {
+                canjeIndicator.style.display = 'block';
+            } else {
+                canjeIndicator.style.display = 'none';
+            }
+            currentCouponCardPreview = card;
+        }
+
+        window.addCouponCircle = async function() {
+            if (!currentCouponCardPreview) {
+                window.showNotification('Por favor, selecciona o crea una cuponera primero.');
+                return;
+            }
+            if (currentCouponCardPreview.circleCount < 10) {
+                currentCouponCardPreview.circleCount++;
+                try {
+                    await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, currentCouponCardPreview.id), currentCouponCardPreview);
+                    window.showNotification('Círculo añadido.');
+                } catch (e) {
+                    console.error("Error updating document: ", e);
+                    window.showNotification('Error al añadir el círculo.');
+                }
+            } else {
+                window.showNotification('Máximo de 10 círculos alcanzado.');
+            }
+        }
+
+        window.removeCouponCircle = async function() {
+            if (!currentCouponCardPreview) {
+                window.showNotification('Por favor, selecciona o crea una cuponera primero.');
+                return;
+            }
+            if (currentCouponCardPreview.circleCount > 1) {
+                currentCouponCardPreview.circleCount--;
+                if (currentCouponCardPreview.purchases.length > currentCouponCardPreview.circleCount) {
+                    currentCouponCardPreview.purchases.pop();
+                }
+                try {
+                    await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, currentCouponCardPreview.id), currentCouponCardPreview);
+                    window.showNotification('Círculo eliminado.');
+                } catch (e) {
+                    console.error("Error updating document: ", e);
+                    window.showNotification('Error al eliminar el círculo.');
+                }
+            } else {
+                window.showNotification('Mínimo de 1 círculo.');
+            }
+        }
+
+        window.updateCouponHistory = function() {
+            const tbody = document.getElementById('couponHistoryBody');
+            tbody.innerHTML = '';
+            const filteredCards = window.filterCouponCards();
+            if (filteredCards.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-records">No hay cuponeras registradas</td></tr>';
+                return;
+            }
+
+            filteredCards.forEach(card => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${card.number}</td>
+                    <td>${card.recipient}</td>
+                    <td>${card.purchases.length}/${card.circleCount}</td>
+                    <td>${card.circleCount}</td>
+                    <td>${card.manualDiscount !== null ? card.manualDiscount + '%' : '-'}</td>
+                    <td>${window.formatDate(new Date(card.createdAt))}</td>
+                    <td><span class="status ${card.status}">${card.status === 'active' ? 'Activa' : 'Canjeada'}</span></td>
+                    <td>${card.redeemedAt ? window.formatDate(new Date(card.redeemedAt)) : '-'}</td>
+                    <td class="action-buttons">
+                        <button class="action-btn btn-primary" onclick="window.showModal('registerPurchaseModal'); document.getElementById('purchaseCardNumber').value = '${card.number}'">Registrar Compra</button>
+                        <button class="action-btn btn-warning" onclick="window.showModal('redeemCouponModal'); document.getElementById('redeemCardNumber').value = '${card.number}'">Canjear</button>
+                        <button class="action-btn btn-secondary" onclick="window.editCouponCard('${card.id}')">Modificar</button>
+                        <button class="action-btn btn-info" onclick="window.managePurchases('${card.id}')">Gestionar Compras</button>
+                        <button class="action-btn btn-danger" onclick="window.deleteCouponCard('${card.id}')">Eliminar</button>
+                    </td>
+                `;
+                row.onclick = () => window.updateCouponCardPreview(card);
+                tbody.appendChild(row);
+            });
+        }
+
+        window.filterCouponCards = function() {
+            const searchInput = document.getElementById('couponSearchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('couponStatusFilter').value;
+
+            return window.couponCards.filter(card => {
+                const matchesSearch = !searchInput ||
+                    card.recipient.toLowerCase().includes(searchInput) ||
+                    card.number.toLowerCase().includes(searchInput);
+                const matchesStatus = !statusFilter || card.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+        }
+
+        window.filterCouponHistory = function() {
+            window.updateCouponHistory();
+        }
+
+        window.registerPurchase = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('registerPurchaseModal');
+            const cardNumber = document.getElementById('purchaseCardNumber').value.trim();
+            const purchaseDateInput = document.getElementById('purchaseDate').value;
+            if (!cardNumber || !purchaseDateInput) {
+                window.showNotification('Por favor, completa todos los campos.');
+                window.hideLoading('registerPurchaseModal');
+                return;
+            }
+
+            const purchaseDate = new Date(purchaseDateInput);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            purchaseDate.setHours(0, 0, 0, 0);
+
+            if (purchaseDate > today) {
+                window.showNotification('La fecha de compra no puede ser futura.');
+                window.hideLoading('registerPurchaseModal');
+                return;
+            }
+
+            const card = window.couponCards.find(c => c.number === cardNumber && c.status === 'active');
+            if (!card) {
+                window.showNotification('Cuponera no encontrada o ya canjeada.');
+                window.hideLoading('registerPurchaseModal');
+                return;
+            }
+
+            if (card.purchases.length >= card.circleCount) {
+                window.showNotification(`La cuponera ya tiene el máximo de compras (${card.circleCount}).`);
+                window.hideLoading('registerPurchaseModal');
+                return;
+            }
+
+            const existingPurchase = card.purchases.find(p => {
+                const pDate = new Date(p);
+                pDate.setHours(0, 0, 0, 0);
+                return pDate.getTime() === purchaseDate.getTime();
+            });
+
+            if (existingPurchase) {
+                window.showNotification('Ya se registró una compra en esta fecha para esta cuponera.');
+                window.hideLoading('registerPurchaseModal');
+                return;
+            }
+
+            card.purchases.push(purchaseDate.toISOString());
+            try {
+                await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
+                window.closeModal('registerPurchaseModal');
+                window.showNotification('Compra registrada exitosamente.');
+            } catch (e) {
+                console.error("Error updating document: ", e);
+                window.showNotification('Error al registrar la compra.');
+            } finally {
+                window.hideLoading('registerPurchaseModal');
+            }
+        }
+
+        window.redeemCouponCard = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('redeemCouponModal');
+            const cardNumber = document.getElementById('redeemCardNumber').value.trim();
+            const card = window.couponCards.find(c => c.number === cardNumber && c.status === 'active');
+            if (!card) {
+                window.showNotification('Cuponera no encontrada o ya canjeada.');
+                window.hideLoading('redeemCouponModal');
+                return;
+            }
+
+            let discount = card.manualDiscount;
+            if (discount === null) { // If no manual discount, calculate based on purchases
+                const purchaseCount = card.purchases.length;
+                if (purchaseCount >= 5) discount = 40;
+                if (purchaseCount >= 8) discount = 75;
+                if (purchaseCount >= 10) discount = 100;
+            }
+
+            if (discount === null || discount === 0) {
+                window.showNotification('La cuponera no tiene suficientes compras o un descuento manual para canjear.');
+                window.hideLoading('redeemCouponModal');
+                return;
+            }
+
+            window.showConfirmationModal(`¿Estás seguro de que deseas canjear esta cuponera por un ${discount}% de descuento? Esto la invalidará.`, async (confirmed) => {
+                if (confirmed) {
+                    card.status = 'redeemed';
+                    card.redeemedAt = new Date().toISOString();
+                    try {
+                        await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
+                        window.closeModal('redeemCouponModal');
+                        window.showNotification(`Cuponera canjeada: ${discount}% de descuento aplicado.`);
+                    } catch (e) {
+                        console.error("Error updating document: ", e);
+                        window.showNotification('Error al canjear la cuponera.');
+                    } finally {
+                        window.hideLoading('redeemCouponModal');
+                    }
+                } else {
+                    window.hideLoading('redeemCouponModal');
+                }
+            });
+        }
+
+        window.applyCouponCard = function() {
+            const cardNumber = document.getElementById('couponCardInput').value.trim();
+            const card = window.couponCards.find(c => c.number === cardNumber && c.status === 'active');
+            if (!card) {
+                window.showNotification('Cuponera no encontrada o ya canjeada.');
+                return;
+            }
+
+            let discountPercentage = card.manualDiscount;
+            if (discountPercentage === null) { // If no manual discount, calculate based on purchases
+                const purchaseCount = card.purchases.length;
+                if (purchaseCount >= 5) discountPercentage = 40;
+                if (purchaseCount >= 8) discountPercentage = 75;
+                if (purchaseCount >= 10) discountPercentage = 100;
+            }
+
+            if (discountPercentage === null || discountPercentage === 0) {
+                window.showNotification('La cuponera no tiene suficientes compras o un descuento manual para aplicar.');
+                return;
+            }
+
+            const cartTotalElement = document.getElementById('cartTotal');
+            const cartSubtotalElement = document.getElementById('cartSubtotal');
+            const cartDiscountElement = document.getElementById('cartDiscount');
+
+            let currentSubtotal = parseFloat(cartSubtotalElement.textContent.replace('$', '')) || 0;
+            let appliedDiscount = currentSubtotal * (discountPercentage / 100);
+            let finalTotal = currentSubtotal - appliedDiscount;
+
+            cartDiscountElement.textContent = `-$${appliedDiscount.toFixed(2)}`;
+            cartTotalElement.textContent = `$${finalTotal.toFixed(2)}`;
+            window.showNotification(`Descuento de ${discountPercentage}% aplicado al carrito.`);
+        }
+
+        window.printCouponCard = function() {
+            let cardToPrint = currentCouponCardPreview;
+
+            if (!cardToPrint) {
+                window.showNotification('No hay una cuponera seleccionada o creada para imprimir.');
+                return;
+            }
+            
+            window.updateCouponCardPreview(cardToPrint);
+
+            const couponCardElement = document.getElementById('couponCard');
+            const printArea = document.getElementById('print-area');
+            const clonedCard = couponCardElement.cloneNode(true);
+
+            clonedCard.style.transform = 'none';
+            const cardBack = clonedCard.querySelector('.card-back');
+            if (cardBack) {
+                cardBack.style.display = 'none';
+            }
+
+            printArea.innerHTML = '';
+            printArea.appendChild(clonedCard);
+
+            window.print();
+
+            setTimeout(() => {
+                printArea.innerHTML = '';
+            }, 1000);
+        }
+
+        window.editCouponCard = function(cardId) {
+            const card = window.couponCards.find(c => c.id === cardId);
+            if (card) {
+                document.getElementById('modifyCouponId').value = card.id;
+                document.getElementById('modifyCouponRecipientName').value = card.recipient;
+                document.getElementById('modifyCouponCardModel').value = card.model || 'model-classic';
+                document.getElementById('modifyCouponCircleCount').value = card.circleCount || 10;
+                document.getElementById('modifyCouponPurchasesCount').value = card.purchases.length;
+                document.getElementById('modifyCouponManualDiscount').value = card.manualDiscount !== null ? card.manualDiscount : '';
+                document.getElementById('modifyCouponBgColor').value = card.bgColor || '#FF7F50';
+                document.getElementById('modifyCouponTextColor').value = card.textColor || '#ffffff';
+                document.getElementById('modifyCouponFontFamily').value = card.fontFamily || 'Inter, sans-serif';
+                window.showModal('modifyCouponModal');
+            } else {
+                window.showNotification('Cuponera no encontrada.');
+            }
+        }
+
+        window.saveModifiedCouponCard = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('modifyCouponModal');
+            const cardId = document.getElementById('modifyCouponId').value;
+            const newRecipientName = document.getElementById('modifyCouponRecipientName').value.trim();
+            const newModel = document.getElementById('modifyCouponCardModel').value;
+            const newCircleCount = parseInt(document.getElementById('modifyCouponCircleCount').value);
+            const newPurchasesCount = parseInt(document.getElementById('modifyCouponPurchasesCount').value);
+            const newManualDiscount = document.getElementById('modifyCouponManualDiscount').value.trim();
+            const newBgColor = document.getElementById('modifyCouponBgColor').value;
+            const newTextColor = document.getElementById('modifyCouponTextColor').value;
+            const newFontFamily = document.getElementById('modifyCouponFontFamily').value;
+
+            if (!newRecipientName) {
+                window.showNotification('El nombre del destinatario no puede estar vacío.');
+                window.hideLoading('modifyCouponModal');
+                return;
+            }
+            if (isNaN(newCircleCount) || newCircleCount < 1 || newCircleCount > 10) {
+                window.showNotification('El número de círculos debe estar entre 1 y 10.');
+                window.hideLoading('modifyCouponModal');
+                return;
+            }
+            if (isNaN(newPurchasesCount) || newPurchasesCount < 0 || newPurchasesCount > newCircleCount) {
+                window.showNotification(`Las compras registradas deben estar entre 0 y ${newCircleCount}.`);
+                window.hideLoading('modifyCouponModal');
+                return;
+            }
+            const parsedManualDiscount = newManualDiscount === '' ? null : parseInt(newManualDiscount);
+            if (parsedManualDiscount !== null && (isNaN(parsedManualDiscount) || parsedManualDiscount < 0 || parsedManualDiscount > 100)) {
+                window.showNotification('El descuento manual debe ser un número entre 0 y 100.');
+                window.hideLoading('modifyCouponModal');
+                return;
+            }
+
+            const cardIndex = window.couponCards.findIndex(c => c.id === cardId);
+            if (cardIndex === -1) {
+                window.showNotification('Error al modificar la cuponera.');
+                window.hideLoading('modifyCouponModal');
+                return;
+            }
+
+            const currentCard = window.couponCards[cardIndex];
+
+            let updatedPurchases = [...currentCard.purchases];
+            while (updatedPurchases.length < newPurchasesCount) {
+                updatedPurchases.push(new Date().toISOString());
+            }
+            while (updatedPurchases.length > newPurchasesCount) {
+                updatedPurchases.pop();
+            }
+
+            currentCard.recipient = newRecipientName;
+            currentCard.model = newModel;
+            currentCard.circleCount = newCircleCount;
+            currentCard.purchases = updatedPurchases;
+            currentCard.manualDiscount = parsedManualDiscount;
+            currentCard.bgColor = newBgColor;
+            currentCard.textColor = newTextColor;
+            currentCard.fontFamily = newFontFamily;
+
+            try {
+                await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, cardId), currentCard);
+                window.closeModal('modifyCouponModal');
+                window.showNotification('Cuponera modificada exitosamente.');
+            } catch (e) {
+                console.error("Error updating document: ", e);
+                window.showNotification('Error al guardar los cambios.');
+            } finally {
+                window.hideLoading('modifyCouponModal');
+            }
+        }
+
+        window.deleteCouponCard = async function(cardId) {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showConfirmationModal('¿Estás seguro de que deseas eliminar esta cuponera? Esta acción no se puede deshacer.', async (confirmed) => {
+                if (confirmed) {
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, cardId));
+                        window.showNotification('Cuponera eliminada.');
+                        if (currentCouponCardPreview && currentCouponCardPreview.id === cardId) {
+                            if (window.couponCards.length > 0) {
+                                window.updateCouponCardPreview(window.couponCards[window.couponCards.length - 1]);
+                            } else {
+                                window.updateCouponCardPreview({
+                                    number: 'XXXX-XXXX-XXXX',
+                                    recipient: 'NOMBRE DEL DESTINATARIO',
+                                    purchases: [],
+                                    model: 'model-classic',
+                                    circleCount: 10,
+                                    bgColor: '#FF7F50',
+                                    textColor: '#ffffff',
+                                    fontFamily: 'Inter, sans-serif',
+                                    manualDiscount: null
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Error removing document: ", e);
+                        window.showNotification('Error al eliminar la cuponera.');
+                    }
+                }
+            });
+        }
+
+        window.managePurchases = function(cardId) {
+            const card = window.couponCards.find(c => c.id === cardId);
+            if (!card) {
+                window.showNotification('Cuponera no encontrada.');
+                return;
+            }
+
+            document.getElementById('managePurchasesCouponId').value = card.id;
+            document.getElementById('managePurchasesCardNumber').textContent = card.number;
+            const purchaseList = document.getElementById('purchaseList');
+            purchaseList.innerHTML = '';
+
+            if (card.purchases.length === 0) {
+                purchaseList.innerHTML = '<p style="text-align: center; color: #666;">No hay compras registradas para esta cuponera.</p>';
+            } else {
+                card.purchases.sort((a, b) => new Date(a) - new Date(b));
+                card.purchases.forEach((purchaseDateISO, index) => {
+                    const date = new Date(purchaseDateISO);
+                    const listItem = document.createElement('div');
+                    listItem.style.display = 'flex';
+                    listItem.style.justifyContent = 'space-between';
+                    listItem.style.alignItems = 'center';
+                    listItem.style.padding = '8px 0';
+                    listItem.style.borderBottom = '1px dashed #eee';
+                    listItem.innerHTML = `
+                        <span>Compra ${index + 1}: ${window.formatDate(date)}</span>
+                        <button class="action-btn btn-danger" onclick="window.removePurchase('${card.id}', '${purchaseDateISO}')">Eliminar</button>
+                    `;
+                    purchaseList.appendChild(listItem);
+                });
+            }
+            window.showModal('managePurchasesModal');
+        }
+
+        window.addPurchaseManually = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('managePurchasesModal');
+            const cardId = document.getElementById('managePurchasesCouponId').value;
+            const purchaseDateInput = document.getElementById('addPurchaseDate').value;
+
+            if (!purchaseDateInput) {
+                window.showNotification('Por favor, selecciona una fecha para la compra.');
+                window.hideLoading('managePurchasesModal');
+                return;
+            }
+
+            const purchaseDate = new Date(purchaseDateInput);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            purchaseDate.setHours(0, 0, 0, 0);
+
+            if (purchaseDate > today) {
+                window.showNotification('La fecha de compra no puede ser futura.');
+                window.hideLoading('managePurchasesModal');
+                return;
+            }
+
+            const card = window.couponCards.find(c => c.id === cardId);
+            if (!card) {
+                window.showNotification('Cuponera no encontrada.');
+                window.hideLoading('managePurchasesModal');
+                return;
+            }
+
+            if (card.purchases.length >= card.circleCount) {
+                window.showNotification(`La cuponera ya tiene el máximo de compras (${card.circleCount}).`);
+                window.hideLoading('managePurchasesModal');
+                return;
+            }
+
+            const existingPurchase = card.purchases.find(p => {
+                const pDate = new Date(p);
+                pDate.setHours(0, 0, 0, 0);
+                return pDate.getTime() === purchaseDate.getTime();
+            });
+
+            if (existingPurchase) {
+                window.showNotification('Ya se registró una compra en esta fecha para esta cuponera.');
+                window.hideLoading('managePurchasesModal');
+                return;
+            }
+
+            card.purchases.push(purchaseDate.toISOString());
+            try {
+                await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
+                window.showNotification('Compra añadida exitosamente.');
+                window.managePurchases(cardId);
+                document.getElementById('addPurchaseDate').value = '';
+            } catch (e) {
+                console.error("Error adding purchase: ", e);
+                window.showNotification('Error al añadir la compra.');
+            } finally {
+                window.hideLoading('managePurchasesModal');
+            }
+        }
+
+
+        window.removePurchase = async function(cardId, purchaseDateISO) {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showConfirmationModal('¿Estás seguro de que deseas eliminar esta compra?', async (confirmed) => {
+                if (confirmed) {
+                    window.showLoading('managePurchasesModal');
+                    const card = window.couponCards.find(c => c.id === cardId);
+                    if (card) {
+                        card.purchases = card.purchases.filter(p => p !== purchaseDateISO);
+                        try {
+                            await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
+                            window.showNotification('Compra eliminada exitosamente.');
+                            window.managePurchases(cardId);
+                        } catch (e) {
+                            console.error("Error removing purchase: ", e);
+                            window.showNotification('Error al eliminar la compra.');
+                        } finally {
+                            window.hideLoading('managePurchasesModal');
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // Initialize Coupon Card Section
+        window.initCouponCardSection = function() {
+            if (!isAuthReady) return;
+            window.showLoading('couponCardManagementSection');
+            const q = query(collection(db, `artifacts/${appId}/users/${userId}/couponCards`));
+            onSnapshot(q, (snapshot) => {
+                window.couponCards = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                if (window.couponCards.length > 0) {
+                    window.updateCouponCardPreview(window.couponCards[window.couponCards.length - 1]);
+                } else {
+                    window.updateCouponCardPreview({
+                        number: 'XXXX-XXXX-XXXX',
+                        recipient: 'NOMBRE DEL DESTINATARIO',
+                        purchases: [],
+                        model: 'model-classic',
+                        circleCount: 10,
+                        bgColor: '#FF7F50',
+                        textColor: '#ffffff',
+                        fontFamily: 'Inter, sans-serif',
+                        manualDiscount: null
+                    });
+                }
+                window.updateCouponHistory();
+                window.hideLoading('couponCardManagementSection');
+            }, (error) => {
+                console.error("Error getting coupon cards: ", error);
+                window.showNotification("Error al cargar las cuponeras.");
+                window.hideLoading('couponCardManagementSection');
+            });
+        }
+
+        // Cart Functions
+        window.toggleCart = function() {
+            window.showModal('cartModal');
+            window.updateCart();
+        }
+
+        window.updateCart = function() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const emptyCartMessage = document.getElementById('emptyCartMessage');
+            const cartCount = document.getElementById('cartCount');
+            cartItems.innerHTML = '';
+
+            if (window.cart.length === 0) {
+                emptyCartMessage.style.display = 'block';
+                cartSummary.style.display = 'none';
+                cartCount.textContent = '0';
+                return;
+            }
+
+            emptyCartMessage.style.display = 'none';
+            cartSummary.style.display = 'block';
+
+            let subtotal = 0;
+            window.cart.forEach((item, index) => {
+                const price = item.offerPrice || item.regularPrice;
+                const itemTotal = price * item.quantity;
+                subtotal += itemTotal;
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">$${itemTotal.toFixed(2)}</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="window.updateQuantity(${index}, -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="quantity-btn" onclick="window.updateQuantity(${index}, 1)">+</button>
+                        </div>
+                        <button class="remove-item" onclick="window.removeFromCart(${index})">Eliminar</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+
+            document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cartDiscount').textContent = '$0.00'; // Reset discount on cart update
+            document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
+            cartCount.textContent = window.cart.reduce((sum, item) => sum + item.quantity, 0);
+        }
+
+        window.updateQuantity = function(index, change) {
+            window.cart[index].quantity += change;
+            if (window.cart[index].quantity <= 0) {
+                window.cart.splice(index, 1);
+            }
+            localStorage.setItem('cart', JSON.stringify(window.cart));
+            window.updateCart();
+        }
+
+        window.removeFromCart = function(index) {
+            window.cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(window.cart));
+            window.updateCart();
+        }
+
+        window.openCheckoutInfoModal = function() {
+            window.showModal('checkoutInfoModal');
+        }
+
+        // Auction Functions
+        window.createAuction = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('auctionModal');
+            const productName = document.getElementById('auctionProductName').value.trim();
+            const basePrice = parseFloat(document.getElementById('auctionBasePrice').value);
+            const durationElement = document.querySelector('#auctionDuration .time-option.selected');
+            const duration = durationElement ? parseInt(durationElement.dataset.value) : 24;
+
+            if (!productName || isNaN(basePrice)) {
+                window.showNotification('Por favor, completa todos los campos.');
+                window.hideLoading('auctionModal');
+                return;
+            }
+
+            const auction = {
+                name: productName,
+                basePrice: basePrice,
+                currentBid: basePrice,
+                endTime: new Date(Date.now() + duration * 60 * 60 * 1000).toISOString(),
+                image: 'https://placehold.co/300x250?text=Auction+Product',
+                status: 'active'
+            };
+
+            try {
+                await addDoc(collection(db, `artifacts/${appId}/public/data/auctions`), auction);
+                window.closeModal('auctionModal');
+                window.showNotification('Subasta creada exitosamente.');
+            } catch (e) {
+                console.error("Error adding auction: ", e);
+                window.showNotification('Error al crear la subasta.');
+            } finally {
+                window.hideLoading('auctionModal');
+            }
+        }
+
+        window.loadAuctions = function() {
+            if (!isAuthReady) return;
+            window.showLoading('auctionsSection');
+            const q = query(collection(db, `artifacts/${appId}/public/data/auctions`));
+            onSnapshot(q, (snapshot) => {
+                window.auctions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.updateAuctionGrid();
+                window.hideLoading('auctionsSection');
+            }, (error) => {
+                console.error("Error getting auctions: ", error);
+                window.showNotification("Error al cargar las subastas.");
+                window.hideLoading('auctionsSection');
+            });
+        }
+
+        window.updateAuctionGrid = function() {
+            const auctionGrid = document.getElementById('auctionGrid');
+            auctionGrid.innerHTML = '';
+            window.auctions.forEach(auction => {
+                if (auction.status === 'active') {
+                    const card = document.createElement('div');
+                    card.classList.add('product-card');
+                    card.innerHTML = `
+                        <div class="product-image">
+                            <img src="${auction.image}" alt="${auction.name}">
+                            <span class="auction-badge">Subasta</span>
+                        </div>
+                        <div class="auction-info">
+                            <div class="product-name">${auction.name}</div>
+                            <div class="auction-current-bid">Puja actual: $${auction.currentBid.toFixed(2)}</div>
+                            <div class="auction-timer" id="auctionTimer_${auction.id}"></div>
+                            <div class="bid-input">
+                                <input type="number" placeholder="Tu puja" min="${auction.currentBid + 1}">
+                                <button class="bid-btn" onclick="window.placeBid('${auction.id}', this)">Pujar</button>
+                            </div>
+                        </div>
+                    `;
+                    auctionGrid.appendChild(card);
+                    window.updateAuctionTimer(auction);
+                }
+            });
+        }
+
+        window.updateAuctionTimer = function(auction) {
+            const timerElement = document.getElementById(`auctionTimer_${auction.id}`);
+            if (!timerElement) return;
+
+            const update = async () => {
+                const now = new Date();
+                const end = new Date(auction.endTime);
+                const diff = end - now;
+                if (diff <= 0) {
+                    if (auction.status === 'active') {
+                        auction.status = 'ended';
+                        try {
+                            await updateDoc(doc(db, `artifacts/${appId}/public/data/auctions`, auction.id), { status: 'ended' });
+                        } catch (e) {
+                            console.error("Error updating auction status: ", e);
+                        }
+                    }
+                    timerElement.textContent = 'Subasta terminada.';
+                    return;
+                }
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                timerElement.textContent = `Tiempo restante: ${hours}h ${minutes}m ${seconds}s`;
+                setTimeout(update, 1000);
+            };
+            update();
+        }
+
+        window.placeBid = async function(auctionId, button) {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            const auction = window.auctions.find(a => a.id === auctionId);
+            if (!auction || auction.status !== 'active') {
+                window.showNotification('Esta subasta no está activa.');
+                return;
+            }
+            const input = button.previousElementSibling;
+            const bid = parseFloat(input.value);
+            if (isNaN(bid) || bid <= auction.currentBid) {
+                window.showNotification('La puja debe ser mayor que la actual.');
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, `artifacts/${appId}/public/data/auctions`, auction.id), { currentBid: bid });
+                window.showNotification('Puja realizada exitosamente.');
+            } catch (e) {
+                console.error("Error placing bid: ", e);
+                window.showNotification('Error al realizar la puja.');
+            }
+        }
+
+        // Navigation and Sections
+        window.showSection = function(sectionId, element) {
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(`${sectionId}Section`).style.display = 'block';
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active-nav');
+            });
+            if (element) element.classList.add('active-nav');
+        }
+
+        // Carousel Functions
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const totalSlides = slides.length;
+
+        window.updateCarousel = function() {
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        window.nextSlide = function() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            window.updateCarousel();
+        }
+
+        window.prevSlide = function() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            window.updateCarousel();
+        }
+
+        setInterval(window.nextSlide, 5000);
+
+        // Product Detail Carousel
+        let currentProductSlide = 0;
+
+        window.updateProductCarousel = function(product) {
+            const carousel = document.getElementById('productDetailCarousel');
+            carousel.style.transform = `translateX(-${currentProductSlide * 100}%)`;
+        }
+
+        window.nextProductSlide = function() {
+            const product = products.find(p => p.id === currentProductId);
+            currentProductSlide = (currentProductSlide + 1) % product.images.length;
+            window.updateProductCarousel(product);
+        }
+
+        window.prevProductSlide = function() {
+            const product = products.find(p => p.id === currentProductId);
+            currentProductSlide = (currentProductSlide - 1 + product.images.length) % product.images.length;
+            window.updateProductCarousel(product);
+        }
+
+        // Sample Products (static for now)
+        const products = [
+            {
+                id: '1',
+                name: 'Zapatillas Nike Air Max',
+                listPrice: 200,
+                offerPrice: 150,
+                regularPrice: 180,
+                discount: 25,
+                images: ['https://placehold.co/300x250?text=Nike+Air+Max+1', 'https://placehold.co/300x250?text=Nike+Air+Max+2'],
+                description: 'Zapatillas importadas con tecnología Air para máxima comodidad.'
+            },
+            {
+                id: '2',
+                name: 'Zapatillas Adidas Ultraboost',
+                regularPrice: 220,
+                images: ['https://placehold.co/300x250?text=Adidas+Ultraboost'],
+                description: 'Diseño ergonómico para un rendimiento superior.'
+            }
+        ];
+
+        let currentProductId = null;
+
+        window.showProductDetail = function(productId) {
+            const product = products.find(p => p.id === productId);
+            currentProductId = productId;
+            document.getElementById('productDetailName').textContent = product.name;
+            document.getElementById('productDetailDescription').textContent = product.description;
+            document.getElementById('productDetailListPrice').style.display = product.listPrice ? 'block' : 'none';
+            document.getElementById('productDetailListPrice').textContent = product.listPrice ? `$${product.listPrice.toFixed(2)}` : '';
+            document.getElementById('productDetailOfferPrice').style.display = product.offerPrice ? 'block' : 'none';
+            document.getElementById('productDetailOfferPrice').textContent = product.offerPrice ? `$${product.offerPrice.toFixed(2)}` : '';
+            document.getElementById('productDetailRegularPrice').style.display = product.regularPrice ? 'block' : 'none';
+            document.getElementById('productDetailRegularPrice').textContent = product.regularPrice ? `$${product.regularPrice.toFixed(2)}` : '';
+            document.getElementById('productDetailDiscount').style.display = product.discount ? 'block' : 'none';
+            document.getElementById('productDetailDiscount').textContent = product.discount ? `${product.discount}% OFF` : '';
+            document.getElementById('productDetailCarousel').innerHTML = product.images.map(img => `<div class="carousel-slide" style="background-image: url('${img}')"></div>`).join('');
+            currentProductSlide = 0;
+            window.updateProductCarousel(product);
+            document.getElementById('productDetailAddToCart').onclick = () => window.addToCart(product);
+            window.showSection('productDetail', null);
+        }
+
+        window.addToCart = function(product) {
+            const existingItem = window.cart.find(item => item.id === product.id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                window.cart.push({ ...product, quantity: 1 });
+            }
+            localStorage.setItem('cart', JSON.stringify(window.cart));
+            window.updateCart();
+            window.showNotification('Producto añadido al carrito.');
+        }
+
+        // Initialize Product Grid
+        window.initProductGrid = function() {
+            const productGrid = document.getElementById('productGrid');
+            productGrid.innerHTML = '';
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.images[0]}" alt="${product.name}">
+                        ${product.offerPrice ? '<span class="offer-badge">Oferta</span>' : ''}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-prices">
+                            ${product.listPrice ? `<span class="price-original">$${product.listPrice.toFixed(2)}</span>` : ''}
+                            ${product.offerPrice ? `<span class="price-offer">$${product.offerPrice.toFixed(2)}</span>` : ''}
+                            ${!product.offerPrice ? `<span class="price-regular">$${product.regularPrice.toFixed(2)}</span>` : ''}
+                        </div>
+                        ${product.offerPrice ? `<div class="offer-timer">Oferta termina en: 24h</div>` : ''}
+                        <div class="product-actions">
+                            <button class="btn btn-primary" onclick="window.addToCart(products[${products.indexOf(product)}])">Agregar al Carrito</button>
+                            <button class="btn btn-secondary" onclick="window.showProductDetail('${product.id}')">Ver Detalle</button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        // User Menu (Placeholder)
+        window.toggleUserMenu = function() {
+            window.showNotification('Funcionalidad de usuario no implementada.');
+        }
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 3000);
+            window.initProductGrid();
+            window.populateModelDropdowns();
+            // Data loading for Gift Cards and Coupon Cards is now handled by onAuthStateChanged
+            // Auctions are also loaded via onAuthStateChanged
+        });
+
+        // Gift Card Functions
+        let currentGiftCardPreview = null;
+
+        window.generateGiftCard = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('giftCardManagementSection');
+
+            const recipientName = document.getElementById('recipientInput').value.trim();
+            const amount = document.getElementById('amountInput').value;
+            const giftCardModelSelect = document.getElementById('giftCardModel');
+            const giftCardBgColorInput = document.getElementById('giftCardBgColor');
+            const giftCardTextColorInput = document.getElementById('giftCardTextColor');
+            const giftCardFontFamilySelect = document.getElementById('giftCardFontFamily');
+
+            const model = giftCardModelSelect.value;
+            const bgColor = giftCardBgColorInput.value;
+            const textColor = giftCardTextColorInput.value;
+            const fontFamily = giftCardFontFamilySelect.value;
+            
+            if (!recipientName || !amount) {
+                window.showNotification('Por favor completa todos los campos de la Gift Card.');
+                window.hideLoading('giftCardManagementSection');
+                return;
+            }
+
+            const parsedAmount = parseInt(amount);
+            if (isNaN(parsedAmount) || parsedAmount < 0) {
+                window.showNotification('Por favor, ingresa un monto válido (número positivo).');
+                window.hideLoading('giftCardManagementSection');
+                return;
+            }
+
+            const cardNumber = window.generateRandomCardNumber();
+            const now = new Date();
+            
+            const newCard = {
+                cardNumber: cardNumber,
+                recipientName: recipientName,
+                amount: parsedAmount,
+                createdDate: now.toLocaleDateString(),
+                status: 'active',
+                usedDate: null,
+                model: model,
+                bgColor: bgColor,
+                textColor: textColor,
+                fontFamily: fontFamily
+            };
+
+            try {
+                const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/giftCards`), newCard);
+                newCard.id = docRef.id;
+                window.giftCards.push(newCard);
+                window.updateGiftCardPreview(newCard);
+                document.getElementById('recipientInput').value = '';
+                document.getElementById('amountInput').value = '';
+                document.getElementById('giftCardBgColor').value = '#ff6b6b';
+                document.getElementById('giftCardTextColor').value = '#ffffff';
+                document.getElementById('giftCardFontFamily').value = 'Inter, sans-serif';
+                window.showNotification(`¡Gift Card creada exitosamente!\nNúmero: ${cardNumber}\nDestinatario: ${recipientName}\nMonto: $${parsedAmount.toLocaleString()}`);
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                window.showNotification('Error al crear la Gift Card.');
+            } finally {
+                window.hideLoading('giftCardManagementSection');
+            }
+        }
+
+        window.generateRandomCardNumber = function() {
+            const segments = [];
+            for (let i = 0; i < 3; i++) {
+                segments.push(Math.floor(Math.random() * 10000).toString().padStart(4, '0'));
+            }
+            return segments.join('-');
+        }
+
+        window.updateGiftCardPreview = function(cardData) {
+            const giftCardElement = document.getElementById('giftCard');
+            const cardFront = giftCardElement.querySelector('.card-front');
+
+            cardFront.style.background = '';
+            cardFront.style.backgroundImage = '';
+            cardFront.style.backgroundColor = '';
+            cardFront.style.color = '';
+            cardFront.style.fontFamily = '';
+
+            if (cardData.bgColor) {
+                cardFront.style.backgroundColor = cardData.bgColor;
+            } else {
+                const selectedModel = giftCardModels[cardData.model] || giftCardModels['model-classic'];
+                cardFront.style.background = selectedModel.background;
+            }
+
+            cardFront.style.color = cardData.textColor || 'white';
+            cardFront.style.fontFamily = cardData.fontFamily || 'Inter, sans-serif';
+
+            document.getElementById('cardNumber').textContent = cardData.cardNumber;
+            document.getElementById('recipientName').textContent = cardData.recipientName.toUpperCase();
+            document.getElementById('amount').textContent = `$${cardData.amount.toLocaleString()}`;
+            
+            currentGiftCardPreview = cardData;
+        }
+
+        window.printCard = function() {
+            let cardToPrint = currentGiftCardPreview;
+            if (!cardToPrint) {
+                window.showNotification('No hay una Gift Card seleccionada o creada para imprimir.');
+                return;
+            }
+
+            window.updateGiftCardPreview(cardToPrint);
+
+            const giftCardElement = document.getElementById('giftCard');
+            const printArea = document.getElementById('print-area');
+            const clonedCard = giftCardElement.cloneNode(true);
+
+            clonedCard.style.transform = 'none';
+            const cardBack = clonedCard.querySelector('.card-back');
+            if (cardBack) {
+                cardBack.style.display = 'none';
+            }
+
+            printArea.innerHTML = '';
+            printArea.appendChild(clonedCard);
+
+            window.print();
+
+            setTimeout(() => {
+                printArea.innerHTML = '';
+            }, 1000);
+        }
+
+        window.markAsUsed = async function(cardId) {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showConfirmationModal('¿Estás seguro de que deseas marcar esta gift card como usada?', async (confirmed) => {
+                if (confirmed) {
+                    window.showLoading('historyTable');
+                    const card = window.giftCards.find(c => c.id === cardId);
+                    if (card) {
+                        try {
+                            await updateDoc(doc(db, `artifacts/${appId}/users/${userId}/giftCards`, card.id), {
+                                status: 'used',
+                                usedDate: new Date().toLocaleDateString()
+                            });
+                            window.showNotification('Gift card marcada como usada.');
+                        } catch (e) {
+                            console.error("Error updating document: ", e);
+                            window.showNotification('Error al marcar como usada.');
+                        } finally {
+                            window.hideLoading('historyTable');
+                        }
+                    }
+                }
+            });
+        }
+
+        window.deleteCard = async function(cardId) {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showConfirmationModal('¿Estás seguro de que deseas eliminar esta gift card? Esta acción no se puede deshacer.', async (confirmed) => {
+                if (confirmed) {
+                    window.showLoading('historyTable');
+                    try {
+                        await deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/giftCards`, cardId));
+                        window.showNotification('Gift card eliminada.');
+                        if (currentGiftCardPreview && currentGiftCardPreview.id === cardId) {
+                            if (window.giftCards.length > 0) {
+                                window.updateGiftCardPreview(window.giftCards[window.giftCards.length - 1]);
+                            } else {
+                                window.updateGiftCardPreview({
+                                    cardNumber: 'XXXX-XXXX-XXXX',
+                                    recipientName: 'NOMBRE DEL DESTINATARIO',
+                                    amount: 0,
+                                    model: 'model-classic',
+                                    bgColor: '#ff6b6b',
+                                    textColor: '#ffffff',
+                                    fontFamily: 'Inter, sans-serif'
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Error removing document: ", e);
+                        window.showNotification('Error al eliminar la gift card.');
+                    } finally {
+                        window.hideLoading('historyTable');
+                    }
+                }
+            });
+        }
+
+        window.openRechargeModal = function(cardId) {
+            const card = window.giftCards.find(c => c.id === cardId);
+            if (card) {
+                document.getElementById('rechargeCardNumber').value = card.cardNumber;
+                document.getElementById('rechargeCardName').value = card.recipientName;
+                document.getElementById('rechargeCurrentAmount').value = `$${card.amount.toLocaleString()}`;
+                document.getElementById('rechargeAmount').value = '';
+                window.showModal('rechargeModal');
+                window.currentRechargeCard = card;
+            }
+        }
+
+        window.confirmRecharge = async function() {
+            if (!isAuthReady) {
+                window.showNotification('Autenticando usuario, por favor espera.');
+                return;
+            }
+            window.showLoading('rechargeModal');
+            const rechargeAmount = document.getElementById('rechargeAmount').value;
+            
+            if (!rechargeAmount || parseInt(rechargeAmount) <= 0 || isNaN(parseInt(rechargeAmount))) {
+                window.showNotification('Por favor ingresa un monto válido para recargar.');
+                window.hideLoading('rechargeModal');
+                return;
+            }
+
+            if (window.currentRechargeCard) {
+                const newAmount = window.currentRechargeCard.amount + parseInt(rechargeAmount);
+                try {
+                    await updateDoc(doc(db, `artifacts/${appId}/users/${userId}/giftCards`, window.currentRechargeCard.id), {
+                        amount: newAmount,
+                        status: 'active',
+                        usedDate: null
+                    });
+                    window.closeModal('rechargeModal');
+                    window.showNotification(`Gift card recargada exitosamente!\nNuevo monto: $${newAmount.toLocaleString()}`);
+                } catch (e) {
+                    console.error("Error recharging gift card: ", e);
+                    window.showNotification('Error al recargar la gift card.');
+                } finally {
+                    window.hideLoading('rechargeModal');
+                }
+            }
+        }
+
+        window.printCardById = function(cardId) {
+            const card = window.giftCards.find(c => c.id === cardId);
+            if (card) {
+                currentGiftCardPreview = card;
+                window.printCard();
+            } else {
+                window.showNotification('Tarjeta no encontrada para imprimir.');
+            }
+        }
+
+        window.updateHistoryTable = function() {
+            const tbody = document.getElementById('historyBody');
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filteredCards = window.giftCards.filter(card => {
+                const matchesSearch = !searchTerm || 
+                    card.recipientName.toLowerCase().includes(searchTerm) ||
+                    card.cardNumber.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || card.status === statusFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+
+            tbody.innerHTML = '';
+            
+            if (filteredCards.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="no-records">No hay gift cards registradas</td></tr>';
+                return;
+            }
+            
+            filteredCards.forEach(card => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${card.cardNumber}</td>
+                    <td>${card.recipientName}</td>
+                    <td>$${card.amount.toLocaleString()}</td>
+                    <td>${card.createdDate}</td>
+                    <td><span class="status ${card.status}">${card.status === 'active' ? 'Activa' : 'Usada'}</span></td>
+                    <td>${card.usedDate || '-'}</td>
+                    <td class="action-buttons">
+                        ${card.status === 'active' ? `
+                            <button class="action-btn btn-danger" onclick="window.markAsUsed('${card.id}')">Marcar Usada</button>
+                        ` : ''}
+                        <button class="action-btn btn-warning" onclick="window.openRechargeModal('${card.id}')">Recargar</button>
+                        <button class="action-btn btn-secondary" onclick="window.printCardById('${card.id}')">Imprimir</button>
+                        <button class="action-btn btn-danger" onclick="window.deleteCard('${card.id}')">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+                row.onclick = () => window.updateGiftCardPreview(card);
+                tbody.appendChild(row);
+            });
+        }
+
+        window.filterHistory = function() {
+            window.updateHistoryTable();
+        }
+
+        window.loadGiftCards = function() {
+            if (!isAuthReady) return;
+            window.showLoading('giftCardManagementSection');
+            const q = query(collection(db, `artifacts/${appId}/users/${userId}/giftCards`));
+            onSnapshot(q, (snapshot) => {
+                window.giftCards = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                if (window.giftCards.length > 0) {
+                    window.updateGiftCardPreview(window.giftCards[window.giftCards.length - 1]);
+                } else {
+                     window.updateGiftCardPreview({
+                        cardNumber: 'XXXX-XXXX-XXXX',
+                        recipientName: 'NOMBRE DEL DESTINATARIO',
+                        amount: 0,
+                        model: 'model-classic',
+                        bgColor: '#ff6b6b',
+                        textColor: '#ffffff',
+                        fontFamily: 'Inter, sans-serif'
+                    });
+                }
+                window.updateHistoryTable();
+                window.hideLoading('giftCardManagementSection');
+            }, (error) => {
+                console.error("Error getting gift cards: ", error);
+                window.showNotification("Error al cargar las Gift Cards.");
+                window.hideLoading('giftCardManagementSection');
+            });
+        }
+
+        // Custom Confirmation Modal
+        let confirmationCallback = null;
+
+        window.showConfirmationModal = function(message, callback) {
+            document.getElementById('confirmationModalMessage').textContent = message;
+            confirmationCallback = callback;
+            window.showModal('confirmationModal');
+            document.getElementById('confirmActionBtn').onclick = () => {
+                if (confirmationCallback) {
+                    confirmationCallback(true);
+                }
+                window.closeModal('confirmationModal');
+            };
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        };
+    </script>
+</body>
+</html>
+
