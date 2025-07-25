@@ -2428,6 +2428,10 @@
                         <label for="purchaseDate">Fecha de Compra:</label>
                         <input type="date" id="purchaseDate">
                     </div>
+                    <div class="form-group">
+                        <label for="purchaseAmount">Monto de Compra:</label>
+                        <input type="number" id="purchaseAmount" placeholder="Ingresa el monto" min="0" step="1">
+                    </div>
                     <button class="btn btn-primary" onclick="window.registerPurchase()">Registrar Compra</button>
                 </div>
             </div>
@@ -2503,11 +2507,13 @@
                     <input type="hidden" id="managePurchasesCouponId">
                     <p>Cuponera: <strong id="managePurchasesCardNumber"></strong></p>
                     <div id="purchaseList">
-                        <!-- Purchase dates will be listed here -->
+                        <!-- Purchase dates and amounts will be listed here -->
                     </div>
                     <div class="form-group" style="margin-top: 20px;">
                         <label for="addPurchaseDate">Añadir Compra Manualmente:</label>
                         <input type="date" id="addPurchaseDate">
+                        <label for="addPurchaseAmount">Monto de Compra:</label>
+                        <input type="number" id="addPurchaseAmount" placeholder="Monto" min="0" step="1">
                         <button class="btn btn-primary" style="width: auto; margin-top: 10px;" onclick="window.addPurchaseManually()">Añadir Compra</button>
                     </div>
                     <button class="btn btn-secondary" onclick="window.closeModal('managePurchasesModal')">Cerrar</button>
@@ -2595,6 +2601,8 @@
         // Initialize Firebase
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        console.log("Firebase Config:", firebaseConfig); // Log config for debugging
 
         try {
             app = initializeApp(firebaseConfig);
@@ -2770,7 +2778,7 @@
             const newCard = {
                 number: cardNumber,
                 recipient: recipient,
-                purchases: [], // Stores ISO date strings
+                purchases: [], // Stores objects { date: ISO date string, amount: number }
                 status: 'active',
                 createdAt: new Date().toISOString(),
                 redeemedAt: null,
@@ -2785,14 +2793,7 @@
             try {
                 const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/couponCards`), newCard);
                 newCard.id = docRef.id; // Add Firestore ID to the local object
-                window.couponCards.push(newCard); // Add to local array for immediate preview
-                window.updateCouponCardPreview(newCard);
-                window.updateCouponHistory(); // Update history table (will be refreshed by onSnapshot)
-                document.getElementById('couponRecipientInput').value = '';
-                document.getElementById('couponCircleCount').value = 10;
-                document.getElementById('couponBgColor').value = '#FF7F50';
-                document.getElementById('couponTextColor').value = '#ffffff';
-                document.getElementById('couponFontFamily').value = 'Inter, sans-serif';
+                // The onSnapshot listener will automatically update window.couponCards and the UI
                 window.showNotification('Cuponera creada exitosamente.');
             } catch (e) {
                 console.error("Error adding document: ", e);
@@ -2876,7 +2877,7 @@
             if (currentCouponCardPreview.circleCount > 1) {
                 currentCouponCardPreview.circleCount--;
                 if (currentCouponCardPreview.purchases.length > currentCouponCardPreview.circleCount) {
-                    currentCouponCardPreview.purchases.pop();
+                    currentCouponCardPreview.purchases.pop(); // Remove the last purchase object
                 }
                 try {
                     await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, currentCouponCardPreview.id), currentCouponCardPreview);
@@ -2911,7 +2912,7 @@
                     <td><span class="status ${card.status}">${card.status === 'active' ? 'Activa' : 'Canjeada'}</span></td>
                     <td>${card.redeemedAt ? window.formatDate(new Date(card.redeemedAt)) : '-'}</td>
                     <td class="action-buttons">
-                        <button class="action-btn btn-primary" onclick="window.showModal('registerPurchaseModal'); document.getElementById('purchaseCardNumber').value = '${card.number}'">Registrar Compra</button>
+                        <button class="action-btn btn-primary" onclick="window.showModal('registerPurchaseModal'); document.getElementById('purchaseCardNumber').value = '${card.number}'; document.getElementById('purchaseDate').valueAsDate = new Date();">Registrar Compra</button>
                         <button class="action-btn btn-warning" onclick="window.showModal('redeemCouponModal'); document.getElementById('redeemCardNumber').value = '${card.number}'">Canjear</button>
                         <button class="action-btn btn-secondary" onclick="window.editCouponCard('${card.id}')">Modificar</button>
                         <button class="action-btn btn-info" onclick="window.managePurchases('${card.id}')">Gestionar Compras</button>
@@ -2948,8 +2949,11 @@
             window.showLoading('registerPurchaseModal');
             const cardNumber = document.getElementById('purchaseCardNumber').value.trim();
             const purchaseDateInput = document.getElementById('purchaseDate').value;
-            if (!cardNumber || !purchaseDateInput) {
-                window.showNotification('Por favor, completa todos los campos.');
+            const purchaseAmountInput = document.getElementById('purchaseAmount');
+            const purchaseAmount = parseFloat(purchaseAmountInput.value);
+
+            if (!cardNumber || !purchaseDateInput || isNaN(purchaseAmount) || purchaseAmount < 0) {
+                window.showNotification('Por favor, completa todos los campos y el monto de compra.');
                 window.hideLoading('registerPurchaseModal');
                 return;
             }
@@ -2979,7 +2983,7 @@
             }
 
             const existingPurchase = card.purchases.find(p => {
-                const pDate = new Date(p);
+                const pDate = new Date(p.date); // Check date property of purchase object
                 pDate.setHours(0, 0, 0, 0);
                 return pDate.getTime() === purchaseDate.getTime();
             });
@@ -2990,11 +2994,12 @@
                 return;
             }
 
-            card.purchases.push(purchaseDate.toISOString());
+            card.purchases.push({ date: purchaseDate.toISOString(), amount: purchaseAmount });
             try {
                 await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
                 window.closeModal('registerPurchaseModal');
                 window.showNotification('Compra registrada exitosamente.');
+                document.getElementById('purchaseAmount').value = ''; // Clear amount input
             } catch (e) {
                 console.error("Error updating document: ", e);
                 window.showNotification('Error al registrar la compra.');
@@ -3181,9 +3186,11 @@
             const currentCard = window.couponCards[cardIndex];
 
             let updatedPurchases = [...currentCard.purchases];
+            // If increasing purchases count, add new placeholder purchases with default amount
             while (updatedPurchases.length < newPurchasesCount) {
-                updatedPurchases.push(new Date().toISOString());
+                updatedPurchases.push({ date: new Date().toISOString(), amount: 0 }); // Default amount 0
             }
+            // If decreasing purchases count, remove from the end
             while (updatedPurchases.length > newPurchasesCount) {
                 updatedPurchases.pop();
             }
@@ -3191,7 +3198,7 @@
             currentCard.recipient = newRecipientName;
             currentCard.model = newModel;
             currentCard.circleCount = newCircleCount;
-            currentCard.purchases = updatedPurchases;
+            currentCard.purchases = updatedPurchases; // Assign the new array of objects
             currentCard.manualDiscount = parsedManualDiscount;
             currentCard.bgColor = newBgColor;
             currentCard.textColor = newTextColor;
@@ -3259,9 +3266,9 @@
             if (card.purchases.length === 0) {
                 purchaseList.innerHTML = '<p style="text-align: center; color: #666;">No hay compras registradas para esta cuponera.</p>';
             } else {
-                card.purchases.sort((a, b) => new Date(a) - new Date(b));
-                card.purchases.forEach((purchaseDateISO, index) => {
-                    const date = new Date(purchaseDateISO);
+                card.purchases.sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date property
+                card.purchases.forEach((purchase, index) => { // Iterate over purchase objects
+                    const date = new Date(purchase.date);
                     const listItem = document.createElement('div');
                     listItem.style.display = 'flex';
                     listItem.style.justifyContent = 'space-between';
@@ -3269,8 +3276,8 @@
                     listItem.style.padding = '8px 0';
                     listItem.style.borderBottom = '1px dashed #eee';
                     listItem.innerHTML = `
-                        <span>Compra ${index + 1}: ${window.formatDate(date)}</span>
-                        <button class="action-btn btn-danger" onclick="window.removePurchase('${card.id}', '${purchaseDateISO}')">Eliminar</button>
+                        <span>Compra ${index + 1}: ${window.formatDate(date)} - $${purchase.amount.toFixed(2)}</span>
+                        <button class="action-btn btn-danger" onclick="window.removePurchase('${card.id}', '${purchase.date}')">Eliminar</button>
                     `;
                     purchaseList.appendChild(listItem);
                 });
@@ -3286,9 +3293,11 @@
             window.showLoading('managePurchasesModal');
             const cardId = document.getElementById('managePurchasesCouponId').value;
             const purchaseDateInput = document.getElementById('addPurchaseDate').value;
+            const addPurchaseAmountInput = document.getElementById('addPurchaseAmount');
+            const addPurchaseAmount = parseFloat(addPurchaseAmountInput.value);
 
-            if (!purchaseDateInput) {
-                window.showNotification('Por favor, selecciona una fecha para la compra.');
+            if (!purchaseDateInput || isNaN(addPurchaseAmount) || addPurchaseAmount < 0) {
+                window.showNotification('Por favor, selecciona una fecha y un monto válido para la compra.');
                 window.hideLoading('managePurchasesModal');
                 return;
             }
@@ -3318,7 +3327,7 @@
             }
 
             const existingPurchase = card.purchases.find(p => {
-                const pDate = new Date(p);
+                const pDate = new Date(p.date);
                 pDate.setHours(0, 0, 0, 0);
                 return pDate.getTime() === purchaseDate.getTime();
             });
@@ -3329,12 +3338,13 @@
                 return;
             }
 
-            card.purchases.push(purchaseDate.toISOString());
+            card.purchases.push({ date: purchaseDate.toISOString(), amount: addPurchaseAmount });
             try {
                 await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
                 window.showNotification('Compra añadida exitosamente.');
                 window.managePurchases(cardId);
                 document.getElementById('addPurchaseDate').value = '';
+                document.getElementById('addPurchaseAmount').value = '';
             } catch (e) {
                 console.error("Error adding purchase: ", e);
                 window.showNotification('Error al añadir la compra.');
@@ -3354,7 +3364,7 @@
                     window.showLoading('managePurchasesModal');
                     const card = window.couponCards.find(c => c.id === cardId);
                     if (card) {
-                        card.purchases = card.purchases.filter(p => p !== purchaseDateISO);
+                        card.purchases = card.purchases.filter(p => p.date !== purchaseDateISO); // Filter by date property
                         try {
                             await setDoc(doc(db, `artifacts/${appId}/users/${userId}/couponCards`, card.id), card);
                             window.showNotification('Compra eliminada exitosamente.');
@@ -3819,13 +3829,7 @@
             try {
                 const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/giftCards`), newCard);
                 newCard.id = docRef.id;
-                window.giftCards.push(newCard);
-                window.updateGiftCardPreview(newCard);
-                document.getElementById('recipientInput').value = '';
-                document.getElementById('amountInput').value = '';
-                document.getElementById('giftCardBgColor').value = '#ff6b6b';
-                document.getElementById('giftCardTextColor').value = '#ffffff';
-                document.getElementById('giftCardFontFamily').value = 'Inter, sans-serif';
+                // The onSnapshot listener will automatically update window.giftCards and the UI
                 window.showNotification(`¡Gift Card creada exitosamente!\nNúmero: ${cardNumber}\nDestinatario: ${recipientName}\nMonto: $${parsedAmount.toLocaleString()}`);
             } catch (e) {
                 console.error("Error adding document: ", e);
