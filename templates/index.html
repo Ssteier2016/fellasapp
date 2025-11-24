@@ -3385,22 +3385,6 @@
                 updateHistoryTable(); // Refresh history table
             }
         }
-<!-- === FIREBASE + CATÁLOGO EN TIEMPO REAL (ESTO ES NUEVO) === -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script>
-        // TU CONFIGURACIÓN DE FIREBASE (la misma que tenés en etiquetaqr.online)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIGUo2-YFCHKF6Nc8I-lB_NmGZiQ5pHJI",
-            authDomain: "cryptotracker-8a6fd.firebaseapp.com",
-            projectId: "cryptotracker-8a6fd",
-            storageBucket: "cryptotracker-8a6fd.firebasestorage.app",
-            messagingSenderId: "720112375781",
-            appId: "1:720112375781:web:7995dcbd6fe7470aea810c"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
         // Cargar catálogo en tiempo real
         async function cargarCatalogo() {
