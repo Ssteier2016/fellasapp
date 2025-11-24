@@ -1,7 +1,7 @@
 {
-  "name": "FellasApp",
-  "short_name": "FellasApp",
-  "description": "Chat global con walkie-talkie",
+  "name": "Showroom +Roma",
+  "short_name": "Showroom +Roma",
+  "description": "Tienda Online de Indumentaria",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f0f2f5",
