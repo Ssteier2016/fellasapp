@@ -1,21 +1,29 @@
 {
-  "name": "Showroom +Roma",
-  "short_name": "Showroom +Roma",
-  "description": "Tienda Online de Indumentaria",
-  "start_url": "/",
+  "name": "Showroom +Roma | Tienda Online",
+  "short_name": "ShowroomRoma",
+  "description": "Tienda Online de Indumentaria Showroom +Roma.",
+  "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#f0f2f5",
+  "background_color": "#F0F2F5",
   "theme_color": "#25D366",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/static/icon.png",
+      "src": "/static/icon3.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/static/icon.png",
+      "src": "/static/icon3.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/static/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
+
