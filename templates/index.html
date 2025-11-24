@@ -3965,5 +3965,49 @@
             });
         };
     </script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBIGUo2-YFCHKF6Nc8I-lB_NmGZiQ5pHJI",
+        authDomain: "cryptotracker-8a6fd.firebaseapp.com",
+        projectId: "cryptotracker-8a6fd",
+        storageBucket: "cryptotracker-8a6fd.firebasestorage.app",
+        messagingSenderId: "720112375781",
+        appId: "1:720112375781:web:7995dcbd6fe7470aea810c"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Cargar catálogo en tiempo real
+    db.collection('catalogo_publico').doc('showroom_roma')
+      .onSnapshot((doc) => {
+          if (doc.exists) {
+              const productos = doc.data().productos || [];
+              const grid = document.getElementById('productGrid');
+              grid.innerHTML = '';
+              productos.forEach(p => {
+                  const card = document.createElement('div');
+                  card.className = 'product-card';
+                  card.innerHTML = `
+                      <div class="product-image">
+                          <img src="${p.image}" alt="${p.name}" loading="lazy">
+                      </div>
+                      <div class="product-info">
+                          <div class="product-name">${p.name}</div>
+                          <div class="product-prices">
+                              <span class="price-original">$${p.regularPrice}</span>
+                              <span class="price-offer">$${p.offerPrice}</span>
+                          </div>
+                          <div class="product-actions">
+                              <button class="btn btn-primary">Consultar</button>
+                          </div>
+                      </div>
+                  `;
+                  grid.appendChild(card);
+              });
+          }
+      });
+</script>
 </body>
 </html>
