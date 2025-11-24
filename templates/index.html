@@ -3503,7 +3503,7 @@
                 closeModal('confirmationModal');
             };
         }
-        <script>
+
         // Close modals when clicking outside
         window.onclick = function(event) {
             const modals = document.querySelectorAll('.modal');
@@ -3514,69 +3514,6 @@
             });
         };
     </script>
-
-    <!-- CARGA FIREBASE UNA SOLA VEZ -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIGUo2-YFCHKF6Nc8I-lB_NmGZiQ5pHJI",
-            authDomain: "cryptotracker-8a6fd.firebaseapp.com",
-            projectId: "cryptotracker-8a6fd",
-            storageBucket: "cryptotracker-8a6fd.firebasestorage.app",
-            messagingSenderId: "720112375781",
-            appId: "1:720112375781:web:7995dcbd6fe7470aea810c"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        const grid = document.getElementById('productGrid');
-
-        db.collection('catalogo_publico').doc('showroom_roma')
-          .onSnapshot((doc) => {
-              if (!grid) return;
-              if (doc.exists && doc.data().productos?.length > 0) {
-                  const productos = doc.data().productos;
-                  grid.innerHTML = '';
-                  productos.forEach(p => {
-                      const card = document.createElement('div');
-                      card.className = 'product-card group';
-                      card.innerHTML = `
-                          <div class="product-image relative overflow-hidden rounded-t-2xl">
-                              <img src="${p.image || 'https://placehold.co/400x400?text=Sin+Foto'}"
-                                   alt="${p.name}" loading="lazy"
-                                   class="w-full h-64 object-cover transition-transform group-hover:scale-110">
-                          </div>
-                          <div class="product-info p-5">
-                              <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">${p.name}</h3>
-                              ${p.vendedora ? `<p class="text-sm text-gray-600 dark:text-gray-300 mb-2">Vendedora: ${p.vendedora}</p>` : ''}
-                              <div class="text-2xl font-bold text-red-600 mb-4">
-                                  $${Number(p.offerPrice).toLocaleString('es-AR')}
-                                  <span class="text-sm text-gray-500 line-through">$${Number(p.regularPrice).toLocaleString('es-AR')}</span>
-                              </div>
-                              <a href="https://wa.me/5491124689196?text=¡Hola!%20Me%20interesa%20${encodeURIComponent(p.name)}%20a%20$${p.offerPrice}%20(ID:${p.id.substring(0,8)}...)"
-                                 target="_blank"
-                                 class="btn btn-primary w-full text-center block py-3">
-                                  Consultar por WhatsApp
-                              </a>
-                          </div>
-                      `;
-                      grid.appendChild(card);
-                  });
-              } else {
-                  grid.innerHTML = `
-                      <div class="col-span-full text-center py-20">
-                          <p class="text-3xl font-bold text-gray-400 mb-4">Catálogo vacío</p>
-                          <p class="text-gray-600 dark:text-gray-400">Subí prendas en <strong>etiquetaqr.online</strong> para que aparezcan aquí al instante</p>
-                      </div>
-                  `;
-              }
-          }, (error) => {
-              console.error("Error:", error);
-              grid.innerHTML = '<p class="col-span-full text-center text-red-500">Error de conexión</p>';
-          });
-    </script>
 </body>
 </html>
+
