@@ -1,34 +1,103 @@
 {
   "name": "Showroom +Roma | Tienda Online",
-  "short_name": "Showroom+Roma",
-  "description": "Tienda Online de Indumentaria Showroom +Roma.",
-  "start_url": "/", 
+  "short_name": "+Roma",
+  "description": "Prendas nuevas, únicas e importadas. Tienda Online de Indumentaria Showroom +Roma.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#F0F2F5",
-  "theme_color": "#25D366",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
   "orientation": "portrait-primary",
+  "categories": ["shopping", "fashion", "clothing"],
+  "lang": "es-AR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "icon.png",
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
       "sizes": "72x72",
       "type": "image/png"
     },
     {
-      "src": "icon.png",
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon.png",
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "icon.png",
+      "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "https://via.placeholder.com/540x720/667eea/ffffff?text=Showroom+Roma",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "https://via.placeholder.com/1024x768/667eea/ffffff?text=Showroom+Roma+Tienda",
+      "sizes": "1024x768",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Catálogo",
+      "short_name": "Catálogo",
+      "description": "Explora nuestro catálogo de productos",
+      "url": "/#catalog",
+      "icons": [
+        {
+          "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Reservar por WhatsApp",
+      "short_name": "WhatsApp",
+      "description": "Contacta para reservar productos",
+      "url": "/#whatsapp",
+      "icons": [
+        {
+          "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
   ]
 }
-
