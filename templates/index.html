@@ -1,15 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#667eea">
+    <!-- Favicon - Usando tu logo de GitHub -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png">
     <title>Showroom +Roma - Prendas nuevas, únicas e importadas</title>
     
-    <!-- Manifest para PWA -->
-    <link rel="manifest" href="manifest.json">
+    <!-- Manifest para PWA - FIXED -->
+    <link rel="manifest" id="app-manifest">
+    
+    <!-- Meta tags para PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Showroom +Roma">
+    <meta name="mobile-web-app-capable" content="yes">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -127,7 +135,7 @@
             to { width: 100%; }
         }
 
-        /* Login Screen - FIXED: Visible siempre */
+        /* Login Screen */
         .login-screen {
             position: fixed;
             top: 0;
@@ -248,6 +256,14 @@
         .install-btn {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
+        }
+
+        .install-btn.installing {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+
+        .install-btn.installed {
+            background: linear-gradient(45deg, #00C853, #1DD1A1);
         }
 
         .share-btn {
@@ -436,11 +452,28 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        .hero .btn {
+        /* Botón principal */
+        .btn {
             padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
             font-size: 1.1rem;
-            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
 
         /* WhatsApp Reserve Button */
@@ -913,6 +946,11 @@
             color: #333;
         }
 
+        .btn-primary:hover, .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
         /* Admin Panel Styles */
         .admin-panel {
             background: rgba(255,255,255,0.95);
@@ -1261,7 +1299,7 @@
             margin-top: 5px;
         }
 
-        /* Profile Section */
+        /* Profile Section - CORREGIDO PARA MÓVIL */
         .profile-section {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
@@ -1269,13 +1307,24 @@
             padding: 2rem;
             text-align: center;
             box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .profile-header {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 1.5rem;
             margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .profile-header {
+                flex-direction: row;
+                align-items: center;
+                text-align: left;
+            }
         }
 
         .profile-avatar {
@@ -1293,7 +1342,6 @@
         }
 
         .profile-info {
-            text-align: left;
             flex: 1;
         }
 
@@ -1321,6 +1369,12 @@
             cursor: pointer;
             margin-top: 2rem;
             width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         /* Notification Toast */
@@ -1544,6 +1598,9 @@
                 bottom: 20px;
                 right: 20px;
             }
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1619,7 +1676,7 @@
         </div>
     </div>
 
-    <!-- Login Screen CORREGIDO: Siempre visible al inicio -->
+    <!-- Login Screen -->
     <div class="login-screen" id="loginScreen">
         <div class="login-container">
             <h1 class="login-title">Showroom +Roma</h1>
@@ -1669,7 +1726,7 @@
                         <li class="nav-item" onclick="showSection('catalog', this)">Catálogo</li>
                         <li class="nav-item" onclick="showSection('payments', this)">Pagos</li>
                         <div class="action-buttons">
-                            <button class="action-btn install-btn" onclick="installPWA()">
+                            <button class="action-btn install-btn" id="installButton" onclick="installPWA()">
                                 📱 Instalar App
                             </button>
                             <button class="action-btn share-btn" onclick="shareApp()">
@@ -1872,7 +1929,7 @@
                             No tienes productos favoritos todavía
                         </p>
                     </div>
-                </div>
+</div>
 
                 <!-- Checkout Info Modal -->
                 <div class="modal" id="checkoutInfoModal">
@@ -1897,7 +1954,7 @@
                     <div class="modal-content">
                         <button class="modal-close" onclick="closeModal('productModal')">&times;</button>
                         <h2 id="productModalTitle">Agregar Nuevo Producto</h2>
-                        <form id="productForm" onsubmit="saveProduct(event)">
+                        <form id="productForm">
                             <div class="form-group">
                                 <label for="productName">Nombre del Producto *</label>
                                 <input type="text" id="productName" required>
@@ -1954,7 +2011,7 @@
                                 </select>
                             </div>
                             <input type="hidden" id="productId">
-                            <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                            <button type="button" class="btn btn-primary" onclick="saveProduct()" id="saveProductBtn">Guardar Producto</button>
                             <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Cancelar</button>
                         </form>
                     </div>
@@ -1986,6 +2043,80 @@
     </div>
 
     <script>
+        // ==================== MANIFEST DINÁMICO ====================
+        function createManifest() {
+            const manifest = {
+                "name": "Showroom +Roma | Tienda Online",
+                "short_name": "+Roma",
+                "description": "Prendas nuevas, únicas e importadas. Tienda Online de Indumentaria Showroom +Roma.",
+                "start_url": window.location.origin + window.location.pathname,
+                "scope": "/",
+                "display": "standalone",
+                "background_color": "#667eea",
+                "theme_color": "#667eea",
+                "orientation": "portrait-primary",
+                "categories": ["shopping", "fashion", "clothing"],
+                "lang": "es-AR",
+                "dir": "ltr",
+                "prefer_related_applications": false,
+                "icons": [
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "72x72",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "96x96",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "128x128",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "144x144",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "152x152",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "192x192",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "384x384",
+                        "type": "image/png"
+                    },
+                    {
+                        "src": "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ]
+            };
+            
+            // Crear blob y URL para el manifest
+            const blob = new Blob([JSON.stringify(manifest, null, 2)], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blob);
+            
+            // Asignar el manifest al elemento link
+            const manifestLink = document.getElementById('app-manifest');
+            manifestLink.href = manifestURL;
+            
+            return manifestURL;
+        }
+
+        // Crear manifest al cargar la página
+        createManifest();
+
         // ==================== CONFIGURACIÓN DE FIREBASE ====================
         const firebaseConfig = {
             apiKey: "AIzaSyDm0yBRVNmZWrfSSL_-ueXC0S0f771ofjU",
@@ -2016,29 +2147,106 @@
         let clickCount = 0;
         let lastClickTime = 0;
         let deferredPrompt = null;
-        let uploadedImages = []; // Para almacenar imágenes subidas
-        let editingProductId = null; // Para controlar si estamos editando
+        let uploadedImages = [];
+        let editingProductId = null;
+        let isPWAInstalled = false;
 
-        // ==================== PWA INSTALLATION ====================
+        // ==================== PWA INSTALLATION - MEJORADO ====================
         window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('beforeinstallprompt event fired');
             e.preventDefault();
             deferredPrompt = e;
-            console.log('PWA installation available');
+            
+            // Mostrar botón de instalación
+            const installButton = document.getElementById('installButton');
+            if (installButton) {
+                installButton.style.display = 'flex';
+            }
+            
+            updateInstallButton();
         });
 
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        showNotification('¡App instalada exitosamente!');
-                    } else {
-                        showNotification('Instalación cancelada. Puedes instalarla desde el menú del navegador.');
-                    }
-                    deferredPrompt = null;
-                });
+        window.addEventListener('appinstalled', (e) => {
+            console.log('PWA installed successfully');
+            isPWAInstalled = true;
+            deferredPrompt = null;
+            updateInstallButton();
+            showNotification('¡App instalada exitosamente!');
+        });
+
+        // Verificar si la app ya está instalada
+        if (window.matchMedia('(display-mode: standalone)').matches || 
+            window.navigator.standalone === true) {
+            console.log('App running in standalone mode');
+            isPWAInstalled = true;
+            updateInstallButton();
+        }
+
+        function updateInstallButton() {
+            const installButton = document.getElementById('installButton');
+            if (!installButton) return;
+            
+            if (isPWAInstalled) {
+                installButton.innerHTML = '✅ Instalada';
+                installButton.classList.add('installed');
+                installButton.onclick = null;
+                installButton.style.cursor = 'default';
+                installButton.style.opacity = '0.8';
+            } else if (deferredPrompt) {
+                installButton.innerHTML = '📱 Instalar App';
+                installButton.classList.remove('installed', 'installing');
+                installButton.onclick = installPWA;
+                installButton.style.cursor = 'pointer';
+                installButton.style.opacity = '1';
             } else {
-                showNotification('Para instalar la app, busca la opción "Agregar a pantalla de inicio" en el menú de tu navegador.');
+                installButton.style.display = 'none';
+            }
+        }
+
+        async function installPWA() {
+            if (!deferredPrompt) {
+                showNotification('La instalación no está disponible en este momento.');
+                return;
+            }
+            
+            const installButton = document.getElementById('installButton');
+            const originalText = installButton.innerHTML;
+            
+            try {
+                // Mostrar estado de instalación
+                installButton.innerHTML = '⏳ Instalando...';
+                installButton.classList.add('installing');
+                installButton.disabled = true;
+                
+                // Mostrar el prompt de instalación
+                deferredPrompt.prompt();
+                
+                // Esperar a que el usuario responda
+                const choiceResult = await deferredPrompt.userChoice;
+                
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                    isPWAInstalled = true;
+                    installButton.innerHTML = '✅ Instalada';
+                    installButton.classList.remove('installing');
+                    installButton.classList.add('installed');
+                    installButton.onclick = null;
+                    showNotification('¡App instalada exitosamente!');
+                } else {
+                    console.log('User dismissed the install prompt');
+                    installButton.innerHTML = originalText;
+                    installButton.classList.remove('installing');
+                    installButton.disabled = false;
+                    showNotification('Instalación cancelada. Puedes instalarla más tarde.');
+                }
+                
+                deferredPrompt = null;
+            } catch (error) {
+                console.error('Error durante la instalación:', error);
+                installButton.innerHTML = originalText;
+                installButton.classList.remove('installing');
+                installButton.disabled = false;
+                showNotification('Error durante la instalación. Intenta nuevamente.');
             }
         }
 
@@ -2082,7 +2290,7 @@
             }
         }
 
-        // ==================== AUTENTICACIÓN - CORREGIDO ====================
+        // ==================== AUTENTICACIÓN ====================
         function loginWithGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             const googleBtn = document.querySelector('.btn-google');
@@ -2193,7 +2401,7 @@
                     // Guardar la imagen en el array
                     uploadedImages.push({
                         name: file.name,
-                        data: e.target.result, // URL data
+                        data: e.target.result,
                         file: file
                     });
                 };
@@ -2201,8 +2409,8 @@
                 reader.readAsDataURL(file);
             }
             
-            // Actualizar el campo hidden con las URLs de las imágenes
-            document.getElementById('productImages').value = uploadedImages.map(img => img.data).join(', ');
+            // Actualizar el campo hidden
+            document.getElementById('productImages').value = 'uploaded';
         }
         
         async function uploadImagesToStorage(productId) {
@@ -2210,7 +2418,9 @@
             
             for (let i = 0; i < uploadedImages.length; i++) {
                 const image = uploadedImages[i];
-                const storageRef = storage.ref(`products/${productId}/${image.name}`);
+                const timestamp = Date.now();
+                const filename = `${timestamp}_${image.name}`;
+                const storageRef = storage.ref(`products/${productId}/${filename}`);
                 
                 try {
                     // Subir el archivo a Firebase Storage
@@ -2228,7 +2438,7 @@
             return imageUrls;
         }
 
-        // ==================== ADMIN PANEL FUNCTIONS ====================
+        // ==================== ADMIN PANEL FUNCTIONS - CORREGIDO ====================
         async function loadAdminPanel() {
             await loadProductsFromFirebase();
             
@@ -2245,7 +2455,7 @@
                 const productElement = document.createElement('div');
                 productElement.className = 'admin-product-item';
                 productElement.innerHTML = `
-                    <img src="${product.images[0] || 'https://via.placeholder.com/80?text=No+Image'}" 
+                    <img src="${product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/80?text=No+Image'}" 
                          alt="${product.name}" 
                          class="admin-product-image">
                     <div class="admin-product-info">
@@ -2300,7 +2510,7 @@
                     });
                 });
                 
-                document.getElementById('productImages').value = product.images.join(', ');
+                document.getElementById('productImages').value = 'existing';
             } else {
                 document.getElementById('productImages').value = '';
             }
@@ -2325,41 +2535,44 @@
             showModal('productModal');
         }
         
-        async function saveProduct(event) {
-            event.preventDefault();
-            
-            const productId = document.getElementById('productId').value;
-            const productName = document.getElementById('productName').value;
-            const productDescription = document.getElementById('productDescription').value;
-            const productListPrice = parseFloat(document.getElementById('productListPrice').value);
-            const productDiscount = parseInt(document.getElementById('productDiscount').value) || 0;
-            const productCategory = document.getElementById('productCategory').value;
-            const productBrand = document.getElementById('productBrand').value;
-            const productStock = document.getElementById('productStock').value === 'true';
-            
-            if (!productName || !productListPrice || !productCategory || !productBrand) {
-                showNotification('Por favor, completa todos los campos requeridos (*)');
-                return;
-            }
-            
-            if (uploadedImages.length === 0) {
-                showNotification('Por favor, sube al menos una imagen del producto');
-                return;
-            }
-            
-            let imageUrls = [];
+        async function saveProduct() {
+            const saveBtn = document.getElementById('saveProductBtn');
+            const originalText = saveBtn.innerHTML;
             
             try {
-                // Subir imágenes si son nuevas
-                if (editingProductId && uploadedImages[0]?.file) {
-                    // Si estamos editando y hay archivos nuevos
-                    imageUrls = await uploadImagesToStorage(productId || `temp_${Date.now()}`);
-                } else if (uploadedImages[0]?.file) {
-                    // Si son archivos nuevos
+                // Validar campos requeridos
+                const productName = document.getElementById('productName').value.trim();
+                const productListPrice = parseFloat(document.getElementById('productListPrice').value);
+                const productCategory = document.getElementById('productCategory').value;
+                const productBrand = document.getElementById('productBrand').value.trim();
+                
+                if (!productName || isNaN(productListPrice) || !productCategory || !productBrand) {
+                    showNotification('Por favor, completa todos los campos requeridos (*)');
+                    return;
+                }
+                
+                if (uploadedImages.length === 0 && !document.getElementById('productImages').value) {
+                    showNotification('Por favor, sube al menos una imagen del producto');
+                    return;
+                }
+                
+                // Cambiar estado del botón
+                saveBtn.innerHTML = '⏳ Guardando...';
+                saveBtn.disabled = true;
+                
+                const productId = document.getElementById('productId').value;
+                const productDescription = document.getElementById('productDescription').value.trim();
+                const productDiscount = parseInt(document.getElementById('productDiscount').value) || 0;
+                const productStock = document.getElementById('productStock').value === 'true';
+                
+                let imageUrls = [];
+                
+                // Subir imágenes si hay nuevas
+                if (uploadedImages.length > 0 && uploadedImages[0]?.file) {
                     const tempId = productId || `temp_${Date.now()}`;
                     imageUrls = await uploadImagesToStorage(tempId);
-                } else {
-                    // Si estamos usando URLs existentes
+                } else if (editingProductId && uploadedImages.length > 0) {
+                    // Usar URLs existentes cuando se edita
                     imageUrls = uploadedImages.map(img => img.data);
                 }
                 
@@ -2370,21 +2583,34 @@
                     discount: productDiscount,
                     category: productCategory,
                     brand: productBrand,
-                    images: imageUrls,
                     inStock: productStock,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    public: true // Asegurar que sea público
                 };
+                
+                // Solo actualizar imágenes si hay nuevas
+                if (imageUrls.length > 0) {
+                    productData.images = imageUrls;
+                }
                 
                 if (productId) {
                     // Actualizar producto existente
                     await db.collection('products').doc(productId).update(productData);
-                    showNotification('Producto actualizado exitosamente');
+                    showNotification('✅ Producto actualizado exitosamente');
                 } else {
                     // Crear nuevo producto
                     productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     productData.likes = 0;
-                    await db.collection('products').add(productData);
-                    showNotification('Producto agregado exitosamente');
+                    productData.public = true; // Asegurar que sea público
+                    const docRef = await db.collection('products').add(productData);
+                    showNotification('✅ Producto agregado exitosamente');
+                    
+                    // Si hay imágenes, actualizar con el ID real
+                    if (imageUrls.length > 0) {
+                        await docRef.update({
+                            images: imageUrls
+                        });
+                    }
                 }
                 
                 closeModal('productModal');
@@ -2394,7 +2620,11 @@
                 }
             } catch (error) {
                 console.error('Error guardando producto:', error);
-                showNotification('Error guardando producto: ' + error.message);
+                showNotification('❌ Error guardando producto: ' + error.message);
+            } finally {
+                // Restaurar botón
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
             }
         }
         
@@ -2405,14 +2635,14 @@
             
             try {
                 await db.collection('products').doc(productId).delete();
-                showNotification('Producto eliminado exitosamente');
+                showNotification('✅ Producto eliminado exitosamente');
                 await loadProductsFromFirebase();
                 if (adminAccess) {
                     await loadAdminPanel();
                 }
             } catch (error) {
                 console.error('Error eliminando producto:', error);
-                showNotification('Error eliminando producto: ' + error.message);
+                showNotification('❌ Error eliminando producto: ' + error.message);
             }
         }
         
@@ -2455,7 +2685,12 @@
         // ==================== PRODUCT FUNCTIONS ====================
         async function loadProductsFromFirebase() {
             try {
-                const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+                // Solo cargar productos públicos
+                const snapshot = await db.collection('products')
+                    .where('public', '==', true)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
                 products = [];
                 
                 snapshot.forEach(doc => {
@@ -2540,7 +2775,7 @@
                 card.className = 'product-card';
                 card.innerHTML = `
                     <div class="product-image">
-                        <img src="${product.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                        <img src="${product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/300x200?text=No+Image'}" 
                              alt="${product.name}" 
                              loading="lazy">
                         <button class="favorite-btn" data-product-id="${product.id}" onclick="toggleFavorite('${product.id}')">
@@ -2616,7 +2851,7 @@
                 favorites[productId] = {
                     count: 0,
                     name: product.name,
-                    image: product.images[0],
+                    image: product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/300x200?text=No+Image',
                     price: product.listPrice - (product.listPrice * (product.discount || 0) / 100)
                 };
             }
@@ -2673,7 +2908,8 @@
                     userId: userId,
                     productName: productName,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    userType: currentUser.type
+                    userType: currentUser.type,
+                    public: true
                 });
             } catch (error) {
                 console.error('Error guardando like:', error);
@@ -2716,7 +2952,7 @@
                 cart.push({
                     id: product.id,
                     name: product.name,
-                    image: product.images[0] || 'https://via.placeholder.com/300x200?text=No+Image',
+                    image: product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/300x200?text=No+Image',
                     price: finalPrice,
                     quantity: 1,
                     inStock: product.inStock
@@ -2853,6 +3089,7 @@
         function showApp() {
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('appContainer').style.display = 'block';
+            updateInstallButton();
         }
         
         function hideApp() {
@@ -2987,4 +3224,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
