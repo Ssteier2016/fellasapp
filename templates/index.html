@@ -2416,7 +2416,7 @@
         async function uploadImagesToStorage(productId) {
             const imageUrls = [];
             
-            for (let i 0; i < uploadedImages.length; i++) {
+            for (let i = 0; i < uploadedImages.length; i++) {
                 const image = uploadedImages[i];
                 const timestamp = Date.now();
                 const filename = `${timestamp}_${image.name}`;
@@ -2440,181 +2440,209 @@
 
         // ==================== ADMIN PANEL FUNCTIONS - CORREGIDO ====================
         async function loadAdminPanel() {
-            // ==================== PRODUCT FUNCTIONS ====================
-async function loadProductsFromFirebase() {
-    try {
-        // Usar tu colección "prendas" en lugar de "products"
-        const snapshot = await db.collection('prendas')
-            .where('public', '==', true)
-            .orderBy('createdAt', 'desc')
-            .get();
-        
-        products = [];
-        
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            products.push({
-                id: doc.id,
-                ...data,
-                createdAt: data.createdAt?.toDate() || new Date()
+            await loadProductsFromFirebase();
+            
+            const adminList = document.getElementById('adminProductList');
+            adminList.innerHTML = '';
+            
+            if (products.length === 0) {
+                adminList.innerHTML = '<p style="text-align: center; color: #666;">No hay productos para mostrar</p>';
+                return;
+            }
+            
+            products.forEach(product => {
+                const finalPrice = product.listPrice - (product.listPrice * (product.discount || 0) / 100);
+                const productElement = document.createElement('div');
+                productElement.className = 'admin-product-item';
+                productElement.innerHTML = `
+                    <img src="${product.images && product.images[0] ? product.images[0] : 'https://via.placeholder.com/80?text=No+Image'}" 
+                         alt="${product.name}" 
+                         class="admin-product-image">
+                    <div class="admin-product-info">
+                        <div class="admin-product-name">${product.name}</div>
+                        <div class="admin-product-price">$${finalPrice.toFixed(2)}</div>
+                        <small>Likes: ${product.likes || 0} | Stock: ${product.inStock ? 'Disponible' : 'Agotado'}</small>
+                    </div>
+                    <div class="admin-actions">
+                        <button class="btn-edit" onclick="editProduct('${product.id}')">✏️ Editar</button>
+                        <button class="btn-delete" onclick="deleteProduct('${product.id}')">🗑️ Eliminar</button>
+                    </div>
+                `;
+                adminList.appendChild(productElement);
             });
-        });
-        
-        if (products.length === 0) {
-            showNotification('No hay productos disponibles. Agrega algunos desde el panel de administración.');
+            
+            loadAdminStats();
         }
         
-        updateProductsCount();
-        updateProductGrid();
-    } catch (error) {
-        console.error('Error cargando productos:', error);
-        // Si hay error de índice, intentar sin el where
-        if (error.code === 'failed-precondition') {
-            try {
-                const snapshot = await db.collection('prendas')
-                    .orderBy('createdAt', 'desc')
-                    .get();
-                
-                products = [];
-                
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    products.push({
-                        id: doc.id,
-                        ...data,
-                        createdAt: data.createdAt?.toDate() || new Date()
+        async function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                showNotification('Producto no encontrado');
+                return;
+            }
+            
+            editingProductId = productId;
+            document.getElementById('productModalTitle').textContent = 'Editar Producto';
+            document.getElementById('productId').value = productId;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('productListPrice').value = product.listPrice;
+            document.getElementById('productDiscount').value = product.discount || 0;
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productBrand').value = product.brand;
+            document.getElementById('productStock').value = product.inStock ? 'true' : 'false';
+            
+            // Limpiar y cargar previsualización de imágenes existentes
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            uploadedImages = [];
+            
+            if (product.images && product.images.length > 0) {
+                product.images.forEach((imgUrl, index) => {
+                    const img = document.createElement('img');
+                    img.src = imgUrl;
+                    img.className = 'preview-image';
+                    preview.appendChild(img);
+                    
+                    uploadedImages.push({
+                        name: `image_${index}.jpg`,
+                        data: imgUrl
                     });
                 });
                 
-                updateProductsCount();
-                updateProductGrid();
-                showNotification('Productos cargados (sin filtro público)');
-            } catch (error2) {
-                console.error('Error cargando productos sin filtro:', error2);
-                showNotification('Error cargando productos.');
-                products = [];
-                updateProductsCount();
-                updateProductGrid();
+                document.getElementById('productImages').value = 'existing';
+            } else {
+                document.getElementById('productImages').value = '';
             }
-        } else {
-            showNotification('Error cargando productos.');
-            products = [];
-            updateProductsCount();
-            updateProductGrid();
-        }
-    }
-}
-
-async function saveProduct() {
-    const saveBtn = document.getElementById('saveProductBtn');
-    const originalText = saveBtn.innerHTML;
-    
-    try {
-        // Validar campos requeridos
-        const productName = document.getElementById('productName').value.trim();
-        const productListPrice = parseFloat(document.getElementById('productListPrice').value);
-        const productCategory = document.getElementById('productCategory').value;
-        const productBrand = document.getElementById('productBrand').value.trim();
-        
-        if (!productName || isNaN(productListPrice) || !productCategory || !productBrand) {
-            showNotification('Por favor, completa todos los campos requeridos (*)');
-            return;
-        }
-        
-        if (uploadedImages.length === 0 && !document.getElementById('productImages').value) {
-            showNotification('Por favor, sube al menos una imagen del producto');
-            return;
-        }
-        
-        // Cambiar estado del botón
-        saveBtn.innerHTML = '⏳ Guardando...';
-        saveBtn.disabled = true;
-        
-        const productId = document.getElementById('productId').value;
-        const productDescription = document.getElementById('productDescription').value.trim();
-        const productDiscount = parseInt(document.getElementById('productDiscount').value) || 0;
-        const productStock = document.getElementById('productStock').value === 'true';
-        
-        let imageUrls = [];
-        
-        // Subir imágenes si hay nuevas
-        if (uploadedImages.length > 0 && uploadedImages[0]?.file) {
-            const tempId = productId || `temp_${Date.now()}`;
-            imageUrls = await uploadImagesToStorage(tempId);
-        } else if (editingProductId && uploadedImages.length > 0) {
-            // Usar URLs existentes cuando se edita
-            imageUrls = uploadedImages.map(img => img.data);
-        }
-        
-        const productData = {
-            name: productName,
-            description: productDescription,
-            listPrice: productListPrice,
-            discount: productDiscount,
-            category: productCategory,
-            brand: productBrand,
-            inStock: productStock,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-            public: true // Asegurar que sea público
-        };
-        
-        // Solo actualizar imágenes si hay nuevas
-        if (imageUrls.length > 0) {
-            productData.images = imageUrls;
-        }
-        
-        if (productId) {
-            // Actualizar producto existente en la colección "prendas"
-            await db.collection('prendas').doc(productId).update(productData);
-            showNotification('✅ Producto actualizado exitosamente');
-        } else {
-            // Crear nuevo producto en la colección "prendas"
-            productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            productData.likes = 0;
-            productData.public = true; // Asegurar que sea público
             
-            const docRef = await db.collection('prendas').add(productData);
-            showNotification('✅ Producto agregado exitosamente');
+            showModal('productModal');
+        }
+        
+        function openAddProductModal() {
+            editingProductId = null;
+            document.getElementById('productModalTitle').textContent = 'Agregar Nuevo Producto';
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+            document.getElementById('productDiscount').value = '0';
+            document.getElementById('productStock').value = 'true';
             
-            // Si hay imágenes, actualizar con el ID real
-            if (imageUrls.length > 0) {
-                await docRef.update({
-                    images: imageUrls
-                });
+            // Limpiar previsualización de imágenes
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            uploadedImages = [];
+            document.getElementById('productImages').value = '';
+            
+            showModal('productModal');
+        }
+        
+        async function saveProduct() {
+            const saveBtn = document.getElementById('saveProductBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            try {
+                // Validar campos requeridos
+                const productName = document.getElementById('productName').value.trim();
+                const productListPrice = parseFloat(document.getElementById('productListPrice').value);
+                const productCategory = document.getElementById('productCategory').value;
+                const productBrand = document.getElementById('productBrand').value.trim();
+                
+                if (!productName || isNaN(productListPrice) || !productCategory || !productBrand) {
+                    showNotification('Por favor, completa todos los campos requeridos (*)');
+                    return;
+                }
+                
+                if (uploadedImages.length === 0 && !document.getElementById('productImages').value) {
+                    showNotification('Por favor, sube al menos una imagen del producto');
+                    return;
+                }
+                
+                // Cambiar estado del botón
+                saveBtn.innerHTML = '⏳ Guardando...';
+                saveBtn.disabled = true;
+                
+                const productId = document.getElementById('productId').value;
+                const productDescription = document.getElementById('productDescription').value.trim();
+                const productDiscount = parseInt(document.getElementById('productDiscount').value) || 0;
+                const productStock = document.getElementById('productStock').value === 'true';
+                
+                let imageUrls = [];
+                
+                // Subir imágenes si hay nuevas
+                if (uploadedImages.length > 0 && uploadedImages[0]?.file) {
+                    const tempId = productId || `temp_${Date.now()}`;
+                    imageUrls = await uploadImagesToStorage(tempId);
+                } else if (editingProductId && uploadedImages.length > 0) {
+                    // Usar URLs existentes cuando se edita
+                    imageUrls = uploadedImages.map(img => img.data);
+                }
+                
+                const productData = {
+                    name: productName,
+                    description: productDescription,
+                    listPrice: productListPrice,
+                    discount: productDiscount,
+                    category: productCategory,
+                    brand: productBrand,
+                    inStock: productStock,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    public: true // Asegurar que sea público
+                };
+                
+                // Solo actualizar imágenes si hay nuevas
+                if (imageUrls.length > 0) {
+                    productData.images = imageUrls;
+                }
+                
+                if (productId) {
+                    // Actualizar producto existente
+                    await db.collection('products').doc(productId).update(productData);
+                    showNotification('✅ Producto actualizado exitosamente');
+                } else {
+                    // Crear nuevo producto
+                    productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    productData.likes = 0;
+                    productData.public = true; // Asegurar que sea público
+                    const docRef = await db.collection('products').add(productData);
+                    showNotification('✅ Producto agregado exitosamente');
+                    
+                    // Si hay imágenes, actualizar con el ID real
+                    if (imageUrls.length > 0) {
+                        await docRef.update({
+                            images: imageUrls
+                        });
+                    }
+                }
+                
+                closeModal('productModal');
+                await loadProductsFromFirebase();
+                if (adminAccess) {
+                    await loadAdminPanel();
+                }
+            } catch (error) {
+                console.error('Error guardando producto:', error);
+                showNotification('❌ Error guardando producto: ' + error.message);
+            } finally {
+                // Restaurar botón
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
             }
         }
         
-        closeModal('productModal');
-        await loadProductsFromFirebase();
-        if (adminAccess) {
-            await loadAdminPanel();
-        }
-    } catch (error) {
-        console.error('Error guardando producto:', error);
-        showNotification('❌ Error guardando producto: ' + error.message);
-    } finally {
-        // Restaurar botón
-        saveBtn.innerHTML = originalText;
-        saveBtn.disabled = false;
-    }
-}
-
-async function deleteProduct(productId) {
-    if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
-        return;
-    }
-    
-    try {
-        // Eliminar de la colección "prendas"
-        await db.collection('prendas').doc(productId).delete();
-        showNotification('✅ Producto eliminado exitosamente');
-        await loadProductsFromFirebase();
-        if (adminAccess) {
-            await loadAdminPanel();
-        }
-    } catch (error) {
-        console.error('Error eliminando producto:', error);
-        showNotification('❌ Error eliminando producto: ' + error.message);
+        async function deleteProduct(productId) {
+            if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            try {
+                await db.collection('products').doc(productId).delete();
+                showNotification('✅ Producto eliminado exitosamente');
+                await loadProductsFromFirebase();
+                if (adminAccess) {
+                    await loadAdminPanel();
+                }
+            } catch (error) {
+                console.error('Error eliminando producto:', error);
+                showNotification('❌ Error eliminando producto: ' + error.message);
             }
         }
         
