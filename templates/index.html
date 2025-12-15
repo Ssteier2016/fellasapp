@@ -2411,32 +2411,56 @@
             // Actualizar el campo hidden
             document.getElementById('productImages').value = 'uploaded';
         }
-        
-        async function uploadImagesToStorage(productId) {
-            const imageUrls = [];
-            
-            for (let i = 0; i < uploadedImages.length; i++) {
-                const image = uploadedImages[i];
-                const timestamp = Date.now();
-                const filename = `${timestamp}_${image.name}`;
-                const storageRef = storage.ref(`products/${productId}/${filename}`);
-                
-                try {
-                    // Subir el archivo a Firebase Storage
-                    const snapshot = await storageRef.put(image.file);
-                    // Obtener la URL de descarga
-                    const downloadURL = await snapshot.ref.getDownloadURL();
-                    imageUrls.push(downloadURL);
-                } catch (error) {
-                    console.error('Error subiendo imagen:', error);
-                    // Si falla la subida, usar la URL data como fallback
-                    imageUrls.push(image.data);
-                }
-            }
-            
-            return imageUrls;
-        }
 
+        async function uploadImagesToStorage(productId) {
+    const imageUrls = [];
+    
+    for (let i = 0; i < uploadedImages.length; i++) {
+        const image = uploadedImages[i];
+        const timestamp = Date.now();
+        
+        // Limpiar el nombre del archivo
+        const cleanName = image.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const filename = `${timestamp}_${cleanName}`;
+        const storageRef = storage.ref(`products/${productId}/${filename}`);
+        
+        try {
+            console.log(`Subiendo imagen ${i + 1}/${uploadedImages.length}: ${filename}`);
+            
+            // Subir con metadata para evitar CORS
+            const metadata = {
+                contentType: image.file.type,
+                cacheControl: 'public, max-age=31536000',
+            };
+            
+            // Subir el archivo
+            const snapshot = await storageRef.put(image.file, metadata);
+            console.log('Imagen subida, obteniendo URL...');
+            
+            // Obtener la URL de descarga
+            const downloadURL = await snapshot.ref.getDownloadURL();
+            console.log('URL obtenida:', downloadURL);
+            
+            imageUrls.push(downloadURL);
+            
+        } catch (error) {
+            console.error('Error subiendo imagen:', error);
+            
+            // Si falla Firebase Storage, usar Data URL temporal
+            if (image.data && image.data.startsWith('data:image')) {
+                console.log('Usando Data URL como fallback');
+                imageUrls.push(image.data);
+            } else {
+                // Usar placeholder
+                imageUrls.push('https://via.placeholder.com/600x400/667eea/ffffff?text=Imagen+Producto');
+            }
+        }
+    }
+    
+    return imageUrls;
+}
+
+        
         // ==================== ADMIN PANEL FUNCTIONS - CORREGIDO ====================
         async function loadAdminPanel() {
             await loadProductsFromFirebase();
