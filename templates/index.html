@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2594,15 +2593,16 @@
                 }
                 
                 if (productId) {
-                    // Actualizar producto existente
-                    await db.collection('products').doc(productId).update(productData);
+                    // Actualizar producto existente en la colección "prendas"
+                    await db.collection('prendas').doc(productId).update(productData);
                     showNotification('✅ Producto actualizado exitosamente');
                 } else {
-                    // Crear nuevo producto
+                    // Crear nuevo producto en la colección "prendas"
                     productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
                     productData.likes = 0;
                     productData.public = true; // Asegurar que sea público
-                    const docRef = await db.collection('products').add(productData);
+                    
+                    const docRef = await db.collection('prendas').add(productData);
                     showNotification('✅ Producto agregado exitosamente');
                     
                     // Si hay imágenes, actualizar con el ID real
@@ -2634,7 +2634,8 @@
             }
             
             try {
-                await db.collection('products').doc(productId).delete();
+                // Eliminar de la colección "prendas"
+                await db.collection('prendas').doc(productId).delete();
                 showNotification('✅ Producto eliminado exitosamente');
                 await loadProductsFromFirebase();
                 if (adminAccess) {
@@ -2685,8 +2686,8 @@
         // ==================== PRODUCT FUNCTIONS ====================
         async function loadProductsFromFirebase() {
             try {
-                // Solo cargar productos públicos
-                const snapshot = await db.collection('products')
+                // Usar tu colección "prendas" en lugar de "products"
+                const snapshot = await db.collection('prendas')
                     .where('public', '==', true)
                     .orderBy('createdAt', 'desc')
                     .get();
@@ -2710,10 +2711,40 @@
                 updateProductGrid();
             } catch (error) {
                 console.error('Error cargando productos:', error);
-                showNotification('Error cargando productos.');
-                products = [];
-                updateProductsCount();
-                updateProductGrid();
+                // Si hay error de índice, intentar sin el where
+                if (error.code === 'failed-precondition') {
+                    try {
+                        const snapshot = await db.collection('prendas')
+                            .orderBy('createdAt', 'desc')
+                            .get();
+                        
+                        products = [];
+                        
+                        snapshot.forEach(doc => {
+                            const data = doc.data();
+                            products.push({
+                                id: doc.id,
+                                ...data,
+                                createdAt: data.createdAt?.toDate() || new Date()
+                            });
+                        });
+                        
+                        updateProductsCount();
+                        updateProductGrid();
+                        showNotification('Productos cargados (sin filtro público)');
+                    } catch (error2) {
+                        console.error('Error cargando productos sin filtro:', error2);
+                        showNotification('Error cargando productos.');
+                        products = [];
+                        updateProductsCount();
+                        updateProductGrid();
+                    }
+                } else {
+                    showNotification('Error cargando productos.');
+                    products = [];
+                    updateProductsCount();
+                    updateProductGrid();
+                }
             }
         }
         
@@ -2918,7 +2949,7 @@
         
         async function incrementProductLikes(productId) {
             try {
-                const productRef = db.collection('products').doc(productId);
+                const productRef = db.collection('prendas').doc(productId);
                 await productRef.update({
                     likes: firebase.firestore.FieldValue.increment(1)
                 });
