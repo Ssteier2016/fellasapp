@@ -558,7 +558,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: center; 
             color: #333;
             z-index: 10;
         }
@@ -2687,7 +2687,7 @@
                     <div class="admin-product-info">
                         <div class="admin-product-name">${product.name}</div>
                         <div class="admin-product-price">$${finalPrice.toFixed(2)}</div>
-                        <small>Likes: ${product.likes || 0} | Stock: ${product.inStock ? 'Disponible' : 'Agotado'}</small>
+                        <small>Likes: ${product.likes || 0} | Stock: ${product.inStock ? 'Disponible' : 'Reservado'}</small>
                     </div>
                     <div class="admin-actions">
                         <button class="btn-edit" onclick="editProduct('${product.id}')">✏️ Editar</button>
@@ -3243,7 +3243,7 @@
             if (!product) return;
             
             if (!product.inStock) {
-                showNotification('Este producto está agotado');
+                showNotification('Este producto está reservado');
                 return;
             }
             
