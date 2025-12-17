@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -823,33 +824,18 @@
             z-index: 5;
         }
 
-        /* Badge para foto de portada */
-        .cover-badge {
-            position: absolute;
-            top: 50px;
-            right: 10px;
-            background: #25D366;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 5;
-        }
-
-        /* Like button - un solo corazón */
+        /* Like button - MÁS PEQUEÑO Y EN UNA ESQUINA */
         .like-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255, 255, 255, 0.9);
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.85);
             border: none;
-            width: 44px;
-            height: 44px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -857,13 +843,16 @@
             color: #ff6b6b;
             transition: all 0.3s ease;
             z-index: 5;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+            padding: 0;
+            line-height: 1;
         }
 
         .like-btn:hover {
             background: white;
-            transform: scale(1.1);
+            transform: scale(1.05);
             color: #ff5252;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
 
         .like-btn.active {
@@ -872,9 +861,10 @@
         }
 
         .like-count {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: bold;
-            margin-top: 2px;
+            margin-top: 1px;
+            line-height: 1;
         }
 
         .product-info {
@@ -1398,6 +1388,7 @@
             border: 2px dashed #ddd;
             border-radius: 10px;
             text-align: center;
+            position: relative;
         }
 
         .upload-preview {
@@ -1457,6 +1448,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            z-index: 10;
         }
 
         .set-cover-btn:hover {
@@ -1884,6 +1876,13 @@
             .product-image {
                 height: 280px;
             }
+            .like-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.85rem;
+                top: 6px;
+                left: 6px;
+            }
             .whatsapp-reserve {
                 padding: 12px 20px;
                 font-size: 1rem;
@@ -1970,6 +1969,13 @@
             .product-image {
                 height: 240px;
             }
+            .like-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 0.8rem;
+                top: 5px;
+                left: 5px;
+            }
             .product-name {
                 font-size: 0.75rem;
                 height: 28px;
@@ -1988,11 +1994,6 @@
                 font-size: 1rem;
                 width: 42px;
                 height: 42px;
-            }
-            .like-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 1rem;
             }
             .modal-content {
                 padding: 1.5rem;
@@ -2055,6 +2056,13 @@
             .product-image {
                 height: 200px;
             }
+            .like-btn {
+                width: 26px;
+                height: 26px;
+                font-size: 0.75rem;
+                top: 4px;
+                left: 4px;
+            }
             .product-info {
                 padding: 0.6rem;
             }
@@ -2107,6 +2115,13 @@
             }
             .product-image {
                 height: 180px;
+            }
+            .like-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+                top: 3px;
+                left: 3px;
             }
             .ios-install-container {
                 bottom: 50px;
@@ -3070,7 +3085,7 @@
                     setCoverBtn.className = 'set-cover-btn';
                     setCoverBtn.innerHTML = index === 0 ? '⭐' : '☆';
                     setCoverBtn.title = index === 0 ? 'Imagen de portada' : 'Establecer como portada';
-                    setCoverBtn.onclick = () => setCoverImage(index);
+                    setCoverBtn.onclick = (e) => setCoverImage(index, e);
                     
                     // Etiqueta de portada
                     if (index === 0) {
@@ -3100,7 +3115,13 @@
             document.getElementById('coverImageIndex').value = '0';
         }
 
-        function setCoverImage(index) {
+        function setCoverImage(index, event) {
+            // Detener la propagación del evento
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
             coverImageIndex = index;
             document.getElementById('coverImageIndex').value = index;
             
@@ -3354,7 +3375,7 @@
                         <div class="admin-product-price">$${finalPrice.toFixed(2)}</div>
                         <small>Categoría: ${product.category || 'Sin categoría'} | Marca: ${product.brand || 'Sin marca'}</small>
                         <small>Likes: ${product.likes || 0} | Stock: ${product.inStock ? 'Disponible' : 'Reservado'}</small>
-                        <small>Imágenes: ${product.images ? product.images.length : 0} | Portada: Imagen 1</small>
+                        <small>${product.images ? 'Tiene imágenes' : 'Sin imágenes'} | Portada: Sí</small>
                     </div>
                     <div class="admin-actions">
                         <button class="btn-edit" onclick="editProduct('${product.id}')">✏️ Editar</button>
@@ -3404,7 +3425,7 @@
                     setCoverBtn.className = 'set-cover-btn';
                     setCoverBtn.innerHTML = index === 0 ? '⭐' : '☆';
                     setCoverBtn.title = index === 0 ? 'Imagen de portada' : 'Establecer como portada';
-                    setCoverBtn.onclick = () => setCoverImage(index);
+                    setCoverBtn.onclick = (e) => setCoverImage(index, e);
                     
                     // Etiqueta de portada
                     if (index === 0) {
@@ -3837,7 +3858,6 @@
                         </button>
                         ${product.discount > 0 ? `<span class="offer-badge">-${product.discount}%</span>` : ''}
                         ${!product.inStock ? '<span class="reserved-badge">RESERVADO</span>' : ''}
-                        ${hasMultipleImages ? '<span class="cover-badge">📷 ' + product.images.length + '</span>' : ''}
                     </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
@@ -4276,4 +4296,4 @@
         });
     </script>
 </body>
-  </html>
+                            </html>
