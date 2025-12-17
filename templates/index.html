@@ -1066,6 +1066,7 @@
             cursor: pointer;
             color: #aaa;
             transition: color 0.2s ease;
+            z-index: 100;
         }
 
         .modal-close:hover {
@@ -1079,25 +1080,28 @@
             color: #667eea;
         }
 
-        /* Modal de imágenes de producto */
+        /* Modal de imágenes de producto MEJORADO CON ZOOM */
         .image-modal {
-            max-width: 90%;
-            max-height: 90vh;
+            max-width: 95%;
+            max-height: 95vh;
+            z-index: 2001;
         }
 
         .image-modal-content {
-            padding: 1.5rem;
-            max-width: 800px;
+            padding: 0;
+            max-width: 95%;
             background: #111;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
         }
 
         .product-image-carousel {
             position: relative;
             width: 100%;
-            height: 500px;
+            height: 70vh;
             overflow: hidden;
-            border-radius: 15px;
-            margin-bottom: 1rem;
+            margin-bottom: 0;
         }
 
         .product-image-full {
@@ -1114,13 +1118,19 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            cursor: zoom-in;
         }
 
         .product-image-slide img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image-slide.zoomed img {
+            transform: scale(1.5);
+            cursor: zoom-out;
         }
 
         .image-carousel-nav {
@@ -1140,7 +1150,7 @@
             align-items: center;
             justify-content: center;
             color: #333;
-            z-index: 10;
+            z-index: 20;
         }
 
         .image-carousel-prev {
@@ -1163,6 +1173,9 @@
             justify-content: center;
             margin-top: 1rem;
             flex-wrap: wrap;
+            padding: 15px;
+            background: rgba(0,0,0,0.7);
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .image-thumb {
@@ -1187,21 +1200,27 @@
             object-fit: cover;
         }
 
-        .cover-indicator {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #25D366;
-            color: white;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
+        .modal-controls {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(0,0,0,0.7);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-controls button {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: bold;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .modal-controls button:hover {
+            background: white;
+            transform: translateY(-2px);
         }
 
         .form-group {
@@ -1900,6 +1919,9 @@
                 right: 15px;
                 max-width: 280px;
             }
+            .product-image-carousel {
+                height: 60vh;
+            }
         }
 
         @media (max-width: 768px) {
@@ -2018,6 +2040,9 @@
                 max-width: 250px;
                 padding: 12px;
             }
+            .product-image-carousel {
+                height: 50vh;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2103,6 +2128,9 @@
                 max-width: 220px;
                 font-size: 0.85rem;
             }
+            .product-image-carousel {
+                height: 40vh;
+            }
         }
 
         @media (max-width: 380px) {
@@ -2125,6 +2153,9 @@
             }
             .ios-install-container {
                 bottom: 50px;
+            }
+            .product-image-carousel {
+                height: 35vh;
             }
         }
     </style>
@@ -2451,10 +2482,10 @@
                     </div>
                 </div>
 
-                <!-- Modal de imágenes de producto -->
+                <!-- Modal de imágenes de producto MEJORADO CON ZOOM -->
                 <div class="modal image-modal" id="productImageModal">
                     <div class="modal-content image-modal-content">
-                        <button class="modal-close" onclick="closeModal('productImageModal')">&times;</button>
+                        <button class="modal-close" onclick="closeProductImageModal()">&times;</button>
                         <div class="product-image-carousel">
                             <div class="product-image-full" id="productImageFull">
                                 <!-- Las imágenes se cargarán aquí -->
@@ -2465,7 +2496,10 @@
                         <div class="image-thumbnails" id="imageThumbnails">
                             <!-- Las miniaturas se cargarán aquí -->
                         </div>
-                        <button class="btn btn-secondary" onclick="closeModal('productImageModal')" style="margin-top: 20px; width: 100%;">Cerrar</button>
+                        <div class="modal-controls">
+                            <button onclick="toggleZoom()" id="zoomToggleBtn">🔍 Zoom</button>
+                            <button onclick="closeProductImageModal()">✖️ Cerrar</button>
+                        </div>
                     </div>
                 </div>
 
@@ -2691,6 +2725,7 @@
         // Variables para carrusel de imágenes
         let currentImageSlide = 0;
         let currentProductImages = [];
+        let isZoomed = false;
         
         // Variables para usuarios conectados
         let connectedUsersCount = 0;
@@ -3271,7 +3306,7 @@
             return imageUrls;
         }
 
-        // ==================== FUNCIONES DEL CARRUSEL DE IMÁGENES - MEJORADO ====================
+        // ==================== FUNCIONES DEL CARRUSEL DE IMÁGENES - MEJORADO CON ZOOM ====================
         function openProductImageModal(productId) {
             const product = products.find(p => p.id === productId);
             if (!product || !product.images || product.images.length === 0) {
@@ -3281,6 +3316,7 @@
             
             currentProductImages = product.images;
             currentImageSlide = 0;
+            isZoomed = false;
             
             const imageFullContainer = document.getElementById('productImageFull');
             const thumbnailsContainer = document.getElementById('imageThumbnails');
@@ -3291,6 +3327,7 @@
             currentProductImages.forEach((imgUrl, index) => {
                 const slide = document.createElement('div');
                 slide.className = 'product-image-slide';
+                slide.onclick = toggleZoom;
                 slide.innerHTML = `<img src="${imgUrl}" alt="${product.name} - Imagen ${index + 1}" loading="lazy">`;
                 imageFullContainer.appendChild(slide);
             });
@@ -3304,20 +3341,12 @@
                 img.src = imgUrl;
                 img.alt = `Miniatura ${index + 1}`;
                 
-                // Agregar indicador de portada si es la primera imagen
-                if (index === 0) {
-                    const coverIndicator = document.createElement('div');
-                    coverIndicator.className = 'cover-indicator';
-                    coverIndicator.textContent = '📌';
-                    coverIndicator.title = 'Imagen de portada';
-                    thumb.appendChild(coverIndicator);
-                }
-                
                 thumb.appendChild(img);
                 thumbnailsContainer.appendChild(thumb);
             });
             
             updateImageCarousel();
+            updateZoomButton();
             showModal('productImageModal');
         }
         
@@ -3336,18 +3365,51 @@
         }
         
         function prevImageSlide() {
+            if (isZoomed) return; // No cambiar de slide cuando está en zoom
             currentImageSlide = (currentImageSlide - 1 + currentProductImages.length) % currentProductImages.length;
             updateImageCarousel();
         }
         
         function nextImageSlide() {
+            if (isZoomed) return; // No cambiar de slide cuando está en zoom
             currentImageSlide = (currentImageSlide + 1) % currentProductImages.length;
             updateImageCarousel();
         }
         
         function goToImageSlide(index) {
+            if (isZoomed) return; // No cambiar de slide cuando está en zoom
             currentImageSlide = index;
             updateImageCarousel();
+        }
+        
+        function toggleZoom() {
+            const currentSlide = document.querySelectorAll('.product-image-slide')[currentImageSlide];
+            if (!currentSlide) return;
+            
+            isZoomed = !isZoomed;
+            currentSlide.classList.toggle('zoomed');
+            updateZoomButton();
+        }
+        
+        function updateZoomButton() {
+            const zoomToggleBtn = document.getElementById('zoomToggleBtn');
+            if (zoomToggleBtn) {
+                zoomToggleBtn.textContent = isZoomed ? '🔍 Salir del Zoom' : '🔍 Zoom';
+            }
+        }
+        
+        function closeProductImageModal() {
+            // Salir del zoom si está activado
+            if (isZoomed) {
+                isZoomed = false;
+                const currentSlide = document.querySelectorAll('.product-image-slide')[currentImageSlide];
+                if (currentSlide) {
+                    currentSlide.classList.remove('zoomed');
+                }
+            }
+            
+            // Cerrar el modal
+            closeModal('productImageModal');
         }
 
         // ==================== ADMIN PANEL FUNCTIONS - ACTUALIZADO ====================
@@ -3843,7 +3905,6 @@
                 const likeClass = likeCount > 0 ? 'active' : '';
                 const likeText = likeCount > 0 ? `${likeCount}` : '';
                 const showCashPrice = product.discount > 0;
-                const hasMultipleImages = product.images && product.images.length > 1;
                 
                 const card = document.createElement('div');
                 card.className = 'product-card';
@@ -4210,11 +4271,15 @@
         }
         
         function showModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+            const modal = document.getElementById(modalId);
+            modal.classList.add('active');
+            // Asegurarse de que el modal esté en la parte superior
+            modal.style.zIndex = '2001';
         }
         
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('active');
         }
         
         function showNotification(message, duration = 3000) {
@@ -4282,18 +4347,28 @@
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
                 if (event.target === modal) {
-                    modal.classList.remove('active');
+                    // Cerrar modal de imágenes de producto de manera especial
+                    if (modal.id === 'productImageModal') {
+                        closeProductImageModal();
+                    } else {
+                        modal.classList.remove('active');
+                    }
                 }
             });
         };
         
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
-                document.querySelectorAll('.modal.active').forEach(modal => {
-                    modal.classList.remove('active');
-                });
+                // Cerrar modal de imágenes de producto si está abierto
+                if (document.getElementById('productImageModal').classList.contains('active')) {
+                    closeProductImageModal();
+                } else {
+                    document.querySelectorAll('.modal.active').forEach(modal => {
+                        modal.classList.remove('active');
+                    });
+                }
             }
         });
     </script>
 </body>
-                            </html>
+                                                                                       </html>
