@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#667eea">
     
     <!-- Favicon - Usando tu logo de GitHub -->
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png">
+    <link rel="icon" type="image/png" href="imagen/logo2.png">
+    <link rel="apple-touch-icon" href="imagen/logo2.png">
     <title>Showroom +Roma - Prendas de calidad, únicas e importadas</title>
     
     <!-- Manifest para PWA -->
@@ -18,7 +18,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Showroom +Roma">
     <meta name="mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-startup-image" href="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png">
+    <link rel="apple-touch-startup-image" href="imagen/logo2.png">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2430,7 +2430,7 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="logo-animation">
-            <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo" loading="lazy">
+            <img src="imagen/logo2.png" alt="Showroom +Roma Logo" loading="lazy">
         </div>
         <div class="brand-text">Showroom +Roma</div>
         <div class="loading-bar">
@@ -2501,7 +2501,7 @@
             <div class="nav-container">
                 <div class="logo-container" onclick="checkAdminAccess()">
                     <div class="logo">
-                        <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo" loading="lazy">
+                        <img src="imagen/logo2.png" alt="Showroom +Roma Logo" loading="lazy">
                     </div>
                     <div class="brand-name">Showroom +Roma</div>
                 </div>
@@ -2741,7 +2741,7 @@
                     <div class="profile-section">
                         <div class="profile-header">
                             <div class="profile-avatar" id="profileAvatar">
-                                <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Avatar">
+                                <img src="imagen/logo2.png" alt="Avatar">
                             </div>
                             <div class="profile-info">
                                 <h2 id="userName">Invitado</h2>
@@ -3830,7 +3830,7 @@
                 uid: 'anonymous_' + Date.now(),
                 name: "Invitado",
                 email: null,
-                avatar: "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                avatar: "imagen/logo2.png",
                 type: "anonymous",
                 purchases: []
             };
@@ -3863,7 +3863,7 @@
                 uid: user.uid,
                 name: user.displayName || 'Usuario',
                 email: user.email || null,
-                avatar: user.photoURL || "https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png",
+                avatar: user.photoURL || "imagen/logo2.png",
                 lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
