@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png">
+    <title>Showroom +Roma - Offline</title>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .features {
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #4ecdc4;
+        }
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+        .features li {
+            margin: 12px 0;
+            font-size: 1rem;
+            padding-left: 30px;
+            position: relative;
+        }
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ecdc4;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            background: #f8f9fa;
+        }
+        .button.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        .button.secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .cached-data {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        .offline-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="https://raw.githubusercontent.com/Ssteier2016/fellasapp/main/imagen/logo2.png" alt="Showroom +Roma Logo">
+    </div>
+    
+    <div class="container">
+        <div class="connection-status">
+            <div class="status-indicator"></div>
+            <span>Sin conexión a internet</span>
+        </div>
+        
+        <div class="icon">📶</div>
+        
+        <h1>Estás Offline</h1>
+        
+        <div class="offline-message">
+            <p>No hay conexión a internet en este momento.</p>
+            <p>Pero no te preocupes, puedes seguir viendo productos que ya habías cargado.</p>
+        </div>
+        
+        <div class="features">
+            <p><strong>¿Qué puedes hacer offline?</strong></p>
+            <ul>
+                <li>Ver productos ya cargados previamente</li>
+                <li>Revisar tu carrito de compras</li>
+                <li>Ver tus productos favoritos</li>
+                <li>Acceder a información guardada</li>
+                <li>Preparar reservas para cuando vuelva la conexión</li>
+            </ul>
+        </div>
+        
+        <div class="cached-data">
+            <p><strong>Modo offline activado:</strong> Los datos se cargarán automáticamente cuando recuperes la conexión.</p>
+            <p id="cacheStatus">Cargando información del caché...</p>
+        </div>
+        
+        <div class="buttons">
+            <button class="button" onclick="window.location.href='/'">
+                🔄 Reintentar conexión
+            </button>
+            <button class="button secondary" onclick="checkProductsCache()">
+                📦 Ver productos cacheados
+            </button>
+            <button class="button secondary" onclick="checkConnection()">
+                🌐 Verificar conexión
+            </button>
+        </div>
+        
+        <p style="margin-top: 30px; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+            La app funcionará automáticamente cuando se restablezca la conexión.
+        </p>
+    </div>
+
+    <script>
+        // Configuración de Firebase (usa la misma que tu app principal)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDm0yBRVNmZWrfSSL_-ueXC0S0f771ofjU",
+            authDomain: "showroom-7a0a5.firebaseapp.com",
+            projectId: "showroom-7a0a5",
+            storageBucket: "showroom-7a0a5.firebasestorage.app",
+            messagingSenderId: "1088867111350",
+            appId: "1:1088867111350:web:f7d557749f8037021b7117",
+            measurementId: "G-R8FYLYS8FK"
+        };
+
+        // Inicializar Firebase (esto ya lo tienes)
+        firebase.initializeApp(firebaseConfig);
+
+        // --- AGREGA ESTO DESDE AQUÍ ---
+        firebase.firestore().enablePersistence({ synchronizeTabs: true })
+          .then(() => {
+            console.log("Caché de Firestore activado con éxito");
+            document.getElementById('cacheStatus').textContent = "✅ Caché de Firestore activado correctamente";
+          })
+          .catch((err) => {
+            if (err.code == 'failed-precondition') {
+              // Ocurre si hay muchas pestañas abiertas a la vez
+              console.warn("La persistencia falló: demasiadas pestañas abiertas.");
+              document.getElementById('cacheStatus').textContent = "⚠️ Muchas pestañas abiertas. Cierra algunas para activar el caché completo.";
+            } else if (err.code == 'unimplemented') {
+              // El navegador (muy antiguo) no lo soporta
+              console.warn("Este navegador no soporta caché local.");
+              document.getElementById('cacheStatus').textContent = "⚠️ Tu navegador no soporta almacenamiento offline completo.";
+            } else {
+              document.getElementById('cacheStatus').textContent = "⚠️ Error activando caché: " + err.message;
+            }
+          });
+        // --- HASTA AQUÍ ---
+
+        // Después continúa tu código normal de db = firebase.firestore();
+        const db = firebase.firestore();
+
+        // Función para verificar conexión
+        function checkConnection() {
+            const statusElement = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.connection-status span');
+            
+            if (navigator.onLine) {
+                statusElement.style.background = '#4CAF50';
+                statusText.textContent = '¡Conexión restablecida!';
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                statusElement.style.background = '#ff6b6b';
+                statusText.textContent = 'Aún sin conexión';
+                
+                // Animar el indicador
+                statusElement.style.animation = 'blink 1s infinite';
+                
+                // Mostrar notificación
+                showMessage('Aún no hay conexión a internet. Intenta más tarde.');
+            }
+        }
+
+        // Función para verificar caché de productos
+        function checkProductsCache() {
+            const cacheStatus = document.getElementById('cacheStatus');
+            
+            // Intentar acceder al caché de Firestore
+            try {
+                // Verificar si hay datos cacheados
+                if (localStorage.getItem('showroom_products_cache')) {
+                    const cacheData = JSON.parse(localStorage.getItem('showroom_products_cache'));
+                    const productCount = cacheData.products ? cacheData.products.length : 0;
+                    
+                    cacheStatus.innerHTML = `
+                        <strong>✅ Datos cacheados encontrados:</strong><br>
+                        • ${productCount} productos disponibles offline<br>
+                        • Caché actualizado: ${new Date(cacheData.timestamp).toLocaleTimeString()}<br>
+                        • Tamaño: ${Math.round(JSON.stringify(cacheData).length / 1024)}KB
+                    `;
+                } else {
+                    cacheStatus.textContent = '⚠️ No hay datos cacheados disponibles. Necesitas conexión para cargar productos por primera vez.';
+                }
+            } catch (error) {
+                cacheStatus.textContent = 'Error accediendo al caché: ' + error.message;
+            }
+        }
+
+        // Función para mostrar mensajes
+        function showMessage(message, isError = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${isError ? '#ff6b6b' : '#4CAF50'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideDown 0.3s ease;
+            `;
+            
+            // Agregar animación CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideDown {
+                    from { top: -100px; opacity: 0; }
+                    to { top: 20px; opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            messageDiv.textContent = message;
+            document.body.appendChild(messageDiv);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                messageDiv.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => messageDiv.remove(), 300);
+            }, 3000);
+        }
+
+        // Verificar caché al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            checkProductsCache();
+            
+            // Verificar conexión automáticamente cada 5 segundos
+            setInterval(checkConnection, 5000);
+            
+            // También verificar cuando el usuario vuelve a la pestaña
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    checkConnection();
+                }
+            });
+            
+            // Intentar cargar algunos datos desde caché de Firestore
+            loadCachedProducts();
+        });
+
+        // Función para cargar productos desde caché de Firestore
+        async function loadCachedProducts() {
+            try {
+                // Intentar leer desde la colección 'prendas' (esto usará caché si está offline)
+                const snapshot = await db.collection('prendas')
+                    .where('public', '==', true)
+                    .limit(5)
+                    .get();
+                
+                if (!snapshot.empty) {
+                    console.log(`✅ ${snapshot.size} productos cargados desde caché de Firestore`);
+                    
+                    // Actualizar mensaje
+                    const cacheElement = document.getElementById('cacheStatus');
+                    if (cacheElement) {
+                        cacheElement.innerHTML += `<br>• Firestore: ${snapshot.size} productos listos offline`;
+                    }
+                } else {
+                    console.log('No hay productos en caché de Firestore');
+                }
+            } catch (error) {
+                console.log('Error accediendo a Firestore (modo offline):', error.message);
+            }
+        }
+
+        // Monitorear cambios en la conexión
+        window.addEventListener('online', () => {
+            const statusElement = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.connection-status span');
+            
+            statusElement.style.background = '#4CAF50';
+            statusElement.style.animation = 'none';
+            statusText.textContent = '¡Conexión detectada!';
+            
+            // Mostrar mensaje
+            showMessage('✅ ¡Conexión a internet restablecida! Redirigiendo...', false);
+            
+            // Redirigir después de 2 segundos
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        });
+
+        window.addEventListener('offline', () => {
+            const statusElement = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.connection-status span');
+            
+            statusElement.style.background = '#ff6b6b';
+            statusElement.style.animation = 'blink 1.5s infinite';
+            statusText.textContent = 'Sin conexión a internet';
+            
+            showMessage('⚠️ Se perdió la conexión a internet', true);
+        });
+    </script>
+</body>
+</html>
