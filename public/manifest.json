@@ -1,0 +1,132 @@
+{
+  "name": "Showroom +Roma",
+  "short_name": "+Roma",
+  "description": "Prendas nuevas, únicas e importadas de calidad",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "window-controls-overlay"],
+  "orientation": "portrait",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "categories": ["shopping", "fashion", "ecommerce"],
+  "icons": [
+    {
+      "src": "/imagen/logo2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/imagen/logo2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/imagen/logo2.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/imagen/logo2.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/imagen/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Catálogo de productos"
+    },
+    {
+      "src": "/imagen/screenshot2.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Vista móvil del producto"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver Catálogo",
+      "short_name": "Catálogo",
+      "description": "Explora nuestra colección",
+      "url": "/#catalog",
+      "icons": [
+        {
+          "src": "/imagen/catalog-icon.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Mi Carrito",
+      "short_name": "Carrito",
+      "description": "Ver mis productos seleccionados",
+      "url": "/#cart",
+      "icons": [
+        {
+          "src": "/imagen/cart-icon.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Mis Favoritos",
+      "short_name": "Favoritos",
+      "description": "Productos que me gustan",
+      "url": "/#favorites",
+      "icons": [
+        {
+          "src": "/imagen/heart-icon.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": ["auto", "focus-existing", "navigate-new"]
+  },
+  "permissions": [
+    "clipboard-write"
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+showroom",
+      "url": "/?url=%s"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.showroom.roma",
+      "id": "com.showroom.roma"
+    }
+  ],
+  "prefer_related_applications": false,
+  "id": "/",
+  "handle_links": "preferred",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link"
+    }
+  }
+}
