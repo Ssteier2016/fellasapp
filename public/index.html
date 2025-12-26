@@ -136,87 +136,6 @@
             to { width: 100%; }
         }
 
-        /* Estilos para el estado de carga de productos */
-        .products-loading-state {
-            text-align: center;
-            padding: 3rem;
-            margin: 2rem 0;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
-            animation: spin 1.2s ease-in-out infinite;
-        }
-
-        .loading-text {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        .loading-subtext {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .progress-container {
-            max-width: 400px;
-            margin: 2rem auto 0;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            height: 6px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 10px;
-        }
-
-        .loading-dots {
-            display: inline-flex;
-            gap: 4px;
-            margin-left: 5px;
-        }
-
-        .loading-dots span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.7);
-            animation: pulse 1.4s infinite;
-        }
-
-        .loading-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .loading-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-
         /* Contador de usuarios conectados */
         .connected-users {
             position: fixed;
@@ -242,6 +161,11 @@
             background: #4ecdc4;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         /* Botón de instalación para iOS - NUEVO */
@@ -816,76 +740,14 @@
             text-shadow: 0 4px 15px rgba(0,0,0,0.4);
         }
 
-        /* Filtros de búsqueda - DESPLEGABLE */
+        /* Filtros de búsqueda */
         .filters-container {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 0;
+            padding: 1.5rem;
             margin-bottom: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            overflow: hidden;
-            transition: all 0.4s ease-in-out;
-        }
-
-        .filters-header {
-            padding: 1.2rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            border-bottom: 1px solid #e1e5e9;
-        }
-
-        .filters-header:hover {
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .filters-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .filters-title::before {
-            content: "🔍";
-            font-size: 1.1rem;
-        }
-
-        .filters-toggle {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .filters-toggle:hover {
-            transform: rotate(180deg) scale(1.1);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .filters-content {
-            padding: 1.5rem;
-            max-height: 500px;
-            overflow: hidden;
-            transition: max-height 0.4s ease-in-out, padding 0.4s ease-in-out;
-        }
-
-        .filters-container.collapsed .filters-content {
-            max-height: 0;
-            padding: 0 1.5rem;
         }
 
         .filters-grid {
@@ -941,17 +803,8 @@
         .filters-actions {
             display: flex;
             gap: 1rem;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-end;
             margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .filters-info {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
         }
 
         .clear-filters-btn {
@@ -963,7 +816,6 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s ease;
-            white-space: nowrap;
         }
 
         .clear-filters-btn:hover {
@@ -2291,11 +2143,6 @@
             }
             .filters-actions {
                 flex-direction: column;
-                gap: 0.8rem;
-            }
-            .filters-info {
-                justify-content: space-between;
-                width: 100%;
             }
         }
 
@@ -2384,17 +2231,6 @@
             }
             .product-image-carousel {
                 height: 40vh;
-            }
-            .filters-header {
-                padding: 1rem;
-            }
-            .filters-title {
-                font-size: 1.1rem;
-            }
-            .filters-toggle {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
             }
         }
 
@@ -2566,81 +2402,51 @@
                 <section id="catalogSection" style="display: none;">
                     <h2 class="section-title">Nuestro Catálogo</h2>
                     
-                    <!-- Filtros de búsqueda DESPLEGABLE -->
-                    <div class="filters-container" id="filtersContainer">
-                        <div class="filters-header" onclick="toggleFilters()">
-                            <div class="filters-title">
-                                <span>Filtros de Búsqueda</span>
-                            </div>
-                            <button class="filters-toggle" id="filtersToggle">
-                                ↓
-                            </button>
-                        </div>
-                        
-                        <div class="filters-content" id="filtersContent">
-                            <div class="filters-grid">
-                                <div class="filter-group">
-                                    <label for="categoryFilter">Categoría</label>
-                                    <select id="categoryFilter" class="filter-select" onchange="applyFilters()">
-                                        <option value="">Todas las categorías</option>
-                                        <option value="Camisas">Camisas</option>
-                                        <option value="Pantalones">Pantalones</option>
-                                        <option value="Chaquetas">Chaquetas</option>
-                                        <option value="Zapatos">Zapatos</option>
-                                        <option value="Accesorios">Accesorios</option>
-                                        <option value="Bolsos">Bolsos</option>
-                                        <option value="Marcas">Marcas</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="filter-group">
-                                    <label for="brandFilter">Marca</label>
-                                    <select id="brandFilter" class="filter-select" onchange="applyFilters()">
-                                        <option value="">Todas las marcas</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="filter-group">
-                                    <label for="searchInput">Buscar por nombre</label>
-                                    <input type="text" id="searchInput" class="search-input" placeholder="Ej: Camisa Nike" oninput="applyFilters()">
-                                </div>
-                                
-                                <div class="filter-group">
-                                    <label for="priceSort">Ordenar por precio</label>
-                                    <select id="priceSort" class="filter-select" onchange="applyFilters()">
-                                        <option value="">Seleccionar</option>
-                                        <option value="low-high">Menor a mayor</option>
-                                        <option value="high-low">Mayor a menor</option>
-                                    </select>
-                                </div>
+                    <!-- Filtros de búsqueda -->
+                    <div class="filters-container">
+                        <div class="filters-grid">
+                            <div class="filter-group">
+                                <label for="categoryFilter">Categoría</label>
+                                <select id="categoryFilter" class="filter-select" onchange="applyFilters()">
+                                    <option value="">Todas las categorías</option>
+                                    <option value="Camisas">Camisas</option>
+                                    <option value="Pantalones">Pantalones</option>
+                                    <option value="Chaquetas">Chaquetas</option>
+                                    <option value="Zapatos">Zapatos</option>
+                                    <option value="Accesorios">Accesorios</option>
+                                    <option value="Bolsos">Bolsos</option>
+                                    <option value="Marcas">Marcas</option>
+                                </select>
                             </div>
                             
-                            <div class="filters-actions">
-                                <div class="filters-info">
-                                    <span id="productsCount">Cargando productos...</span>
-                                    <span id="filteredCount" style="color: #667eea; font-weight: bold;"></span>
-                                </div>
-                                <button class="clear-filters-btn" onclick="clearFilters()">Limpiar Filtros</button>
+                            <div class="filter-group">
+                                <label for="brandFilter">Marca</label>
+                                <select id="brandFilter" class="filter-select" onchange="applyFilters()">
+                                    <option value="">Todas las marcas</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="searchInput">Buscar por nombre</label>
+                                <input type="text" id="searchInput" class="search-input" placeholder="Ej: Camisa Nike" oninput="applyFilters()">
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label for="priceSort">Ordenar por precio</label>
+                                <select id="priceSort" class="filter-select" onchange="applyFilters()">
+                                    <option value="">Seleccionar</option>
+                                    <option value="low-high">Menor a mayor</option>
+                                    <option value="high-low">Mayor a menor</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Estado de carga profesional -->
-                    <div id="loadingProducts" class="products-loading-state" style="display: block;">
-                        <div class="loading-spinner"></div>
-                        <div class="loading-text">
-                            Cargando catálogo de productos
-                            <div class="loading-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                        
+                        <div class="filters-actions">
+                            <div>
+                                <span id="productsCount">Cargando productos...</span>
+                                <span id="filteredCount" style="margin-left: 10px; color: #667eea; font-weight: bold;"></span>
                             </div>
-                        </div>
-                        <div class="loading-subtext">
-                            Estamos preparando nuestra exclusiva colección de prendas nuevas, únicas e importadas para ti.
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar" id="loadingProgressBar"></div>
+                            <button class="clear-filters-btn" onclick="clearFilters()">Limpiar Filtros</button>
                         </div>
                     </div>
                     
@@ -2648,18 +2454,16 @@
                         <!-- Products will be generated by JavaScript -->
                     </div>
                     
+                    <!-- Estado de carga -->
+                    <div id="loadingProducts" style="text-align: center; color: white; padding: 2rem; display: none;">
+                        <div style="width: 40px; height: 40px; border: 3px solid #fff; border-top-color: transparent; border-radius: 50%; margin: 0 auto 1rem; animation: spin 1s linear infinite;"></div>
+                        <p>Cargando productos...</p>
+                    </div>
+                    
                     <!-- Sin resultados -->
-                    <div id="noResults" style="text-align: center; color: white; padding: 4rem 2rem; display: none;">
-                        <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
-                        <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem;">
-                            No se encontraron productos
-                        </h3>
-                        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; max-width: 500px; margin: 0 auto;">
-                            Intenta con otros filtros o ajusta los criterios de búsqueda.
-                        </p>
-                        <button class="btn btn-primary" onclick="clearFilters()" style="margin-top: 1rem;">
-                            Limpiar Filtros
-                        </button>
+                    <div id="noResults" style="text-align: center; color: white; padding: 3rem; display: none;">
+                        <h3>No se encontraron productos</h3>
+                        <p>Intenta con otros filtros o vuelve más tarde.</p>
                     </div>
                     
                     <!-- Pagination -->
@@ -3088,7 +2892,6 @@
         let currentBrand = '';
         let currentSearch = '';
         let currentPriceSort = '';
-        let filtersExpanded = true; // Estado inicial: filtros expandidos
         
         // Variables para carrusel de imágenes
         let currentImageSlide = 0;
@@ -3103,43 +2906,6 @@
         // Variables para configuración de WhatsApp
         let whatsappNumber = '5491128662992';
         let brands = new Set();
-
-        // ==================== FUNCIÓN PARA TOGGLE DE FILTROS ====================
-        function toggleFilters() {
-            const filtersContainer = document.getElementById('filtersContainer');
-            const filtersToggle = document.getElementById('filtersToggle');
-            
-            filtersExpanded = !filtersExpanded;
-            
-            if (filtersExpanded) {
-                filtersContainer.classList.remove('collapsed');
-                filtersToggle.innerHTML = '↓';
-                filtersToggle.style.transform = 'rotate(0deg)';
-            } else {
-                filtersContainer.classList.add('collapsed');
-                filtersToggle.innerHTML = '→';
-                filtersToggle.style.transform = 'rotate(-90deg)';
-            }
-            
-            // Guardar estado en localStorage
-            localStorage.setItem('filtersExpanded', filtersExpanded);
-        }
-        
-        function loadFiltersState() {
-            const savedState = localStorage.getItem('filtersExpanded');
-            if (savedState !== null) {
-                filtersExpanded = savedState === 'true';
-            }
-            
-            const filtersContainer = document.getElementById('filtersContainer');
-            const filtersToggle = document.getElementById('filtersToggle');
-            
-            if (!filtersExpanded && filtersContainer && filtersToggle) {
-                filtersContainer.classList.add('collapsed');
-                filtersToggle.innerHTML = '→';
-                filtersToggle.style.transform = 'rotate(-90deg)';
-            }
-        }
 
         // ==================== MANTENER APP ACTIVA ====================
         // Mantener la conexión activa para evitar que Render duerma la app
@@ -3970,12 +3736,9 @@
             }
             
             // Actualizar contador de productos filtrados
-            const filteredCountElement = document.getElementById('filteredCount');
-            if (filteredCountElement) {
-                filteredCountElement.textContent = 
-                    filteredProducts.length !== products.length ? 
-                    `(${filteredProducts.length} filtrados)` : '';
-            }
+            document.getElementById('filteredCount').textContent = 
+                filteredProducts.length !== products.length ? 
+                `(${filteredProducts.length} filtrados)` : '';
             
             currentPage = 1;
         }
@@ -3992,10 +3755,7 @@
             currentPriceSort = '';
             
             filteredProducts = [...products];
-            const filteredCountElement = document.getElementById('filteredCount');
-            if (filteredCountElement) {
-                filteredCountElement.textContent = '';
-            }
+            document.getElementById('filteredCount').textContent = '';
             currentPage = 1;
             updateProductGrid();
             showNotification('Filtros limpiados');
@@ -4003,8 +3763,6 @@
         
         function updateBrandsList() {
             const brandFilter = document.getElementById('brandFilter');
-            if (!brandFilter) return;
-            
             // Limpiar opciones excepto la primera
             while (brandFilter.options.length > 1) {
                 brandFilter.remove(1);
@@ -4331,26 +4089,12 @@
             `;
         }
 
-        // ==================== FUNCIONES DE CARGA DE PRODUCTOS - ACTUALIZADO CON BARRA DE PROGRESO ====================
+        // ==================== PRODUCT FUNCTIONS - ACTUALIZADO ====================
         async function loadProductsFromFirebase() {
             try {
-                // Mostrar estado de carga con animación
-                const loadingElement = document.getElementById('loadingProducts');
-                const progressBar = document.getElementById('loadingProgressBar');
-                
-                if (loadingElement) {
-                    loadingElement.style.display = 'block';
-                    loadingElement.style.opacity = '1';
-                    loadingElement.style.transform = 'translateY(0)';
-                    // Resetear la barra de progreso
-                    if (progressBar) progressBar.style.width = '10%';
-                }
-                
-                const noResultsElement = document.getElementById('noResults');
-                if (noResultsElement) noResultsElement.style.display = 'none';
-                
-                // Simular progreso inicial
-                if (progressBar) progressBar.style.width = '30%';
+                // Mostrar estado de carga
+                document.getElementById('loadingProducts').style.display = 'block';
+                document.getElementById('noResults').style.display = 'none';
                 
                 let snapshot;
                 
@@ -4361,13 +4105,10 @@
                         .get();
                 } catch (error) {
                     console.log('Cargando sin filtro public:', error);
-                    if (progressBar) progressBar.style.width = '50%';
                     snapshot = await db.collection('prendas')
                         .orderBy('createdAt', 'desc')
                         .get();
                 }
-                
-                if (progressBar) progressBar.style.width = '70%';
                 
                 products = [];
                 brands.clear();
@@ -4380,7 +4121,9 @@
                     // Optimizar URLs de imágenes para mejor rendimiento
                     const optimizedImages = images.map(img => {
                         if (img && img.startsWith('data:image')) {
-                            if (img.length > 500000) {
+                            // Para imágenes dataURL, verificar tamaño
+                            if (img.length > 500000) { // 500KB
+                                // Si es muy grande, usar placeholder temporal
                                 return 'https://via.placeholder.com/600x400/667eea/ffffff?text=Imagen+Cargando';
                             }
                         }
@@ -4404,8 +4147,6 @@
                     }
                 });
                 
-                if (progressBar) progressBar.style.width = '85%';
-                
                 if (products.length === 0) {
                     try {
                         const snapshot2 = await db.collection('producta').get();
@@ -4422,6 +4163,7 @@
                             
                             products.push(product);
                             
+                            // Agregar marca al conjunto de marcas
                             if (data.brand && data.brand.trim() !== '') {
                                 brands.add(data.brand.trim());
                             }
@@ -4431,70 +4173,23 @@
                     }
                 }
                 
-                // Actualizar lista de marcas
+                // Actualizar lista de marcas en el filtro
                 updateBrandsList();
                 
                 // Actualizar productos filtrados
                 filteredProducts = [...products];
                 
-                // Completar la barra de progreso
-                if (progressBar) progressBar.style.width = '100%';
-                
-                // Pequeña pausa para mostrar el 100%
-                await new Promise(resolve => setTimeout(resolve, 300));
-                
                 updateProductsCount();
                 updateProductGrid();
                 
-                // Ocultar estado de carga con transición suave
-                if (loadingElement) {
-                    loadingElement.style.opacity = '0';
-                    loadingElement.style.transform = 'translateY(-20px)';
-                    setTimeout(() => {
-                        loadingElement.style.display = 'none';
-                        loadingElement.style.opacity = '1';
-                        loadingElement.style.transform = 'translateY(0)';
-                    }, 300);
-                }
+                // Ocultar estado de carga
+                document.getElementById('loadingProducts').style.display = 'none';
                 
             } catch (error) {
                 console.error('Error cargando productos:', error);
                 
-                // Manejar error en la barra de progreso
-                const progressBar = document.getElementById('loadingProgressBar');
-                if (progressBar) {
-                    progressBar.style.background = '#ff6b6b';
-                    progressBar.style.width = '100%';
-                }
-                
-                // Actualizar mensaje de error
-                const loadingElement = document.getElementById('loadingProducts');
-                if (loadingElement) {
-                    const loadingText = loadingElement.querySelector('.loading-text');
-                    const loadingSubtext = loadingElement.querySelector('.loading-subtext');
-                    
-                    if (loadingText) {
-                        loadingText.innerHTML = 'Error al cargar el catálogo';
-                    }
-                    if (loadingSubtext) {
-                        loadingSubtext.innerHTML = 'Estamos teniendo problemas técnicos. Por favor, intenta recargar la página o vuelve más tarde.';
-                    }
-                    
-                    // Cambiar spinner a icono de error después de 2 segundos
-                    setTimeout(() => {
-                        const spinner = loadingElement.querySelector('.loading-spinner');
-                        if (spinner) {
-                            spinner.style.border = 'none';
-                            spinner.style.background = 'transparent';
-                            spinner.style.animation = 'none';
-                            spinner.innerHTML = '❌';
-                            spinner.style.fontSize = '2rem';
-                            spinner.style.display = 'flex';
-                            spinner.style.alignItems = 'center';
-                            spinner.style.justifyContent = 'center';
-                        }
-                    }, 2000);
-                }
+                // Ocultar estado de carga
+                document.getElementById('loadingProducts').style.display = 'none';
                 
                 showNotification('Error cargando productos. Usando datos de prueba.');
                 
@@ -4563,10 +4258,7 @@
         }
         
         function updateProductsCount() {
-            const productsCountElement = document.getElementById('productsCount');
-            if (productsCountElement) {
-                productsCountElement.textContent = `${products.length} productos disponibles`;
-            }
+            document.getElementById('productsCount').textContent = `${products.length} productos disponibles`;
         }
         
         function updateProductGrid() {
@@ -4574,20 +4266,16 @@
             const loadingProducts = document.getElementById('loadingProducts');
             const noResults = document.getElementById('noResults');
             
-            if (!productGrid) return;
+            // Ocultar estado de carga
+            if (loadingProducts) loadingProducts.style.display = 'none';
             
             productGrid.innerHTML = '';
             
-            // Verificar si la carga está activa
-            if (loadingProducts && loadingProducts.style.display !== 'none') {
-                return;
-            }
-            
             if (filteredProducts.length === 0) {
-                if (noResults) noResults.style.display = 'block';
+                noResults.style.display = 'block';
                 return;
             } else {
-                if (noResults) noResults.style.display = 'none';
+                noResults.style.display = 'none';
             }
             
             const startIndex = (currentPage - 1) * productsPerPage;
@@ -4642,19 +4330,9 @@
             });
             
             const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-            const pageInfoElement = document.getElementById('pageInfo');
-            const prevPageBtn = document.getElementById('prevPageBtn');
-            const nextPageBtn = document.getElementById('nextPageBtn');
-            
-            if (pageInfoElement) {
-                pageInfoElement.textContent = `Página ${currentPage} de ${totalPages}`;
-            }
-            if (prevPageBtn) {
-                prevPageBtn.disabled = currentPage === 1;
-            }
-            if (nextPageBtn) {
-                nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
-            }
+            document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentPage === totalPages || totalPages === 0;
             
             loadLikeButtons();
         }
@@ -4729,15 +4407,8 @@
         
         function updateFavoritesCount() {
             const totalFavorites = Object.keys(favorites).length;
-            const favoritesCountElement = document.getElementById('favoritesCount');
-            const favoritesProfileCountElement = document.getElementById('favoritesProfileCount');
-            
-            if (favoritesCountElement) {
-                favoritesCountElement.textContent = totalFavorites;
-            }
-            if (favoritesProfileCountElement) {
-                favoritesProfileCountElement.textContent = totalFavorites;
-            }
+            document.getElementById('favoritesCount').textContent = totalFavorites;
+            document.getElementById('favoritesProfileCount').textContent = totalFavorites;
         }
         
         async function saveLikeToFirestore(productId, userId, productName) {
@@ -4815,9 +4486,6 @@
             const cartSummary = document.getElementById('cartSummary');
             const emptyCartMessage = document.getElementById('emptyCartMessage');
             const cartCount = document.getElementById('cartCount');
-            
-            if (!cartItems || !cartSummary || !emptyCartMessage || !cartCount) return;
-            
             cartItems.innerHTML = '';
             
             if (cart.length === 0) {
@@ -4853,13 +4521,9 @@
                 cartItems.appendChild(cartItem);
             });
             
-            const cartSubtotalElement = document.getElementById('cartSubtotal');
-            const cartDiscountElement = document.getElementById('cartDiscount');
-            const cartTotalElement = document.getElementById('cartTotal');
-            
-            if (cartSubtotalElement) cartSubtotalElement.textContent = `$${subtotal.toFixed(2)}`;
-            if (cartDiscountElement) cartDiscountElement.textContent = '$0.00';
-            if (cartTotalElement) cartTotalElement.textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cartDiscount').textContent = '$0.00';
+            document.getElementById('cartTotal').textContent = `$${subtotal.toFixed(2)}`;
             cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
         
@@ -4934,37 +4598,24 @@
 
         // ==================== UTILITY FUNCTIONS ====================
         function showApp() {
-            const loginScreen = document.getElementById('loginScreen');
-            const appContainer = document.getElementById('appContainer');
-            
-            if (loginScreen) loginScreen.classList.add('hidden');
-            if (appContainer) appContainer.style.display = 'block';
-            
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appContainer').style.display = 'block';
             updateInstallButton();
             // Mostrar prompt de instalación para iOS si es necesario
             showIOSInstallPrompt();
         }
         
         function hideApp() {
-            const loginScreen = document.getElementById('loginScreen');
-            const appContainer = document.getElementById('appContainer');
-            
-            if (loginScreen) loginScreen.classList.remove('hidden');
-            if (appContainer) appContainer.style.display = 'none';
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appContainer').style.display = 'none';
         }
         
         function updateUserProfile() {
             if (!currentUser) return;
             
-            const userNameElement = document.getElementById('userName');
-            const userEmailElement = document.getElementById('userEmail');
-            const cartItemsCountElement = document.getElementById('cartItemsCount');
-            
-            if (userNameElement) userNameElement.textContent = currentUser.name;
-            if (userEmailElement) userEmailElement.textContent = currentUser.email || "Sesión de invitado";
-            if (cartItemsCountElement) {
-                cartItemsCountElement.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-            }
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userEmail').textContent = currentUser.email || "Sesión de invitado";
+            document.getElementById('cartItemsCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
             updateFavoritesCount();
         }
         
@@ -4991,47 +4642,8 @@
             }
             
             if (sectionId === 'catalog') {
-                // Resetear el estado de carga si no hay productos
+                // Cargar productos si no están cargados
                 if (products.length === 0) {
-                    const loadingElement = document.getElementById('loadingProducts');
-                    if (loadingElement) {
-                        loadingElement.style.display = 'block';
-                        loadingElement.style.opacity = '1';
-                        loadingElement.style.transform = 'translateY(0)';
-                        
-                        // Resetear barra de progreso
-                        const progressBar = document.getElementById('loadingProgressBar');
-                        if (progressBar) {
-                            progressBar.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
-                            progressBar.style.width = '10%';
-                        }
-                        
-                        // Resetear texto
-                        const loadingText = loadingElement.querySelector('.loading-text');
-                        const loadingSubtext = loadingElement.querySelector('.loading-subtext');
-                        const spinner = loadingElement.querySelector('.loading-spinner');
-                        
-                        if (loadingText) {
-                            loadingText.innerHTML = `Cargando catálogo de productos
-                                <div class="loading-dots">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
-                                </div>`;
-                        }
-                        if (loadingSubtext) {
-                            loadingSubtext.textContent = 'Estamos preparando nuestra exclusiva colección de prendas nuevas, únicas e importadas para ti.';
-                        }
-                        if (spinner) {
-                            spinner.innerHTML = '';
-                            spinner.style.border = '4px solid rgba(255, 255, 255, 0.3)';
-                            spinner.style.borderTop = '4px solid #667eea';
-                            spinner.style.animation = 'spin 1.2s ease-in-out infinite';
-                            spinner.style.background = 'transparent';
-                        }
-                    }
-                    
-                    // Cargar productos
                     loadProductsFromFirebase();
                 } else {
                     updateProductGrid();
@@ -5043,29 +4655,22 @@
         
         function showModal(modalId) {
             const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('active');
-                // Asegurarse de que el modal esté en la parte superior
-                modal.style.zIndex = '2001';
-            }
+            modal.classList.add('active');
+            // Asegurarse de que el modal esté en la parte superior
+            modal.style.zIndex = '2001';
         }
         
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('active');
-            }
+            modal.classList.remove('active');
         }
         
         function showNotification(message, duration = 3000) {
             const toast = document.getElementById('notificationToast');
             const messageElement = document.getElementById('notificationMessage');
-            
-            if (toast && messageElement) {
-                messageElement.textContent = message;
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), duration);
-            }
+            messageElement.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), duration);
         }
 
         // ==================== CAROUSEL FUNCTIONS ====================
@@ -5093,8 +4698,7 @@
         // ==================== INITIALIZATION ====================
         window.addEventListener('load', async () => {
             setTimeout(async () => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                if (loadingScreen) loadingScreen.classList.add('hidden');
+                document.getElementById('loadingScreen').classList.add('hidden');
                 
                 hideApp();
                 
@@ -5109,9 +4713,6 @@
                 
                 // Cargar configuración de WhatsApp
                 loadWhatsAppConfig();
-                
-                // Cargar estado de los filtros
-                loadFiltersState();
                 
                 await loadProductsFromFirebase();
                 
@@ -5148,8 +4749,7 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 // Cerrar modal de imágenes de producto si está abierto
-                const productImageModal = document.getElementById('productImageModal');
-                if (productImageModal && productImageModal.classList.contains('active')) {
+                if (document.getElementById('productImageModal').classList.contains('active')) {
                     closeProductImageModal();
                 } else {
                     document.querySelectorAll('.modal.active').forEach(modal => {
